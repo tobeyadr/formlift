@@ -1,0 +1,180 @@
+.formlift_input::placeholder{
+  opacity: 1;
+}
+
+.intl-tel-input{
+  width:100%;
+  box-sizing: border-box;
+}
+
+.formlift-clearfix{
+  zoom:1;
+  clear: both;
+}
+
+.formlift-infusion-form .formlift_button{
+	cursor: pointer;
+}
+
+.formlift-infusion-form .infusion-radio{
+	padding: 10px;
+}
+
+.formlift-infusion-form input[type="text"],
+.formlift-infusion-form input[type="email"],
+.formlift-infusion-form input[type="url"],
+.formlift-infusion-form input[type="password"],
+.formlift-infusion-form input[type="search"],
+.formlift-infusion-form select,
+.formlift-infusion-form textarea{
+	margin-top: 0;
+    margin-bottom: 0;
+    margin-left: 0;
+    margin-right: 0;
+    border: inherit;
+}
+
+.formlift-form-container {
+	box-sizing: border-box;
+	width: 100%;
+}
+
+.formlift_input,
+.formlift_field,
+.formlift_label,
+.formlift_button,
+.formlift-infusion-form{
+	outline: none;
+	display: inline-block;
+	box-sizing: border-box;
+}
+
+.formlift-no-error{
+	display: none;
+}
+
+.formlift-loader {
+  	display:inline-block;
+  	border: 4px solid #44d7ff;
+  	border-radius: 100%;
+  	border-top: 4px solid green;
+  	width: 20px;
+  	height: 20px;
+  	-webkit-animation: spin 1s linear infinite;
+    animation: spin 1s linear infinite;
+    vertical-align: text-bottom;
+}
+
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.formlift-success-message,
+.formlift-error-message,
+.formlift-wait-message {
+  display: inline-block;
+  padding: 13px 30px 10px 10px;
+  font-size: 18px;
+  font-weight: 500;
+  border-radius: 50px;
+  color: black;
+  box-sizing: border-box;
+  background: #d5ffa7;
+}
+
+.formlift-error-message{
+  background: #ffd0d0;
+}
+
+.formlift-wait-text-container{
+  display: inline-block;
+  margin: 0 0 0 15px;
+}
+
+/* The container */
+.formlift_radio_label_container {
+    position: relative;
+    padding-left: calc( var(--rb-size) + 10px );
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.formlift_check_style{
+    width: var(--rb-size);
+    height: var(--rb-size);
+}
+
+.formlift_radio_label_container input {
+    position: absolute;
+    opacity: 0;
+}
+
+.formlift_checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: solid;
+    border-radius: 50%;
+}
+.formlift_checkbox {
+    position: absolute;
+    top: 0;
+    left: 0;
+    border: solid;
+    text-align: center;
+    line-height: 1;
+}
+
+.formlift_checkmark:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+.formlift_checkbox:after {
+    content: "";
+    position: absolute;
+    display: none;
+}
+
+.formlift_radio_label_container input:checked ~ .formlift_checkmark:after,
+.formlift_radio_label_container input:checked ~ .formlift_checkbox:after {
+    display: block;
+}
+
+.formlift_radio_label_container .formlift_checkmark:after {
+  top: 30%;
+  left: 30%;
+  width: 40%;
+  height: 40%;
+  border-radius: 50%;
+}
+.formlift_radio_label_container .formlift_checkbox:after {
+    content: "✔";
+    height:100%;
+    position: relative;
+}
+
+.formlift-credit{
+  display: inline-block;
+  padding: 4px 12px 2px 12px;
+  background: linear-gradient(#D3EDFA, #C2DEEC);
+  /* border: 1px solid white; */
+  border-radius: 11px;
+  color: black;
+  float: right;
+  font-size: 12px;
+  margin-right: 5px;
+}
+
+.formlift-credit a {
+  color: #FFAC33 !important;
+}
