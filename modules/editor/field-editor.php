@@ -211,6 +211,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $content.= $this->get_label_field();
         //$content.= $this->get_placeholder_field();
         $content.= $this->get_value_field();
+        $content.= $this->get_pre_checked_field();
         $content.= $this->get_required_field();
         $content.= $this->get_loose_validation_field();
         $content.= $this->get_readonly_field();
@@ -284,13 +285,14 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
     public function radio()
     {
         $option_container = "<div class=\"formlift-option-container formlift-sortable-fields\">";
+        $uniqueId = uniqid( 'option_' );
 
         if (empty($this->options)){
-            $row = "<div class=\"formlift-option-editor\" id=\"option_0-$this->id\" data-field-id=\"$this->id\">";
-            $row.= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_0][label]\" value=\"\">";
-            $row.= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_0][value]\" value=\"\">";
-            $row.= "<input type=\"radio\" name=\"{$this->option_key}[{$this->id}][pre_checked]\" value=\"option_0\">Selected";
-            $row.= "<input type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][options][option_0][disabled]\" value=\"1\">Disabled";
+            $row = "<div class=\"formlift-option-editor\" id=\"$uniqueId-$this->id\" data-field-id=\"$this->id\">";
+            $row.= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$uniqueId][label]\" value=\"\">";
+            $row.= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$uniqueId][value]\" value=\"\">";
+            $row.= "<input type=\"radio\" name=\"{$this->option_key}[{$this->id}][pre_checked]\" value=\"$uniqueId\">Selected";
+            $row.= "<input type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][options][$uniqueId][disabled]\" value=\"1\">Disabled";
             $row.= "<span class=\"dashicons dashicons-plus formlift-option-add formlift-option-icon\"></span><span class=\"dashicons dashicons-trash formlift-option-icon formlift-option-delete\"></span><span class=\"dashicons dashicons-move formlift-move-icon formlift-option-icon\"></span>";
             $row.= "</div>";
             $option_container.= $row;
@@ -332,6 +334,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
     {
         $option_container = "<div class=\"formlift-option-container formlift-sortable-fields\">";
         $i = 0;
+        $uniqueId = uniqid( 'option_' );
 
         if (empty($this->options)){
             $row = "<div class=\"formlift-option-editor\" id=\"option_0-$this->id\" data-field-id=\"$this->id\">";

@@ -195,8 +195,7 @@ class FormLift_User
             $atters['name'] = $atters['id'];
         }
 
-	    $atters[ 'name' ] = self::db_extend( $atters['name'] );
-	    //return $atters['name'];
+	    //$atters[ 'name' ] = self::db_extend( $atters['name'] );
 
 	    if ( $content ) {
             if ( ! empty( $atters['name'] ) ){
@@ -214,7 +213,8 @@ class FormLift_User
             foreach ($actual_matches as $pattern) {
                 $field = str_replace('%%', '', $pattern);
 
-                $value = $FormLiftUser->get_user_data( self::db_extend( $field ) );
+//                $value = $FormLiftUser->get_user_data( self::db_extend( $field ) );
+                $value = $FormLiftUser->get_user_data( $field );
 
                 if ( empty( $value ) ) {
                     $value = '{No Data}';
