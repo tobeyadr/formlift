@@ -40,8 +40,10 @@ class Form_Settings_Meta_Box
     public static function remove_import_form_setting_pre_import( $fields )
     {
         //$screen = get_current_screen();
-        if ( ! isset( $_GET['post'] ) )
+        if ( ! isset( $_GET['post'] ) ){
             unset( $fields[ "infusionsoft_form_id" ] );
+            unset( $fields[ "infusionsoft_form_original_html" ] );
+        }
 
         return $fields;
     }

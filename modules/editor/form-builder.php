@@ -281,7 +281,8 @@ class FormLift_Form_Builder
 
         if ( ! isset( $_POST['formlift_editor_nonce'] ) || ! wp_verify_nonce( $_POST['formlift_editor_nonce'], 'formlift_saving_form_fields' ) )
             wp_die( 'Invalid credentials...' );
-
+//        var_dump($_POST);
+//        die();
         if ( isset( $_POST[ FORMLIFT_SETTINGS ]['form_refresh'] ) || isset( $_POST[ FORMLIFT_SETTINGS ]['form_sync'] ) ){
             $temp_code = get_formlift_html( $_POST[ FORMLIFT_SETTINGS ]['infusionsoft_form_id'] );
             $form_bits = self::parse_html( $temp_code );
