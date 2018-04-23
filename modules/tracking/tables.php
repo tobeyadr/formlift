@@ -10,14 +10,23 @@ define( 'FORMLIFT_IMPRESSIONS_TABLE', 'formlift_impressions' );
 
 function formlift_create_submissions_table()
 {
+	if ( ! is_admin() || ! current_user_can('manage_options' ) )
+		return;
+
     global $wpdb;
 
     $charset_collate = $wpdb->get_charset_collate();
 
     $table_name = $wpdb->prefix . FORMLIFT_SUBMISSIONS_TABLE;
 
-    if ( $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name )
+    if ( $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name && get_option('formlift_submissions_db_version') == FORMLIFT_VERSION )
         return;
+
+    $wpdb->query( "ALTER TABLE $table_name DROP COLUMN first_name" );
+    $wpdb->query( "ALTER TABLE $table_name DROP COLUMN last_name" );
+    $wpdb->query( "ALTER TABLE $table_name DROP COLUMN phone_number" );
+    $wpdb->query( "ALTER TABLE $table_name DROP COLUMN other_data" );
+    $wpdb->query( "ALTER TABLE $table_name DROP COLUMN timestamp" );
 
     $sql = "CREATE TABLE $table_name (
       ID mediumint(9) NOT NULL AUTO_INCREMENT,
@@ -30,20 +39,23 @@ function formlift_create_submissions_table()
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     dbDelta( $sql );
 
-    update_option( 'formlift_default_db_version', FORMLIFT_VERSION );
+    update_option( 'formlift_submissions_db_version', FORMLIFT_VERSION );
 }
 
-add_action('init', 'formlift_create_submissions_table' );
+add_action('admin_init', 'formlift_create_submissions_table' );
 
 function formlift_create_impressions_table()
 {
+	if ( ! is_admin() || ! current_user_can('manage_options' ) )
+		return;
+
     global $wpdb;
 
     $charset_collate = $wpdb->get_charset_collate();
 
     $table_name = $wpdb->prefix . FORMLIFT_IMPRESSIONS_TABLE;
 
-    if ( $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name )
+    if ( $wpdb->get_var("SHOW TABLES LIKE '$table_name'") == $table_name && get_option('formlift_submissions_db_version') == FORMLIFT_VERSION )
         return;
 
     $sql = "CREATE TABLE $table_name (
@@ -56,10 +68,10 @@ function formlift_create_impressions_table()
     require_once( ABSPATH . 'wp-admin/includes/upgrade.php' );
     dbDelta( $sql );
 
-    update_option( 'formlift_default_db_version', FORMLIFT_VERSION );
+    update_option( 'formlift_impressions_db_version', FORMLIFT_VERSION );
 }
 
-add_action('init', 'formlift_create_impressions_table' );
+add_action('admin_init', 'formlift_create_impressions_table' );
 
 //add_action( 'formlift_record_impression', 'formlift_add_impression');
 

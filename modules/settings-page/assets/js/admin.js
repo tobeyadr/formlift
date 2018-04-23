@@ -18,3 +18,8 @@ function formliftOpenSection(evt, animName, section_name) {
     evt.currentTarget.className += " formlift-active";
     formliftScrollTo("#formlift-settings-"+section_name);
 }
+
+jQuery(document).ready( function(){
+        jQuery('.formlift-color-picker').wpColorPicker();
+    }
+);

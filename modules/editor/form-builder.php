@@ -332,13 +332,40 @@ class FormLift_Form_Builder
 
     public static function sanitize_fields( $fields )
     {
-        foreach ( $fields as $fieldId => $fieldOption ){
+        foreach ( $fields as $fieldId => $fieldOptions ){
 
-        	if ( is_array( $fieldOption ) ){
-        		self::sanitize_fields( $fieldOption );
-	        } else {
-        		$fields[ $fieldId ] = esc_html( $fieldOption );
-	        }
+	        $fields[$fieldId]['type']           = sanitize_text_field( $fieldOptions['type'] );
+	        $fields[$fieldId]['id']             = sanitize_text_field( $fieldOptions['id'] );
+	        if ( isset( $fields[$fieldId]['name'] ) ):
+        	    $fields[$fieldId]['name']           = sanitize_text_field( $fieldOptions['name'] );
+	        endif;
+	        if ( isset( $fields[$fieldId]['label'] ) ):
+        	    $fields[$fieldId]['label']          = wp_kses( $fieldOptions['label'], wp_kses_allowed_html() );
+	        endif;
+	        if ( isset( $fields[$fieldId]['value'] ) ):
+		        if ( $fields[$fieldId]['type'] == 'custom' )
+        	        $fields[$fieldId]['value']      = wp_kses( $fieldOptions['value'], wp_kses_allowed_html( 'post' ) );
+		        else
+		            $fields[$fieldId]['value']      = sanitize_text_field( $fieldOptions['value'] );
+	        endif;
+	        if ( isset( $fields[$fieldId]['auto_fill'] ) ):
+		        $fields[$fieldId]['auto_fill']      = sanitize_text_field( $fieldOptions['auto_fill'] );
+	        endif;
+	        if ( isset( $fields[$fieldId]['placeholder'] ) ):
+		        $fields[$fieldId]['placeholder']    = sanitize_text_field( $fieldOptions['placeholder'] );
+	        endif;
+	        if ( isset( $fields[$fieldId]['required'] ) ):
+		        $fields[$fieldId]['required']       = sanitize_text_field( $fieldOptions['required'] );
+	        endif;
+	        if ( isset( $fields[$fieldId]['size'] ) ):
+		        $fields[$fieldId]['size']           = sanitize_text_field( $fieldOptions['size'] );
+	        endif;
+	        if ( isset( $fields[$fieldId]['readonly'] ) ):
+		        $fields[$fieldId]['readonly']           = sanitize_text_field( $fieldOptions['size'] );
+	        endif;
+	        if ( isset( $fields[$fieldId]['classes'] ) ):
+		        $fields[$fieldId]['classes']           = sanitize_text_field( $fieldOptions['size'] );
+	        endif;
         }
 
         return $fields;

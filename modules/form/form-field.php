@@ -276,7 +276,7 @@ class FormLift_Field implements FormLift_Field_Interface
             $label = $radio_option_list['label'];
             $value = $radio_option_list['value'];
 
-            $disabled = (isset($option_list['disabled']))? 'readonly' : '';
+            $disabled = (isset($radio_option_list['disabled']))? 'disabled' : '';
 
             if ($value == $this->getValue() || ( isset( $this->pre_checked ) && $radio_id == $this->pre_checked ) ){
                 $checked = "checked='checked'";
@@ -284,7 +284,7 @@ class FormLift_Field implements FormLift_Field_Interface
                 $checked = '';
             }
 
-            $radio = "<input class=\"formlift_radio\" type=\"radio\" id=\"$id-$this->ext\" name=\"{$this->getName()}\" value=\"$value\" $checked $disabled {$this->isReadOnly()}/>";
+            $radio = "<input class=\"formlift_radio\" type=\"radio\" id=\"$id-$this->ext\" name=\"{$this->getName()}\" value=\"$value\" {$checked} {$disabled} {$this->isReadOnly()}/>";
             $content.= "<label class=\"formlift_label formlift_radio_label_container\" for=\"$id-$this->ext\"> $label $radio <span class=\"formlift_checkmark formlift_check_style\"></span></label>";
             $content.= "</div>";
         }
@@ -375,7 +375,11 @@ class FormLift_Field implements FormLift_Field_Interface
 
 	public function error_code()
     {
-        return "<div id=\"error-{$this->getUniqueId()}\" class=\"formlift-error-response formlift-no-error\"></div>";
+    	$error_msg = apply_filters( 'formlift_field_preload_has_error_' . $this->getId(), false );
+
+	    $class = ( empty( $error_msg) )? "formlift-no-error" : "";
+
+        return "<div id=\"error-{$this->getUniqueId()}\" class=\"formlift-error-response {$class}\">{$error_msg}</div>";
     }
 
 	public function __toString()

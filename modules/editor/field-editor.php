@@ -24,6 +24,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
     var $remove_flag = false;
     var $readonly;
     var $classes;
+    var $loose;
     var $advanced_options = array();
 
     function __construct( $options )
@@ -46,6 +47,8 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
             $this->required = $options['required'];
         if (isset($options['options']))
             $this->options = $options['options'];
+        if (isset($options['is_loose']))
+            $this->loose = $options['is_loose'];
 
         /* for compatibility */
         if (isset($options['radio_options']))
@@ -95,7 +98,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
 
 	public function getName()
 	{
-		return ( isset( $this->name ) )? $this->name : $this->id;
+		return ( isset( $this->name ) && !empty( $this->name ) )? $this->name : $this->id;
 	}
 
 	public function getLabel()
@@ -103,7 +106,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
 		if (isset($this->label))
 			return $this->label;
 		else
-			return $this->name;
+			return $this->getName();
 	}
 
 	public function getValue()
@@ -209,6 +212,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         //$content.= $this->get_placeholder_field();
         $content.= $this->get_value_field();
         $content.= $this->get_required_field();
+        $content.= $this->get_loose_validation_field();
         $content.= $this->get_readonly_field();
         $content.= $this->get_custom_class_field();
         $content.= $this->get_advanced_field_options();
@@ -258,13 +262,13 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $checked = (isset($this->date_options['show_year']))? "checked" : "";
         $content.= $this->wrap_row(
             $this->wrap_label_cell("<label for='{$this->id}-show-year'>Show Year Picker</label>").
-            $this->wrap_input_cell("<input id='{$this->id}-show-year' type='checkbox' name='{$this->option_key}[{$this->id}][date_options][show_year]' value='true' $checked/>")
+            $this->wrap_input_cell("<label class=\"switch\"><input id=\"{$this->id}-show-year\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][date_options][show_year]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>")
         );
 
         $checked = (isset($this->date_options['show_month']))? "checked" : "";
         $content.= $this->wrap_row(
             $this->wrap_label_cell("<label for=\"{$this->id}-show-month\">Show Month Picker</label>").
-            $this->wrap_input_cell("<input id=\"{$this->id}-show-month\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][date_options][show_month]\" value=\"true\" $checked  />")
+            $this->wrap_input_cell("<label class=\"switch\"><input id=\"{$this->id}-show-month\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][date_options][show_month]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>")
         );
 
         $content.= $this->get_auto_fill_field();
@@ -294,7 +298,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
             foreach ($this->options as $radio_option_id => $radio_option_list){
                 $row = "<div class=\"formlift-option-editor\" id=\"$radio_option_id\" data-field-id=\"$this->id\">";
                 $row.= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$radio_option_id][label]\" value=\"{$radio_option_list['label']}\">";
-                $row.= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$radio_option_id][value]\" value=\"{$radio_option_list['value']}\" readonly>";
+                $row.= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$radio_option_id][value]\" value=\"{$radio_option_list['value']}\">";
                 
                 $checked = ( isset( $this->pre_checked ) && $this->pre_checked == $radio_option_id )? 'checked' : '';
                 $row.= "<input type=\"radio\" name=\"{$this->option_key}[{$this->id}][pre_checked]\" value=\"$radio_option_id\" $checked>Selected";
@@ -316,6 +320,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $content.= $this->get_label_field();
         $content.= $this->get_auto_fill_field();
         $content.= $this->get_required_field();
+        $content.= $this->get_loose_validation_field();
         $content.= $this->get_custom_class_field();
 	    $content.= $option_container;
 	    $content.= $this->get_advanced_field_options();
@@ -364,8 +369,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $content.= $this->get_auto_fill_field();
         $content.= $this->get_placeholder_field();
         $content.= $this->get_required_field();
-        $content.= $this->get_readonly_field();
-        $content.= $this->get_custom_class_field();
+	    $content.= $this->get_loose_validation_field();
+	    $content.= $this->get_readonly_field();
+	    $content.= $this->get_custom_class_field();
 	    $content.= $option_container;
 	    $content.= $this->get_advanced_field_options();
 
@@ -413,8 +419,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $content.= $this->get_auto_fill_field();
         $content.= $this->get_placeholder_field();
         $content.= $this->get_required_field();
-        $content.= $this->get_readonly_field();
-        $content.= $this->get_custom_class_field();
+	    $content.= $this->get_loose_validation_field();
+	    $content.= $this->get_readonly_field();
+        $content.= $this->get_custom_class_field();;
 	    $content.= $option_container;
 	    $content.= $this->get_advanced_field_options();
 
@@ -634,18 +641,28 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
     {
         $label = "<label for=\"{$this->id}-readonly\">Make this field readonly</label>";
         $checked = (isset($this->readonly))? "checked" : "";
-        $input = "<label class=\"switch\"><input id=\"{$this->id}-readonly\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][readonly]\" value=\"true\" $checked/><span class=\"slider round\"></span></label>";
+        $input = "<label class=\"switch\"><input id=\"{$this->id}-readonly\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][readonly]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
         return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
 
     }
+
+	public function get_loose_validation_field()
+	{
+		$label = "<label for=\"{$this->id}-loose\">Disable strict validation.</label>";
+		$checked = (isset($this->loose))? "checked" : "";
+		$input = "<label class=\"switch\"><input id=\"{$this->id}-loose\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][is_loose]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
+
+		return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
+
+	}
 
     public function get_placeholder_field()
     {
         $label = "<label for=\"{$this->id}-placeholder\">Use label as placeholder text instead</label>";
         $checked = (isset($this->placeholder))? "checked" : "";
 
-        $input = "<label class=\"switch\"><input id=\"{$this->id}-placeholder\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][placeholder]\" value=\"true\" $checked/><span class=\"slider round\"></span></label>";
+        $input = "<label class=\"switch\"><input id=\"{$this->id}-placeholder\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][placeholder]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
         return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
     }
@@ -655,7 +672,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $label = "<label for=\"{$this->id}-required\">Make This Field Required</label>";
         $checked = (isset($this->required))? "checked" : "";
 
-        $input = "<label class=\"switch\"><input id=\"{$this->id}-required\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][required]\" value=\"true\" $checked/><span class=\"slider round\"></span></label>";
+        $input = "<label class=\"switch\"><input id=\"{$this->id}-required\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][required]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
         return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
     }
@@ -664,7 +681,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
     {
         $label = "<label for=\"{$this->id}-pre_checked\">Pre-Check this field</label>";
         $checked = (isset($this->pre_checked))? "checked" : "";
-        $input = "<label class=\"switch\"><input id=\"{$this->id}-pre_checked\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][pre_checked]\" value=\"true\" $checked/><span class=\"slider round\"></span></label>";
+        $input = "<label class=\"switch\"><input id=\"{$this->id}-pre_checked\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][pre_checked]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
         return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
     }
@@ -673,7 +690,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
     {
         $label = "<label for=\"{$this->id}-auto\">Auto populate this field</label>";
         $checked = (isset($this->auto_fill))? "checked" : "";
-        $input = "<label class=\"switch\"><input id=\"{$this->id}-auto\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][auto_fill]\" value=\"true\" $checked/><span class=\"slider round\"></span></label>";
+        $input = "<label class=\"switch\"><input id=\"{$this->id}-auto\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][auto_fill]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
         return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
     }

@@ -38,7 +38,7 @@ class FormLift_Style_Field
     private function color()
     {
         $option_key = FORMLIFT_STYLE;
-        $input = "<input class='color-picker' data-alpha=\"true\" placeholder='{$this->form->get_default_style_setting( $this->class, $this->attribute )}' name='{$option_key}[{$this->class}][{$this->attribute}]' value='{$this->form->get_style_setting( $this->class, $this->attribute )}'/>";
+        $input = "<input type='text' class='formlift-color-picker input' data-alpha=\"true\" placeholder='{$this->form->get_default_style_setting( $this->class, $this->attribute )}' name='{$option_key}[{$this->class}][{$this->attribute}]' value='{$this->form->get_style_setting( $this->class, $this->attribute )}'/>";
         return $input;
     }
 
@@ -50,7 +50,7 @@ class FormLift_Style_Field
     private function input()
     {
         $option_key = FORMLIFT_STYLE;
-        $input = "<input class='formlift-input' placeholder='{$this->form->get_default_style_setting( $this->class, $this->attribute )}' name='{$option_key}[{$this->class}][{$this->attribute}]' value='{$this->form->get_style_setting( $this->class, $this->attribute )}'/>";
+        $input = "<input type='text' class='input' placeholder='{$this->form->get_default_style_setting( $this->class, $this->attribute )}' name='{$option_key}[{$this->class}][{$this->attribute}]' value='{$this->form->get_style_setting( $this->class, $this->attribute )}'/>";
         return $input;
     }
 

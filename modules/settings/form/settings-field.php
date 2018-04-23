@@ -130,7 +130,7 @@ class FormLift_Setting_Field
     {
         $option_key = FORMLIFT_SETTINGS;
         $checked = ( $this->form->get_form_setting( $this->id ) )? 'checked' : '';
-        $input = "<label class='switch'><input type='checkbox' name='{$option_key}[{$this->id}]' value='1' $checked/><span class='slider round'></span></label>";
+        $input = "<label class='switch'><input type='checkbox' name='{$option_key}[{$this->id}]' value='1' $checked/><span class='formlift-slider round'></span></label>";
         return $input;
     }
 

@@ -9,19 +9,37 @@ class FormLift_Settings
     {
         $fields = array();
 
-        $fields["notice_opt_out"] = new FormLift_Setting_Field(FORMLIFT_CHECKBOX, 'notice_opt_out', 'Opt out of notices from FormLift.net :(');
-        $fields[] = "<hr>";
         $fields["opt_out_of_usage_stats"] = new FormLift_Setting_Field(FORMLIFT_CHECKBOX, 'opt_out_of_usage_stats', "Opt of Usage Stats collection.");
-        $fields[] = "<p>This only affects premium users. If you have premium license usage stats may be collected to improve the quality of the software. All usage stats are non invasive, collected asyncronously, and do not contain any Personal information of any kind.</p>";
         $fields[] = "<hr>";
         $fields["disable_utm_removal"] = new FormLift_Setting_Field(FORMLIFT_CHECKBOX, 'disable_utm_removal', 'Disable PII Query Removal');
         $fields[] = "<p>This will stop FormLift from removing PII Variables from the url query string. This may cause issues regarding google adwords policies and put your user's information at risk to external scripts.</p>";
         $fields["exclude_from_utm_removal"] = new FormLift_Setting_Field(FORMLIFT_TEXT, 'exclude_from_utm_removal', 'Exclude UTM Variables From Removal');
         $fields[] = "<p>Enter 1 variable per line. FormLift strips PII (Personal Identifiable Infortmation) from the URL query string to protect user data from external scripts. Add UTM variables here to exclude them from this functionality.</p>";
+	    $fields[] = "<hr>";
+	    if ( FormLift_Module_Manager::has_modules() ){
+		    $fields["disable_credit"] = new FormLift_Setting_Field(FORMLIFT_CHECKBOX, 'disable_credit', "Disable the \"&#9889 by FormLift\" credit. (It helps us out a LOT if you leave it &#9786)");
+	    }
+	    $fields[] = "<hr>";
         $fields["reset_button"] = new FormLift_Setting_Field( FORMLIFT_BUTTON, "reset_style_to_defaults", "Reset All Style Settings To Their Defaults", "RESET TO DEFAULTS");
         $fields["delete_all_sessions"] = new FormLift_Setting_Field( FORMLIFT_BUTTON, "delete_all_sessions", "Delete all currently stored user sessions", "DELETE SESSIONS");
 
         return apply_filters( 'formlift_admin_settings', $fields );
+    }
+
+    public static function import_export()
+    {
+	    $fields = array();
+	    $fields[] = "<h2>Style Settings</h2>";
+	    $fields["import_style_settings"] = new FormLift_Setting_Field(FORMLIFT_TEXT, 'import_style_settings', 'Paste your settings here...');
+	    $fields["import_style"] = new FormLift_Setting_Field( FORMLIFT_BUTTON, "import_style", "Click to import...", "IMPORT NOW");
+	    $fields["export_style"] = new FormLift_Setting_Field( FORMLIFT_BUTTON, "export_style", "Export your settings", "EXPORT NOW");
+	    $fields[] = "<hr>";
+	    $fields[] = "<h2>Plugin Settings</h2>";
+	    $fields["import_plugin_settings"] = new FormLift_Setting_Field(FORMLIFT_TEXT, 'import_plugin_settings', 'Paste your settings here...');
+	    $fields["import_plugin"] = new FormLift_Setting_Field( FORMLIFT_BUTTON, "import_plugin", "Click to import...", "IMPORT NOW");
+	    $fields["export_plugin"] = new FormLift_Setting_Field( FORMLIFT_BUTTON, "export_plugin", "Export your settings", "EXPORT NOW");
+
+	    return apply_filters( 'formlift_import_export_settings', $fields );
     }
 
     public static function submission_settings()
@@ -36,6 +54,7 @@ class FormLift_Settings
         $fields[] = "<div class=\"formlift-error\">Enabling this will turn off validation and open you up to spam.</div>";
         $fields[] = "<hr>";
         $fields["submit_via_ajax"] = new FormLift_Setting_Field( FORMLIFT_CHECKBOX, 'submit_via_ajax', 'Don\'t send to thank you page.' );
+        $fields["enable_compatibility_mode"] = new FormLift_Setting_Field( FORMLIFT_CHECKBOX, 'enable_compatibility_mode', 'Enable compatibility mode.' );
 
         return apply_filters( 'formlift_submission_Settings', $fields );
     }
@@ -156,7 +175,7 @@ class FormLift_Settings
         foreach ( $array as $option => $value )
         {
             if ( is_string( $value ) ){
-                $array[ $option ] = esc_html( $value );
+                $array[ $option ] = sanitize_textarea_field( stripslashes( $value ) );
             } elseif ( ( is_array( $value ) ) ){
                 $array[ $option ] = self::clean_settings($value);
             }
@@ -164,7 +183,50 @@ class FormLift_Settings
 
         return $array;
     }
+
+	public static function export_settings()
+	{
+		if ( isset( $_POST[FORMLIFT_SETTINGS]['export_plugin'] ) && wp_verify_nonce( $_POST['formlift_options'], 'update' ) && current_user_can('manage_options') ){
+			$filename = "formlift_style_settings_".date("Y-m-d_H-i",time() );
+
+			header("Content-type: text/plain");
+			//header("Content-disposition: csv" . date("Y-m-d") . ".csv");
+			header( "Content-disposition: attachment; filename=".$filename.".txt");
+			// do not cache the file
+			//header('Pragma: no-cache');
+			//header('Expires: 0');
+
+			$file = fopen('php://output', 'w');
+
+			fputs($file, json_encode( get_option( FORMLIFT_SETTINGS ) ) );
+
+			// output each row of the data
+
+			fclose($file);
+
+			exit();
+		}
+	}
+
+	public static function import()
+	{
+		if ( isset( $_POST[FORMLIFT_SETTINGS]['import_plugin'] ) && wp_verify_nonce( $_POST['formlift_options'], 'update' ) && current_user_can('manage_options') ){
+
+			$options = stripslashes( $_POST[ FORMLIFT_SETTINGS ]['import_plugin_settings'] );
+
+			if ( empty( $options ) ){
+				FormLift_Notice_Manager::add_error('bad_import', "No settings to import..." );
+				return;
+			}
+
+			$options = apply_filters( 'formlift_sanitize_form_settings', json_decode( $options, true ) );
+			update_option( FORMLIFT_SETTINGS, $options );
+
+		}
+	}
 }
 
 add_action( 'init' , array('FormLift_Settings', 'save_settings') );
-add_filter( 'formlift_save_settings', array( 'FormLift_Settings', 'clean_settings') );
+add_filter( 'formlift_sanitize_form_settings', array( 'FormLift_Settings', 'clean_settings') );
+add_action( 'init' , array( 'FormLift_Settings', 'export_settings' ) );
+add_action( 'init' , array( 'FormLift_Settings', 'import' ) );

@@ -34,18 +34,22 @@ class FormLift_User
 	function set_user_data( $field, $data )
 	{
 	    if ( is_ssl() )
-            $this->attributes[$field] = $data;
+	    	$this->attributes[$field] = $data;
 	}
 
     function remove_user_data( $field )
 	{
-        unset ( $this->attributes[$field] );
+		if ( isset( $this->attributes[$field] ) )
+            unset ( $this->attributes[$field] );
 	}
 
     /* exists just because it has a better name */
     function get_user_data( $field, $default = false )
     {
-        if ( isset( $this->attributes[ $field ] ) && is_ssl() ){
+    	if ( ! is_ssl() )
+    		return $default;
+
+	    if ( isset( $this->attributes[ $field ] ) ){
             return $this->attributes[ $field ] ;
         } else if ( is_user_logged_in() ) {
             return $this->get_user_data_from_wp( $field , $default );
@@ -81,7 +85,7 @@ class FormLift_User
         if ( get_formlift_setting( "disable_session_storage" ) )
             return;
 
-        $expiresInDays = get_formlift_setting( 'time_to_live', 30 );
+        $expiresInDays = intval( get_formlift_setting( 'time_to_live', 30 ) );
         set_transient( $this->ID, $this->attributes, $expiresInDays * 24 * HOUR_IN_SECONDS );
     }
 

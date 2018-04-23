@@ -145,8 +145,8 @@ class FormLift_Defaults
 
     public static function add_style_reset_filter()
     {
-        if ( is_user_logged_in() && is_admin() && isset( $_POST[FORMLIFT_SETTINGS][ "reset_style_to_defaults" ] ) ){
-            add_filter( "formlift_save_style_settings", array( "FormLift_Defaults", "reset_style_settings" ) );
+        if ( is_user_logged_in() && is_admin() && current_user_can('manage_options') && isset( $_POST[FORMLIFT_SETTINGS][ "reset_style_to_defaults" ] ) ){
+            add_filter( "formlift_sanitize_style_settings", array( "FormLift_Defaults", "reset_style_settings" ) );
         }
     }
 

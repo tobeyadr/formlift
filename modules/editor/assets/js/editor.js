@@ -7,6 +7,7 @@ var FormLiftEditor = {
     operatingId: null,
     operation: 'switch',
     optionId: null,
+    reloadCallbacks: [],
 
     init: function(fieldOptions){
         /* all the form options */
@@ -67,6 +68,10 @@ var FormLiftEditor = {
         jQuery( ".formlift-switch-width" ).on("click", function(){
             FormLiftEditor.changeFieldWidth(this.getAttribute('data-change-id'), this.value);
         });
+
+        for( var i = 0; i < this.reloadCallbacks.length; i++ ){
+            this.reloadCallbacks[i]();
+        }
     },
 
     getFieldHtml: function(){
@@ -181,7 +186,8 @@ var FormLiftEditor = {
         if (typeof this.fieldOptions[field_id].options == 'undefined')
             this.fieldOptions[field_id].options = {};
 
-        this.optionId = field_id +  Object.keys(this.fieldOptions[field_id].options).length;
+        this.optionId = 'option_' + Math.random().toString(36).substr(2, 16);
+
         this.operatingId = field_id;
         /* create the div */
         var ajaxCall = jQuery.ajax({

@@ -232,13 +232,9 @@ class FormLift_Style_Settings
     public static function save_settings()
     {
         if ( isset( $_POST['formlift_options'] ) && wp_verify_nonce( $_POST['formlift_options'], 'update' ) && current_user_can('manage_options') ){
-
             $options = $_POST[ FORMLIFT_STYLE ];
-
             $options = apply_filters( 'formlift_sanitize_style_settings', $options );
-
             update_option( FORMLIFT_STYLE, $options);
-
         } 
     }
 
@@ -252,7 +248,50 @@ class FormLift_Style_Settings
 
 	    return $options;
     }
+
+    public static function export_settings()
+    {
+	    if ( isset( $_POST[FORMLIFT_SETTINGS]['import_style'] ) && wp_verify_nonce( $_POST['formlift_options'], 'update' ) && current_user_can('manage_options') ){
+		    $filename = "formlift_style_settings_".date("Y-m-d_H-i",time() );
+
+		    header("Content-type: text/plain");
+		    //header("Content-disposition: csv" . date("Y-m-d") . ".csv");
+		    header( "Content-disposition: attachment; filename=".$filename.".txt");
+		    // do not cache the file
+		    //header('Pragma: no-cache');
+		    //header('Expires: 0');
+
+		    $file = fopen('php://output', 'w');
+
+		    fputs($file, json_encode( get_option( FORMLIFT_STYLE ) ) );
+
+		    // output each row of the data
+
+		    fclose($file);
+
+		    exit();
+	    }
+    }
+
+    public static function import_settings()
+    {
+	    if ( isset( $_POST[FORMLIFT_SETTINGS]['import_style'] ) && wp_verify_nonce( $_POST['formlift_options'], 'update' ) && current_user_can('manage_options') ){
+
+		    $options = stripslashes( $_POST[ FORMLIFT_SETTINGS ]['import_style_settings'] );
+
+		    if ( empty( $options ) ){
+		    	FormLift_Notice_Manager::add_error('bad_import', "No settings to import..." );
+		    	return;
+		    }
+
+		    $options = apply_filters( 'formlift_sanitize_style_settings', json_decode( $options, true ) );
+		    update_option( FORMLIFT_STYLE, $options );
+
+	    }
+    }
 }
 
 add_filter( 'formlift_sanitize_style_settings',  array( 'FormLift_Style_Settings', 'clean_settings' ) );
 add_action( 'init' , array( 'FormLift_Style_Settings', 'save_settings' ) );
+add_action( 'init' , array( 'FormLift_Style_Settings', 'export_settings' ) );
+add_action( 'init' , array( 'FormLift_Style_Settings', 'import_settings' ) );

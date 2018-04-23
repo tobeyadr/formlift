@@ -48,7 +48,7 @@ class FormLift_Form_Post_Type
             'supports' => array(
                 'title',
                 'author',
-                'editor'
+//                'editor'
             )
         );
 
@@ -125,7 +125,7 @@ class FormLift_Form_Post_Type
 
                 $num_subs = formlift_get_form_submissions( date('Y-m-d H:i:s', strtotime('-7 days')), current_time('mysql'), $post_id );
 
-                $terms = sprintf('<p><b>%s</b></p>',$num_subs);
+                $terms = sprintf('<p><b>%s</b></p>', intval( $num_subs ) );
                 if ( is_string( $terms ) )
                     echo $terms;
                 else
@@ -135,7 +135,7 @@ class FormLift_Form_Post_Type
 
                 $num_subs = formlift_get_form_impressions( date('Y-m-d H:i:s', strtotime('-7 days')), current_time('mysql'), $post_id );
 
-                $terms = sprintf('<p><b>%s</b></p>',$num_subs);
+                $terms = sprintf('<p><b>%s</b></p>', intval( $num_subs ) );
                 if ( is_string( $terms ) )
                     echo $terms;
                 else
@@ -147,7 +147,7 @@ class FormLift_Form_Post_Type
                 $imps = formlift_get_form_impressions( date('Y-m-d H:i:s', strtotime('-7 days')), current_time('mysql'), $post_id );
 
                 if ( ! empty ( $subs ) )
-                    $convs = floor( ( $subs / $imps ) * 100 );
+                    $convs = floor( ( intval( $subs ) / intval( $imps ) ) * 100 );
                 else
                     $convs = 0;
 
@@ -239,7 +239,7 @@ class FormLift_Form_Post_Type
      */
     public static function save( $post_id )
     {
-        if ( is_user_logged_in() && current_user_can('manage_options') && get_post_type( $post_id ) == "infusion_form" && isset( $_POST[ 'formlift_editor_nonce' ] ) ){
+        if ( is_user_logged_in() && current_user_can('manage_options') && get_post_type( $post_id ) == "infusion_form" && isset( $_POST[ 'formlift_editor_nonce' ] ) && wp_verify_nonce( $_POST[ 'formlift_editor_nonce' ], 'formlift_saving_form_fields' ) ){
             do_action('formlift_before_save_form', $post_id);
             do_action('formlift_after_save_form', $post_id);
         }

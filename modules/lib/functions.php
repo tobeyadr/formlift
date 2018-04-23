@@ -6,7 +6,7 @@ function get_formlift_setting( $id, $default = false )
 {
     $option = get_option( FORMLIFT_SETTINGS );
 
-    if ( isset( $option[$id] ) ){
+    if ( isset( $option[$id] ) && !empty($option[$id]) ){
         return $option[$id];
     } else {
         return $default;
@@ -160,10 +160,10 @@ function get_formlift_field_types()
 			'checkbox'      => 'Checkbox'
 		),
 		'Additional' => array(
-			'GDPR'      => 'GDPR Compliance',
-			'password'  => 'Password',
-			'custom'    => 'Custom HTML',
-			'button'    => 'Submit Button'
+			'GDPR' => 'GDPR Compliance',
+			'password' => 'Password',
+			'custom' => 'Custom HTML',
+			'button' => 'Submit Button'
 		)
 	);
 

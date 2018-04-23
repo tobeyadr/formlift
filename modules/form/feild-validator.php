@@ -23,6 +23,7 @@ class FormLift_Validator implements FormLift_Field_Interface
 	var $required = false;
 	var $formId;
 	var $message;
+	var $loose = false;
 
 	function __construct( $options, $formId )
 	{
@@ -43,6 +44,9 @@ class FormLift_Validator implements FormLift_Field_Interface
 		if (isset($options['required']))
 			$this->required = true;
 
+		if (isset($options['is_loose']))
+			$this->loose = $options['is_loose'];
+
 		$this->formId = $formId;
 	}
 
@@ -62,12 +66,21 @@ class FormLift_Validator implements FormLift_Field_Interface
 
 		$this->message = $message;
 
+		if ( ! wp_doing_ajax() ){
+			add_filter( 'formlift_field_preload_has_error_' . $this->getId(), array( $this, 'getErrorMessage' ) );
+		}
+
 		return $this->message;
 	}
 
 	public function isRequired()
 	{
 		return $this->required;
+	}
+
+	public function isStrict()
+	{
+		return ! $this->loose;
 	}
 
 	public function getType()
@@ -186,7 +199,7 @@ class FormLift_Validator implements FormLift_Field_Interface
 
 	public function select()
 	{
-		if ( $this->dataExists() ){
+		if ( $this->dataExists() && $this->isStrict() ){
 
 			$found = false;
 
@@ -217,7 +230,7 @@ class FormLift_Validator implements FormLift_Field_Interface
 
 	public function radio()
 	{
-		if ( $this->dataExists() || $this->getData() === 0 ){
+		if ( ( $this->dataExists() || $this->getData() === 0 ) && $this->isStrict() ){
 
 			$found = false;
 
@@ -229,7 +242,7 @@ class FormLift_Validator implements FormLift_Field_Interface
 			}
 
 			if ( ! $found ) {
-				return $this->setErrorMessage('invalid_data_error');
+				return $this->setErrorMessage('invalid_data_error' );
 			} else {
 				return true;
 			}
@@ -262,7 +275,7 @@ class FormLift_Validator implements FormLift_Field_Interface
 
 	public function checkbox()
 	{
-		if ( $this->dataExists() ){
+		if ( $this->dataExists() && $this->isStrict() ){
 
 			if ( $this->getData() !== $this->getValue() ) {
 				return $this->setErrorMessage('invalid_data_error');
@@ -391,7 +404,7 @@ class FormLift_Validator implements FormLift_Field_Interface
 			$name = $this->getName();
 		}
 		if ( isset ( $_POST[ $name ] ) ){
-			return sanitize_textarea_field( $_POST[ $name ] );
+			return sanitize_textarea_field( stripslashes( $_POST[ $name ] ) );
 		} else {
 			return null;
 		}

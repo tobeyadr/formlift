@@ -70,7 +70,7 @@
 .formlift-cell-label{width:200px;float: left}
 
 .formlift-sections-container{
-    max-width: 560px;
+    max-width: calc( 100% - 240px );
     display: inline-block;
     float: left;
     margin-left: 15px;
@@ -101,10 +101,6 @@
 #formlift_style_settings .formlift-nav{
     height: 760px;
 }
-
-.inside .formlift-sections-container{
-    max-width: 450px;
-}
 /* ==== The switch - the box around the slider ==== */
 .switch {
     position: relative;
@@ -117,7 +113,7 @@
 .switch input {display:none;}
 
 /* The slider */
-.slider {
+.formlift-slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -129,7 +125,7 @@
     transition: .4s;
 }
 
-.slider:before {
+.formlift-slider:before {
     position: absolute;
     content: "";
     height: 13px;
@@ -141,25 +137,25 @@
     transition: .4s;
 }
 
-input:checked + .slider {
+input:checked + .formlift-slider {
     background-color: #2196F3;
 }
 
-input:focus + .slider {
+input:focus + .formlift-slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked + .formlift-slider:before {
     -webkit-transform: translateX(13px);
     -ms-transform: translateX(13px);
     transform: translateX(13px);
 }
 
 /* Rounded sliders */
-.slider.round {
+.formlift-slider.round {
     border-radius: 17px;
 }
 
-.slider.round:before {
+.formlift-slider.round:before {
     border-radius: 50%;
 }
