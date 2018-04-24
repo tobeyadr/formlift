@@ -22,7 +22,7 @@ class FormLift_Form_Builder
         /* if something is wrong with the code return ERROR code */
         if ( empty( $code ) || !isset( $code ) )
         {
-            return new WP_Error( 'FORM_RETRIEVE_FAILED', 'Could not retrieve form from Infusionsoft... Is your form published in the campaign builder?' );
+            return new WP_Error( 'FORM_RETRIEVE_FAILED', 'No form code was supplied...' );
         } 
         else 
         {
