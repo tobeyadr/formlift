@@ -436,7 +436,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $content = $this->get_type_field();
         $content.= $this->get_id_field();
         $label = "<label for=\"formlift-button-text\">Button Text</label>";
-        $input = "<textarea id=\"formlift-button-text\" name=\"{$this->option_key}[{$this->id}][label]\">$this->label</textarea>";
+        $input = "<textarea id=\"formlift-button-text\" name=\"{$this->option_key}[{$this->id}][label]\" cols='40'>$this->label</textarea>";
         $content.= self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($input));
         $content.= $this->get_custom_class_field();
         $content.= $this->get_advanced_field_options();
@@ -453,11 +453,11 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $sitename = get_bloginfo( 'name' );
 
         if ( empty( $this->label) ){
-            $this->label = "I consent to receive promotions, marketing, emails, and the occasional flyer from {$sitename}. I acknowledge that I can unsubscribe at anytime. For more information on how you we use your information, please visit our <a href='/privacy-policy'>Privacy Policy</a>.";
+            $this->label = "I consent to receive promotions, marketing, emails, and the occasional flyer from {$sitename}. I acknowledge that I can unsubscribe at anytime. For more information on how you we use your information, please visit our <a target=\"_blank\" href=\"/privacy-policy/\">Privacy Policy</a>.";
         }
 
         $label = "<label for=\"{$this->id}-label\">GDPR Compliancy Text:</label>";
-        $input = "<textarea id=\"{$this->id}-label\" name=\"{$this->option_key}[{$this->id}][label]\">$this->label</textarea>";
+        $input = "<textarea id=\"{$this->id}-label\" name=\"{$this->option_key}[{$this->id}][label]\" cols='40'>$this->label</textarea>";
         $content.= self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($input));
 
         $label = "<label for=\"{$this->id}-value\">Compliance Value:</label>";
@@ -625,7 +625,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
     public function get_label_field()
     {
         $label = "<label for=\"{$this->id}-label\">Field Label</label>";
-        $input = "<textarea id=\"{$this->id}-label\" name=\"{$this->option_key}[{$this->id}][label]\" >$this->label</textarea>";
+        $input = "<textarea id=\"{$this->id}-label\" name=\"{$this->option_key}[{$this->id}][label]\" cols='40'>$this->label</textarea>";
 
         return self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($input));
     }
