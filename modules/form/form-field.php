@@ -401,33 +401,49 @@ class FormLift_Field implements FormLift_Field_Interface
 
     private function getFieldWidthClass()
     {
-        if ($this->getSize() == '1/2')
-            return 'formlift-col formlift-span_1_of_2';
-        elseif ($this->getSize() == '1/3')
-            return 'formlift-col formlift-span_1_of_3';
-        elseif ($this->getSize() == '2/3')
-            return 'formlift-col formlift-span_2_of_3';
-        elseif ($this->getSize() == '1/4')
-            return 'formlift-col formlift-span_1_of_4';
-        elseif ($this->getSize() == '3/4')
-            return 'formlift-col formlift-span_3_of_4';
-        else
-            return 'formlift-col formlift-span_4_of_4';
+	    switch ($this->getSize()):
+		    case '1/2':
+			    return 'formlift-col formlift-span_2_of_2';
+			    break;
+		    case '1/3':
+			    return 'formlift-col formlift-span_1_of_3';
+			    break;
+		    case '2/3':
+			    return 'formlift-col formlift-span_2_of_3';
+			    break;
+		    case '1/4':
+			    return 'formlift-col formlift-span_1_of_4';
+			    break;
+		    case '3/4':
+			    return 'formlift-col formlift-span_3_of_4';
+			    break;
+		    default:
+			    return 'formlift-col formlift-span_4_of_4';
+		    	break;
+	    endswitch;
     }
 
     public function get_decimal_size()
     {
-        if ($this->getSize() == '1/2')
-            return 50;
-        elseif ($this->getSize() == '1/3')
-            return 33;
-        elseif ($this->getSize() == '2/3')
-            return 66;
-        elseif ($this->getSize() == '1/4')
-            return 25;
-        elseif ($this->getSize() == '3/4')
-            return 75;
-        else
-            return 100;
+	    switch ($this->getSize()):
+		    case '1/2':
+			    return 50;
+			    break;
+		    case '1/3':
+			    return 33;
+			    break;
+		    case '2/3':
+			    return 66;
+			    break;
+		    case '1/4':
+			    return 25;
+			    break;
+		    case '3/4':
+			    return 75;
+			    break;
+		    default:
+			    return 100;
+			    break;
+	    endswitch;
     }
 }

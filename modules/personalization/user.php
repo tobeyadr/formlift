@@ -175,6 +175,27 @@ class FormLift_User
         }
     }
 
+    public static function do_replacements( $content )
+    {
+	    global $FormLiftUser;
+
+	    preg_match_all('/%%[\w\d]+%%/', $content, $matches);
+	    $actual_matches = $matches[0];
+
+	    foreach ($actual_matches as $pattern) {
+		    $field = str_replace('%%', '', $pattern);
+
+		    $value = $FormLiftUser->get_user_data( $field );
+
+		    if ( empty( $value ) ) {
+			    $value = '{No Data}';
+		    }
+
+		    $content = preg_replace('/' . $pattern . '/', $value, $content);
+	    }
+	    return $content;
+    }
+
 	public static function display_field( $atts, $content )
     {
         global $FormLiftUser;
@@ -195,7 +216,8 @@ class FormLift_User
             $atters['name'] = $atters['id'];
         }
 
-	    //$atters[ 'name' ] = self::db_extend( $atters['name'] );
+//	    $atters[ 'name' ] = self::db_extend( $atters['name'] );
+	    //return $atters['name'];
 
 	    if ( $content ) {
             if ( ! empty( $atters['name'] ) ){
@@ -206,22 +228,7 @@ class FormLift_User
                     return '';
                 }
             }
-
-            preg_match_all('/%%[\w\d]+%%/', $content, $matches);
-            $actual_matches = $matches[0];
-
-            foreach ($actual_matches as $pattern) {
-                $field = str_replace('%%', '', $pattern);
-
-//                $value = $FormLiftUser->get_user_data( self::db_extend( $field ) );
-                $value = $FormLiftUser->get_user_data( $field );
-
-                if ( empty( $value ) ) {
-                    $value = '{No Data}';
-                }
-
-                $content = preg_replace('/' . $pattern . '/', $value, $content);
-            }
+            $content = self::do_replacements( $content );
             $content = do_shortcode( $content );
         } else {
             $val = $FormLiftUser->get_user_data( $atters['name'] );
