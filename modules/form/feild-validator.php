@@ -55,14 +55,18 @@ class FormLift_Validator implements FormLift_Field_Interface
 		return $this->message;
 	}
 
-	public function setErrorMessage( $key )
+	public function setErrorMessage( $key_or_message )
 	{
 		$messages = get_post_meta( $this->formId, FORMLIFT_SETTINGS, true);
-		$message = $messages[$key];
+		if ( isset( $messages[$key_or_message] ) )
+		    $message = $messages[$key_or_message];
 
 		if ( empty( $message ) ){
-			$message = get_formlift_setting( $key );
+			$message = get_formlift_setting( $key_or_message, false );
 		}
+
+		if ( empty( $message ) )
+		    $message = $key_or_message;
 
 		$this->message = $message;
 
@@ -358,7 +362,7 @@ class FormLift_Validator implements FormLift_Field_Interface
 		if ( $this->dataExists() ){
 
 			if ( !preg_match("/[ABCEGHJKLMNPRSTVXY][0-9][ABCEGHJKLMNPRSTVWXYZ] ?[0-9][ABCEGHJKLMNPRSTVWXYZ][0-9]/i", $this->getData()) ) {
-				return $this->setErrorMessage('invalid_data_error');
+				return $this->setErrorMessage('invalid_data_error' );
 			} else {
 				return true;
 			}

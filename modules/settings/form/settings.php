@@ -21,7 +21,6 @@ class FormLift_Settings
 	    }
 	    $fields[] = "<hr>";
         $fields["reset_button"] = new FormLift_Setting_Field( FORMLIFT_BUTTON, "reset_style_to_defaults", "Reset All Style Settings To Their Defaults", "RESET TO DEFAULTS");
-        $fields["delete_all_sessions"] = new FormLift_Setting_Field( FORMLIFT_BUTTON, "delete_all_sessions", "Delete all currently stored user sessions", "DELETE SESSIONS");
 
         return apply_filters( 'formlift_admin_settings', $fields );
     }
@@ -98,6 +97,7 @@ class FormLift_Settings
         $fields[] = "<p>Enable this to turn OFF the storage of Personal Identifiable Information on FormLift between pages.</p>";
         $fields["time_to_live"] = new FormLift_Setting_Field( FORMLIFT_NUMBER, 'time_to_live', "PII Session Storage Time in Days");
         $fields[] = "<p>The number of days you'd like FormLift to store PII after a user's LAST successful submission so that it will auto populate forms and replacement codes.</p>";
+        $fields["delete_all_sessions"] = new FormLift_Setting_Field( FORMLIFT_BUTTON, "delete_all_sessions", "Delete all currently stored user sessions", "DELETE SESSIONS");
 
         return apply_filters( 'formlift_get_tracking_settings', $fields );
     }

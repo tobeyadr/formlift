@@ -34,7 +34,7 @@ function formlift_example_plugin_load()
 
 function formlift_add_example_plugin( $modules )
 {
-    $modules["example"] = array(
+    $modules[ FL_SAMPLE_ID ] = array(
         'item_name' => FL_SAMPLE_NAME,
         'item_id'   => FL_SAMPLE_ID,
         'version' => FL_SAMPLE_VERSION,
