@@ -87,7 +87,7 @@ function formlift_update_notice()
 
     $version = get_option( FORMLIFT_VERSION_KEY );
 
-    if ( version_compare( $version , FORMLIFT_VERSION, '<' ) || empty( $version ) )
+    if ( version_compare( $version , FORMLIFT_VERSION, '!=' ) || empty( $version ) )
     {
         $nonceField = wp_nonce_field('formlift_db_upgrade', 'formlift_db_upgrade_nonce', null, false );
         FormLift_Notice_Manager::add_error( 'update-required', "Click here to upgrade your database to continue using FormLift. We recommend you perform a database backup first! <form method='post'>{$nonceField}<input type='submit' class='button' name='formlift_db_upgrade' value='Upgrade My Database Now!'/></form>" );
