@@ -207,6 +207,20 @@ class FormLift_Infusionsoft_Manager
 
         return static::$app->send( "FileService.uploadFile", $params );
 	}
+
+    /**
+     * @throws Exception
+     */
+	public static function achieveGoal( $contactId, $callName )
+    {
+        $params = array(
+            "FormLift",
+            $callName,
+            $contactId
+        );
+
+        return static::$app->send( "FunnelService.achieveGoal", $params );
+    }
 }
 
 add_action( 'plugins_loaded', array( 'FormLift_Infusionsoft_Manager', 'listen_for_tokens' ) );
