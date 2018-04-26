@@ -403,7 +403,7 @@ class FormLift_Field implements FormLift_Field_Interface
     {
 	    switch ($this->getSize()):
 		    case '1/2':
-			    return 'formlift-col formlift-span_2_of_2';
+			    return 'formlift-col formlift-span_1_of_2';
 			    break;
 		    case '1/3':
 			    return 'formlift-col formlift-span_1_of_3';
