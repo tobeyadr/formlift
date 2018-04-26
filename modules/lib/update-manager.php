@@ -82,7 +82,7 @@ function formlift_db_update_7_4()
 function formlift_update_notice()
 {
 
-    if ( isset( $_POST['formlift_db_upgrade'] ) && isset( $_POST['formlift_db_upgrade_nonce'] ) && wp_verify_nonce( $_POST['formlift_db_upgrade_nonce'], 'formlift_db_upgrade' ) && current_user_can('manage_plugins' ) )
+    if ( isset( $_POST['formlift_db_upgrade'] ) && isset( $_POST['formlift_db_upgrade_nonce'] ) && wp_verify_nonce( $_POST['formlift_db_upgrade_nonce'], 'formlift_db_upgrade' ) && current_user_can('manage_options' ) )
         formlift_db_update_7_4();
 
     $version = get_option( FORMLIFT_VERSION_KEY );
