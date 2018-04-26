@@ -2,7 +2,7 @@
 /*
  * Plugin Name: FormLift
  * Description: The Ultimate Web Form Solution for WordPress and Infusionsoft. Style your web forms, create personalized pages, and create epic automation with them too.
- * Version: 7.4
+ * Version: 7.4.0
  * Author: Adrian Tobey
  * Plugin URI: https://formlift.net
  * Author URI: https://formlift.net/blog
@@ -44,7 +44,7 @@ if ( version_compare( PHP_VERSION, '5.6.0', '>=' ) ){
 do_action( 'formlift_loaded' );
 
 if ( !is_ssl() ){
-    FormLift_Notice_Manager::add_error( "ssl_error", "Some of FormLift's features are deactivated because you do NOT have an SSL. You should invest in an SSL to keep you user's information safe and to stay compliant with GDPR and HIPAA. If your are with a good host, it's likely that you can install a <b>Let's Encrypt SSL Certificate</b> by yourself for free!" );
+    FormLift_Notice_Manager::add_error( "ssl_error", "Some of FormLift's features are deactivated because you do NOT have an SSL. You should invest in an SSL to keep you user's information safe and to stay compliant with GDPR and HIPAA. If your are with a good host, it's likely that you can install a <b>Let's Encrypt SSL Certificate</b> by yourself for free! We appologize for any inconvenience." );
 } else {
     FormLift_Notice_Manager::remove_notice( "ssl_error" );
 }

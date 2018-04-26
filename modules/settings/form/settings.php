@@ -55,7 +55,7 @@ class FormLift_Settings
         $fields["submit_via_ajax"] = new FormLift_Setting_Field( FORMLIFT_CHECKBOX, 'submit_via_ajax', 'Don\'t send to thank you page.' );
         $fields["enable_compatibility_mode"] = new FormLift_Setting_Field( FORMLIFT_CHECKBOX, 'enable_compatibility_mode', 'Enable compatibility mode.' );
 
-        return apply_filters( 'formlift_submission_Settings', $fields );
+        return apply_filters( 'formlift_submission_settings', $fields );
     }
 
     /**

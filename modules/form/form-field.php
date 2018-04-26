@@ -257,7 +257,7 @@ class FormLift_Field implements FormLift_Field_Interface
 		$placeholder = ( isset($this->placeholder ) )? "placeholder='{$this->getLabel()}: YYYY-MM-DD'" : "placeholder=\"YYYY-MM-DD\"";
 		$label = ( !isset($this->placeholder ) )? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 		$html = "$label<input class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder value=\"{$this->getValue()}\" {$this->isReadOnly()}/>";
-		$code = "<script>jQuery(document).ready(function (){ jQuery('#{$this->getUniqueId()}').datepicker({dateFormat: 'yy-mm-dd', changeMonth: $change_month, changeYear: $change_year, minDate: $minDate, maxDate: $maxDate});});</script>";
+		$code = "<script>jQuery(document).ready(function (){ jQuery('#{$this->getUniqueId()}').datepicker({dateFormat: 'yy-mm-dd', changeMonth: $change_month, changeYear: $change_year, minDate: $minDate, maxDate: $maxDate, yearRange: '-100:+100'});});</script>";
 
 		return $code.$html;
 
