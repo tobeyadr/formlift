@@ -51,11 +51,14 @@ function formlift_db_update_7_4()
         /* STYLE */
         $styleOptions = get_post_meta( $form->ID, FORMLIFT_STYLE, true );
         $newStyleOptions = array();
-        foreach ( $styleOptions as $styleClass => $attributes ) {
-            $newClass = str_replace('flp', 'formlift', $styleClass);
-            $newStyleOptions[$newClass] = $attributes;
+        if ( !empty( $styleOptions ) ){
+            foreach ( $styleOptions as $styleClass => $attributes ) {
+                $newClass = str_replace('flp', 'formlift', $styleClass);
+                $newStyleOptions[$newClass] = $attributes;
+            }
+            update_post_meta(  $form->ID,FORMLIFT_STYLE, $newStyleOptions );
         }
-        update_post_meta(  $form->ID,FORMLIFT_STYLE, $newStyleOptions );
+
         /* OPTIONS */
         $settings = get_post_meta( $form->ID, FORMLIFT_SETTINGS, true );
         $newSettings = array();
