@@ -187,7 +187,7 @@ class FormLift_Settings
 	public static function export_settings()
 	{
 		if ( isset( $_POST[FORMLIFT_SETTINGS]['export_plugin'] ) && wp_verify_nonce( $_POST['formlift_options'], 'update' ) && current_user_can('manage_options') ){
-			$filename = "formlift_style_settings_".date("Y-m-d_H-i",time() );
+			$filename = "formlift_plugin_settings_".date("Y-m-d_H-i",time() );
 
 			header("Content-type: text/plain");
 			//header("Content-disposition: csv" . date("Y-m-d") . ".csv");

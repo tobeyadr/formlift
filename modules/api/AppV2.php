@@ -34,7 +34,7 @@ class FormLift_App
         if ( !empty( $this->apiKey ) ){
             return $this->apiKey;
         } else {
-            $this->apiKey = get_formlift_setting( 'infusionsoft_api_key', "" );
+            $this->apiKey = get_formlift_setting( 'infusionsoft_api_key', $this->getAccessToken() );
             return $this->apiKey;
         }
     }

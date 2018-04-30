@@ -53,9 +53,9 @@ function formlift_submitV2()
 
 	$FormLiftUser->update();
 
-	//upload files ONLY IF the user passes other tests first.
+	//hook for after error checking dependent plugins.
 	if ( empty( $errors ) ) {
-		$errors = apply_filters( 'formlift_validate_uploads', $errors );
+		$errors = apply_filters( 'formlift_pre_submit', $errors, $formId );
 	}
 
 	//Final check to see if should send data or not.

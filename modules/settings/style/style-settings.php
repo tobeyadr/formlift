@@ -251,7 +251,7 @@ class FormLift_Style_Settings
 
     public static function export_settings()
     {
-	    if ( isset( $_POST[FORMLIFT_SETTINGS]['import_style'] ) && wp_verify_nonce( $_POST['formlift_options'], 'update' ) && current_user_can('manage_options') ){
+	    if ( isset( $_POST[FORMLIFT_SETTINGS]['export_style'] ) && wp_verify_nonce( $_POST['formlift_options'], 'update' ) && current_user_can('manage_options') ){
 		    $filename = "formlift_style_settings_".date("Y-m-d_H-i",time() );
 
 		    header("Content-type: text/plain");

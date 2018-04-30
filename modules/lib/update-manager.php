@@ -62,13 +62,16 @@ function formlift_db_update_7_4()
         /* OPTIONS */
         $settings = get_post_meta( $form->ID, FORMLIFT_SETTINGS, true );
         $newSettings = array();
+        //todo error
         foreach ( $settings as $settingName => $options ) {
             $newSettingName = str_replace('flp', 'formlift', $settingName );
             $newSettings[$newSettingName] = $options;
         }
         update_post_meta(  $form->ID,FORMLIFT_SETTINGS, $newSettings );
         /* FIELDS */
+        //todo error
         $fields = array_reverse( get_post_meta( $form->ID, FORMLIFT_FIELDS, true ) );
+        //todo error
         foreach ( $fields as $fieldId => $options )
         {
             if ( $options['type'] === 'captcha' )
@@ -76,6 +79,7 @@ function formlift_db_update_7_4()
                 $fields[$fieldId]['type'] = 'reCaptcha';
             }
         }
+        //todo error
         update_post_meta( $form->ID, FORMLIFT_FIELDS, array_reverse( $fields ) );
     }
 
