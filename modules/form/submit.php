@@ -33,29 +33,27 @@ function formlift_submitV2()
      */
 
 	foreach ( $fields as $field_options ) {
-		
 		$validator = new FormLift_Validator( $field_options, $formId );
-
 		$isValid = $validator->isValid();
-
 		if ( is_wp_error( $isValid ) ){
 			$errors[ $validator->getId() ] = $isValid->get_error_message();
 		} else {
-			if ( $validator->dataExists() ){
-				$FormLiftUser->set_user_data( $validator->getName(), $validator->getData() );
-			} else {
-				/* honor blank field submission */
-				$FormLiftUser->remove_user_data( $validator->getName() );
-			}
+		    if ( isset( $field_options['name'] ) ) {
+	            if ( $validator->dataExists() ){
+		            $FormLiftUser->set_user_data( $validator->getName(), $validator->getData() );
+	            } else {
+		            /* honor blank field submission */
+		            $FormLiftUser->remove_user_data( $validator->getName() );
+	            }
+            }
 		}
-
 	}
 
 	$FormLiftUser->update();
 
-	//hook for after error checking dependent plugins.
+	//upload files ONLY IF the user passes other tests first.
 	if ( empty( $errors ) ) {
-		$errors = apply_filters( 'formlift_pre_submit', $errors, $formId );
+		$errors = apply_filters( 'formlift_pre_submit', $errors );
 	}
 
 	//Final check to see if should send data or not.

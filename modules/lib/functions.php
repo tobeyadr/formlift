@@ -13,6 +13,18 @@ function get_formlift_setting( $id, $default = false )
     }
 }
 
+function formlift_get_form_setting( $formId, $key, $default=null )
+{
+	$options = get_post_meta( $formId, FORMLIFT_SETTINGS, true );
+
+	if ( isset( $options[$key] ) && !empty($options[$key]) ){
+		return $options[$key];
+	} else {
+		return $default;
+	}
+}
+
+
 function formlift_option_exists( $option_name ){
     $option = get_option( $option_name );
     return !empty( $option );
