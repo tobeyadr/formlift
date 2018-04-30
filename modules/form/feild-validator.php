@@ -395,10 +395,14 @@ class FormLift_Validator implements FormLift_Field_Interface
 		return apply_filters( 'formlift_custom_field_validation_' . $this->getType(), $this );
 	}
 
-	public function dataExists()
+	public function dataExists( $name=false )
 	{
-		$not_empty = !empty($_POST[$this->getName()]);
-		$isset = isset($_POST[$this->getName()]);
+		if ( ! $name ){
+			$name = $this->getName();
+		}
+
+		$not_empty = !empty($_POST[$name]);
+		$isset = isset($_POST[$name]);
 		return $isset && $not_empty;
 	}
 

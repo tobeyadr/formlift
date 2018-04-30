@@ -126,7 +126,7 @@ input.formlift_radio:disabled{
     opacity: 0;
 }
 
-.formlift_checkmark {
+.formlift_radio {
     position: absolute;
     /*top: 0;*/
     /*left: 0;*/
@@ -142,7 +142,7 @@ input.formlift_radio:disabled{
     line-height: 1;
 }
 
-.formlift_checkmark:after {
+.formlift_radio:after {
     content: "";
     position: absolute;
     display: none;
@@ -153,12 +153,12 @@ input.formlift_radio:disabled{
     display: none;
 }
 
-.formlift_radio_label_container input:checked ~ .formlift_checkmark:after,
+.formlift_radio_label_container input:checked ~ .formlift_radio:after,
 .formlift_radio_label_container input:checked ~ .formlift_checkbox:after {
     display: block;
 }
 
-.formlift_radio_label_container .formlift_checkmark:after {
+.formlift_radio_label_container .formlift_radio:after {
   top: 30%;
   left: 30%;
   width: 40%;

@@ -285,7 +285,7 @@ class FormLift_Field implements FormLift_Field_Interface
             }
 
             $radio = "<input class=\"formlift_radio\" type=\"radio\" id=\"{$this->getUniqueId()}-{$id}\" name=\"{$this->getName()}\" value=\"$value\" {$checked} {$disabled} {$this->isReadOnly()}/>";
-            $content.= "<label class=\"formlift_label formlift_radio_label_container\" for=\"{$this->getUniqueId()}-{$id}\"> $label $radio <span class=\"formlift_checkmark formlift_check_style\"></span></label>";
+            $content.= "<label class=\"formlift_label formlift_radio_label_container\" for=\"{$this->getUniqueId()}-{$id}\"> $label $radio <span class=\"formlift_radio formlift_check_style\"></span></label>";
             $content.= "</div>";
         }
 
