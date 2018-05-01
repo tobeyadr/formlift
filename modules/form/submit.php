@@ -51,12 +51,12 @@ function formlift_submitV2()
 
 	$FormLiftUser->update();
 
-	//upload files ONLY IF the user passes other tests first.
-	if ( empty( $errors ) ) {
-		$errors = apply_filters( 'formlift_pre_submit', $errors );
-	}
+    //upload files ONLY IF the user passes other tests first.
+    if ( empty( $errors ) ) {
+        $errors = apply_filters( 'formlift_pre_submit', $errors );
+    }
 
-	//Final check to see if should send data or not.
+    //Final check to see if should send data or not.
 
 	if ( empty( $errors ) ){
 

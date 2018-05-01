@@ -128,17 +128,19 @@ class FormLift_Defaults
     );
 
     static $settings_defaults = array(
-        'please_wait_text'       => 'Please Wait...',
+        'success_message'       => 'Success!',
+        'please_wait_text'      => 'Please Wait...',
         'invalid_data_error' 	=> 'Something is wrong with your submission.',
         'required_error'		=> 'This field is required.',
         'email_error'			=> 'Please enter a valid email.',
         'phone_error'			=> 'Please enter a valid phone number.',
         'date_error'			=> 'Please enter a valid date.',
-        'captcha_error'		    => 'Please verify that you are not a robot.',
+        //'captcha_error'		    => 'Please verify that you are not a robot.',
         'url_error'			    => 'Please enter a valid Url.',
         'password_error'        => 'The Passwords you entered do not match.',
-        'logged_in_error'       => 'You must be logged in to submit this form.',
-        'tracking_method' 		=> 'page_load',
+        //'logged_in_error'       => 'You must be logged in to submit this form.',
+        //'tracking_method' 		=> 'page_load',
+        'time_to_live'          => 30,
         'form_settings_active_tab' => 'formlift_infusionsoft_settings',
         'style_settings_active_tab' => 'formlift_button_css'
     );
@@ -153,6 +155,14 @@ class FormLift_Defaults
     public static function reset_style_settings( $settings )
     {
         return FormLift_Defaults::$style_defaults;
+    }
+
+    public static function set_defaults_on_activation()
+    {
+        if ( is_user_logged_in() && is_admin() && current_user_can('activate_plugins') ) {
+            update_option(FORMLIFT_STYLE, self::$style_defaults);
+            update_option(FORMLIFT_SETTINGS, self::$settings_defaults);
+        }
     }
 }
 

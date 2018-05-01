@@ -412,8 +412,11 @@ class FormLift_Validator implements FormLift_Field_Interface
 			$name = $this->getName();
 		}
 		if ( isset ( $_POST[ $name ] ) ){
-			return sanitize_textarea_field( stripslashes( $_POST[ $name ] ) );
-		} else {
+		    if ( is_string( $_POST[ $name ] ) )
+                return sanitize_textarea_field( stripslashes( $_POST[ $name ] ) );
+            else
+                return array_map( 'sanitize_text_field', $_POST[ $name ] );
+        } else {
 			return null;
 		}
 	}

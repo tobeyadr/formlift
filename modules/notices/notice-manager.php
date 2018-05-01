@@ -97,6 +97,17 @@ class FormLift_Notice_Manager
         ));
     }
 
+    public static function add_info( $id, $message )
+    {
+        return self::add_notice( $id, array(
+            'is_dismissable' => true,
+            'is_premium' => 'both',
+            'is_specific' => true,
+            'type' => 'notice-info',
+            'html' => 'Attention! ' . $message
+        ));
+    }
+
     public static  function add_success( $id, $message )
     {
         return self::add_notice( $id, array(

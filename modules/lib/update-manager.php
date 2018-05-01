@@ -2,6 +2,7 @@
 
 function formlift_db_update_7_4()
 {
+
     /*
      * 1. We need to change the meta name for FORMLIFT_FIELDS to the new one.
      * 2. We need to change the settings options to the new naming conventions
@@ -63,36 +64,47 @@ function formlift_db_update_7_4()
         $settings = get_post_meta( $form->ID, FORMLIFT_SETTINGS, true );
         $newSettings = array();
         //todo error
-        foreach ( $settings as $settingName => $options ) {
-            $newSettingName = str_replace('flp', 'formlift', $settingName );
-            $newSettings[$newSettingName] = $options;
+        if ( !empty($settings) ){
+            foreach ( $settings as $settingName => $options ) {
+                $newSettingName = str_replace('flp', 'formlift', $settingName );
+                $newSettings[$newSettingName] = $options;
+            }
+            update_post_meta(  $form->ID,FORMLIFT_SETTINGS, $newSettings );
         }
-        update_post_meta(  $form->ID,FORMLIFT_SETTINGS, $newSettings );
         /* FIELDS */
         //todo error
-        $fields = array_reverse( get_post_meta( $form->ID, FORMLIFT_FIELDS, true ) );
-        //todo error
-        foreach ( $fields as $fieldId => $options )
-        {
-            if ( $options['type'] === 'captcha' )
+        $fields = get_post_meta( $form->ID, FORMLIFT_FIELDS, true );
+        if ( !empty( $fields ) ){
+            $fields = array_reverse( $fields );
+            foreach ( $fields as $fieldId => $options )
             {
-                $fields[$fieldId]['type'] = 'reCaptcha';
+                if ( $options['type'] === 'captcha' )
+                {
+                    $fields[$fieldId]['type'] = 'reCaptcha';
+                }
             }
+            //todo error
+            update_post_meta( $form->ID, FORMLIFT_FIELDS, array_reverse( $fields ) );
         }
-        //todo error
-        update_post_meta( $form->ID, FORMLIFT_FIELDS, array_reverse( $fields ) );
     }
 
     update_option( FORMLIFT_VERSION_KEY, FORMLIFT_VERSION );
+
+    FormLift_Notice_Manager::add_info(
+        'update_notice',
+        'Great, you are all updated now! Please see <a target="_blank" href="https://formlift.net/blog/2018/04/27/how-to-update-to-7-4/">this article</a> if you are experiencing any issues. If you are a premium user, you must install your premium extensions! See <a target="_blank" href="https://formlift.net/blog/2018/04/27/how-to-update-to-7-4/">this article</a> for more details'
+    );
 }
 
 function formlift_update_notice()
 {
 
-    if ( isset( $_POST['formlift_db_upgrade'] ) && isset( $_POST['formlift_db_upgrade_nonce'] ) && wp_verify_nonce( $_POST['formlift_db_upgrade_nonce'], 'formlift_db_upgrade' ) && current_user_can('manage_options' ) )
-        formlift_db_update_7_4();
-
     $version = get_option( FORMLIFT_VERSION_KEY );
+
+    if ( isset( $_POST['formlift_db_upgrade'] ) && isset( $_POST['formlift_db_upgrade_nonce'] ) && wp_verify_nonce( $_POST['formlift_db_upgrade_nonce'], 'formlift_db_upgrade' ) && current_user_can('manage_options' ) )
+    {
+        formlift_db_update_7_4();
+    }
 
     if ( version_compare( $version , FORMLIFT_VERSION, '!=' ) || empty( $version ) )
     {
