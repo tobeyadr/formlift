@@ -52,7 +52,7 @@ class FormLift_Settings
         $fields["show_post_url"] = new FormLift_Setting_Field(FORMLIFT_CHECKBOX, 'show_post_url', 'Show Post URL');
         $fields[] = "<div class=\"formlift-error\">Enabling this will turn off validation and open you up to spam.</div>";
         $fields[] = "<hr>";
-        $fields["submit_via_ajax"] = new FormLift_Setting_Field( FORMLIFT_CHECKBOX, 'submit_via_ajax', 'Don\'t send to thank you page.' );
+        //$fields["submit_via_ajax"] = new FormLift_Setting_Field( FORMLIFT_CHECKBOX, 'submit_via_ajax', 'Don\'t send to thank you page.' );
         $fields["enable_compatibility_mode"] = new FormLift_Setting_Field( FORMLIFT_CHECKBOX, 'enable_compatibility_mode', 'Enable compatibility mode.' );
 
         return apply_filters( 'formlift_submission_settings', $fields );

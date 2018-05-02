@@ -83,15 +83,24 @@ function formlift_submitV2()
 			$packet['xid'] = $xid;
 		}
 
-		/**
-		 * doesn't work...
-		 */
+		$name = get_post_meta( $formId, 'inf_form_name', true );
+
+		if ( !empty( $name ) ){
+			$packet['name'] = $name;
+		}
+
+		$version = get_post_meta( $formId, 'infusionsoft_version', true );
+
+		if ( !empty( $version ) ){
+			$packet['version'] = $version;
+		}
+
 		if ( formlift_get_form_setting($formId, 'submit_via_ajax', false ) ){
 
-			$_POST[ 'inf_form_xid' ] = $packet['xid'];
-
+		    $formData = $FormLiftUser->get_user_data( 'form_data' );
+		    $formData['inf_form_xid'] = $packet['xid'];
 			$response = wp_remote_post( $packet['url'], array(
-				'body' => $_POST
+				'body' => $formData
 			));
 
 			$response = wp_remote_retrieve_body( $response );
@@ -138,6 +147,8 @@ function submit_formlift_form_on_page_load()
 	<p>Please wait...</p>
 	<form id="formlift" method="post" action="<?php echo $packet['url']; ?>">
         <input type="hidden" name="inf_form_xid" value="<?php echo $packet['xid'];?>" />
+        <input type="hidden" name="inf_form_name" value="<?php echo $packet['name'];?>" />
+        <input type="hidden" name="infusionsoft_version" value="<?php echo $packet['version'];?>" />
         <input type="hidden" name="timeZone" value="<?php echo sanitize_text_field($_POST['timeZone']);?>" />
         <?php
 		foreach ( $data as $name => $value ):

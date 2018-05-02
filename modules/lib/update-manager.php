@@ -2,7 +2,6 @@
 
 function formlift_db_update_7_4()
 {
-
     /*
      * 1. We need to change the meta name for FORMLIFT_FIELDS to the new one.
      * 2. We need to change the settings options to the new naming conventions
@@ -88,30 +87,29 @@ function formlift_db_update_7_4()
         }
     }
 
-    update_option( FORMLIFT_VERSION_KEY, FORMLIFT_VERSION );
-
     FormLift_Notice_Manager::add_info(
         'update_notice',
         'Great, you are all updated now! Please see <a target="_blank" href="https://formlift.net/blog/2018/04/27/how-to-update-to-7-4/">this article</a> if you are experiencing any issues. If you are a premium user, you must install your premium extensions! See <a target="_blank" href="https://formlift.net/blog/2018/04/27/how-to-update-to-7-4/">this article</a> for more details'
     );
+
+	FormLift_Notice_Manager::remove_notice( 'update-required' );
+
+	update_option( FORMLIFT_VERSION_KEY, FORMLIFT_VERSION );
 }
 
 function formlift_update_notice()
 {
-
     $version = get_option( FORMLIFT_VERSION_KEY );
 
     if ( isset( $_POST['formlift_db_upgrade'] ) && isset( $_POST['formlift_db_upgrade_nonce'] ) && wp_verify_nonce( $_POST['formlift_db_upgrade_nonce'], 'formlift_db_upgrade' ) && current_user_can('manage_options' ) )
     {
-        formlift_db_update_7_4();
+	    formlift_db_update_7_4();
     }
 
-    if ( version_compare( $version , FORMLIFT_VERSION, '!=' ) || empty( $version ) )
+    if ( version_compare( $version , '7.4.0', '<=' ) || empty( $version ) )
     {
         $nonceField = wp_nonce_field('formlift_db_upgrade', 'formlift_db_upgrade_nonce', null, false );
         FormLift_Notice_Manager::add_error( 'update-required', "Click here to upgrade your database to continue using FormLift. We recommend you perform a database backup first! <form method='post'>{$nonceField}<input type='submit' class='button' name='formlift_db_upgrade' value='Upgrade My Database Now!'/></form>" );
-    } else {
-        FormLift_Notice_Manager::remove_notice( 'update-required' );
     }
 }
 
