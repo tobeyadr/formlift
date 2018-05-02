@@ -143,6 +143,11 @@ Infusionsoft or whichever CRM you use with FormLift is the primary holder of Inf
 
 == Changelog ==
 
+= 7.4.1 =
+* added better extensions compatibility.
+* removed domain from admin_ajax path for better security.
+* better handling of errors from extensions.
+
 = 7.4 =
 * Compliance Update. To see the full list of extensive changes please review [this changelog](https://formlift.net/formlift-7-4-compliance-update).
 
