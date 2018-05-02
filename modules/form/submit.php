@@ -4,7 +4,7 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function formlift_submitV2()
 {
-	if ( ! isset( $_POST['formlift_submit_nonce'] ) ){
+	if ( ! isset( $_POST['formlift_submit_nonce'] ) || ! isset( $_POST['action'] ) || $_POST['action'] != 'formlift_submit_form' ) {
 		return;
 	}
 
@@ -23,9 +23,12 @@ function formlift_submitV2()
 	do_action( 'formlift_before_submit', $formId );
 
 	$fields = get_post_meta( $formId, FORMLIFT_FIELDS, true );
-	$form = new FormLift_Form( $formId );
+
 	$errors = array();
 
+	//clear the cache from any previous submission.
+	$FormLiftUser->remove_user_data('form_data' );
+	
 	$errors = apply_filters( 'formlift_before_field_validation', $errors );
 
     /**
@@ -41,6 +44,12 @@ function formlift_submitV2()
 		    if ( isset( $field_options['name'] ) ) {
 	            if ( $validator->dataExists() ){
 		            $FormLiftUser->set_user_data( $validator->getName(), $validator->getData() );
+		            # For compatibility mode!
+		            if ( formlift_get_form_setting( $formId, 'enable_compatibility_mode' , false ) ){
+			            $packet = $FormLiftUser->get_user_data('form_data', array() );
+			            $packet[$validator->getName()] = $validator->getData();
+			            $FormLiftUser->set_user_data('form_data', $packet );
+		            }
 	            } else {
 		            /* honor blank field submission */
 		            $FormLiftUser->remove_user_data( $validator->getName() );
@@ -64,7 +73,7 @@ function formlift_submitV2()
 		
 		//decode because it get's encoded by default
 		$packet = array( 
-			'url' => html_entity_decode( $form->get_form_setting( 'post_url' ) )
+			'url' => html_entity_decode( formlift_get_form_setting( $formId, 'post_url', '' ) )
 		);
 
 		$xid = get_post_meta( $formId, 'inf_form_xid', true );
@@ -77,7 +86,7 @@ function formlift_submitV2()
 		/**
 		 * doesn't work...
 		 */
-		if ( $form->get_form_setting('submit_via_ajax', false ) ){
+		if ( formlift_get_form_setting($formId, 'submit_via_ajax', false ) ){
 
 			$_POST[ 'inf_form_xid' ] = $packet['xid'];
 
@@ -96,9 +105,7 @@ function formlift_submitV2()
 		if ( wp_doing_ajax() ){
 			wp_die( json_encode( $packet ) );
 		} else {
-			$_POST[ 'inf_form_xid' ] = $packet['xid'];
-			$FormLiftUser->set_user_data( 'submission_packet', $packet );
-			$FormLiftUser->set_user_data( 'data_packet', $_POST );
+			$FormLiftUser->set_user_data( 'form_parameters', $packet );
 			add_action( 'template_redirect', 'submit_formlift_form_on_page_load' );
 		}
 
@@ -107,7 +114,6 @@ function formlift_submitV2()
 		do_action( 'formlift_failed_submit', $formId );
 
 		if ( wp_doing_ajax() ){
-			//wp_die( json_encode( $packet ) );
 			wp_die( json_encode( $errors ) );
 		} else {
 			return;
@@ -124,14 +130,18 @@ add_action( 'wp_ajax_formlift_submit_form', 'formlift_submitV2' );
 function submit_formlift_form_on_page_load()
 {
 	global $FormLiftUser;
-	$packet = $FormLiftUser->get_user_data('submission_packet' );
-	$data = $FormLiftUser->get_user_data('data_packet' );
+
+	$packet = $FormLiftUser->get_user_data('form_parameters' );
+	$data = $FormLiftUser->get_user_data('form_data' );
+
 	?>
 	<p>Please wait...</p>
 	<form id="formlift" method="post" action="<?php echo $packet['url']; ?>">
-		<?php
+        <input type="hidden" name="inf_form_xid" value="<?php echo $packet['xid'];?>" />
+        <input type="hidden" name="timeZone" value="<?php echo sanitize_text_field($_POST['timeZone']);?>" />
+        <?php
 		foreach ( $data as $name => $value ):
-			?>
+        ?>
 		<input type="hidden" name="<?php echo $name;?>" value="<?php echo $value;?>" />
 		<?php
 		endforeach;
