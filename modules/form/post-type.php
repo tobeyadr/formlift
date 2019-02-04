@@ -15,19 +15,19 @@ class FormLift_Form_Post_Type
     {
         //forms
         $labels = array(
-            'name'                  => _('FormLift'),
-            'singular_name'         => _('Infusionsoft Form'),
-            'add_new'               => _('Add Form'),
-            'add_new_item'          => _('Add Form'),
-            'all_items'             => _('All Forms'),
-            'edit_item'             => _('Edit Form'),
-            'new_item'              => _('New Form'),
-            'view'                  => _('View'),
-            'view_item'             => _('View Form'),
-            'search_items'          => _('Search Forms'),
-            'not_found'             => _('No Forms Found'),
-            'not_found_in_trash'    => _('No Forms Found In Trash'),
-            'archives'              => _('Form Archives')
+            'name'                  => __('FormLift'),
+            'singular_name'         => __('Infusionsoft Form'),
+            'add_new'               => __('Add Form'),
+            'add_new_item'          => __('Add Form'),
+            'all_items'             => __('All Forms'),
+            'edit_item'             => __('Edit Form'),
+            'new_item'              => __('New Form'),
+            'view'                  => __('View'),
+            'view_item'             => __('View Form'),
+            'search_items'          => __('Search Forms'),
+            'not_found'             => __('No Forms Found'),
+            'not_found_in_trash'    => __('No Forms Found In Trash'),
+            'archives'              => __('Form Archives')
         );
 
         $args = array(
