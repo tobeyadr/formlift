@@ -36,6 +36,12 @@ var formliftLightBox = {
 	},
 
 	close: function(){
+        //remove editor if any
+        var editors = jQuery( '#' + this.contentId ).find('.wp-editor');
+        for( var i = 0; i<editors.length;i++ ){
+            wp.editor.remove( editors[i].id );
+        }
+
 		this.pushContent();
 		this.hidePopUp();
 	},
@@ -46,9 +52,6 @@ var formliftLightBox = {
 		var source = document.getElementById(this.source);
 		while (source.hasChildNodes()) {
     		target.appendChild(source.firstChild);
-            if ( target.lastChild.tagName === "TEXTAREA" && target.lastChild.className.search("wp-editor") >= 0 ){
-                wp.editor.initialize( target.lastChild.id, { tinymce: true, quicktags: true } );
-            }
         }
 		
 	},
@@ -57,11 +60,6 @@ var formliftLightBox = {
         var target = document.getElementById(this.contentId);
         var source = document.getElementById(this.source);
 
-        var editors = jQuery( target ).find('.wp-editor');
-        for( var i = 0; i<editors.length;i++ ){
-            wp.editor.remove( editors[i].id );
-        }
-
 		while (target.hasChildNodes()) {
             source.appendChild(target.firstChild);
 		}
@@ -69,10 +67,17 @@ var formliftLightBox = {
 
 	/* Load the PopUp onto the screen */
 	showPopUp: function(){
-		jQuery("#"+this.overlayId).css("display", "block");
-		jQuery("#"+this.windowId).css("display", "block");
-		jQuery("#"+this.titleId).html( this.title );
-	},
+
+		//init editor if any
+        var editors = jQuery( '#' + this.contentId ).find('.wp-editor');
+        for( var i = 0; i<editors.length;i++ ){
+            wp.editor.initialize( editors[i].id, { tinymce: true, quicktags: true } );
+        }
+
+        jQuery("#"+this.titleId).html( this.title );
+        jQuery("#"+this.overlayId).fadeIn();
+        jQuery("#"+this.windowId).fadeIn();
+    },
 
 	/* Close the PopUp */
 	hidePopUp: function(){

@@ -4,17 +4,9 @@ if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 function formlift_submitV2()
 {
-	if ( ! isset( $_POST['formlift_submit_nonce'] ) || ! isset( $_POST['action'] ) || $_POST['action'] != 'formlift_submit_form' ) {
+    if ( ! isset( $_POST['action'] ) || $_POST['action'] != 'formlift_submit_form' ) {
 		return;
 	}
-
-    if ( ! wp_verify_nonce( $_POST['formlift_submit_nonce'], 'formlift_submit' ) ){
-    	if ( wp_doing_ajax() ){
-		    wp_die( 'Failed to verify you took this action.' );
-	    } else {
-    		return;
-	    }
-    }
 
 	global $FormLiftUser;
 

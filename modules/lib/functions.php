@@ -87,21 +87,22 @@ function formlift_update_web_form_list()
 
 function _formlift_update_web_form_list()
 {
-    try {
-        $array = FormLift_Infusionsoft_Manager::getWebForms();
-        update_option( 'formlift_web_forms', $array );
-		FormLift_Notice_Manager::add_success( "refresh_success", "Successfully retrieved new web forms." );
-        return $array;
-    } catch ( Exception $e ){
+    $array = FormLift_Infusionsoft_Manager::getWebForms();
+
+    if ( is_wp_error( $array ) ){
         FormLift_Notice_Manager::add_notice( 'oauth_error', array(
             'is_dismissable' => true,
             'is_premium' => 'both',
             'is_specific' => false,
             'type' => 'notice-error',
-            'html' => 'Something went wrong pulling the webform list. Try manually refreshing your connection in the settings. If the problem persists copy the following and send it to <a href="mailto:info@formlift.net">info@formlift.net</a>. Error Code: '.$e->getMessage()
+            'html' => 'Something went wrong pulling the webform list. Try manually refreshing your connection in the settings. If the problem persists copy the following and send it to <a href="mailto:info@formlift.net">info@formlift.net</a>. Error: '. $array->get_error_message()
         ));
-        return array();
+        return $array;
     }
+
+    update_option( 'formlift_web_forms', $array );
+    FormLift_Notice_Manager::add_success( "refresh_success", "Successfully retrieved new web forms." );
+    return $array;
 }
 
 function formlift_get_infusionsoft_webforms()
@@ -117,18 +118,20 @@ function formlift_get_infusionsoft_webforms()
 
 function get_formlift_html( $id )
 {
-    try {
-        return FormLift_Infusionsoft_Manager::getWebFormHtml( $id );
-    } catch ( Exception $e ) {
+    $code = FormLift_Infusionsoft_Manager::getWebFormHtml( $id );
+
+    if ( is_wp_error( $code ) ){
         FormLift_Notice_Manager::add_notice( 'oauth_error', array(
             'is_dismissable' => true,
             'is_premium' => 'both',
             'is_specific' => false,
             'type' => 'notice-error',
-            'html' => 'Something went wrong pulling the webform html. Try manually refreshing your connection in the settings. If the problem persists copy the following and send it to <a href="mailto:info@formlift.net">info@formlift.net</a>. Error Code: '.$e->getMessage()
+            'html' => 'Something went wrong pulling the webform html. Try manually refreshing your connection in the settings. If the problem persists copy the following and send it to <a href="mailto:info@formlift.net">info@formlift.net</a>. Error: '. $code->get_error_message()
         ));
         return '';
     }
+
+    return $code;
 }
 
 function formlift_is_connected()
@@ -191,3 +194,107 @@ function get_formlift_field_type_name( $name )
     $type = array_column( $types, $name );
     return array_pop( $type );
 }
+
+function formlift_get_custom_fields()
+{
+    $returnFields = get_transient( 'formlift_custom_fields' );
+
+    if ( $returnFields ){
+        return $returnFields;
+    }
+
+    $customFields = FormLift_Infusionsoft_Manager::getCustomFields();
+
+    if ( is_wp_error( $customFields ) ){
+        $customFields = array();
+    }
+
+    $returnFields = array(
+        '' => 'Please Select One'
+    );
+
+    foreach ($customFields as $fieldRow)
+    {
+        $returnFields[ '_' . $fieldRow['Name'] ] = $fieldRow['Label'];
+    }
+
+    set_transient( 'formlift_custom_fields', $returnFields, 24 * HOUR_IN_SECONDS );
+
+    return $returnFields;
+}
+
+function formlift_refresh_custom_fields()
+{
+    if ( isset( $_POST[FORMLIFT_SETTINGS]['refresh_custom_fields'] ) )
+    {
+        delete_transient( 'formlift_custom_fields' );
+    }
+}
+
+add_action( 'formlift_after_save_plugin_settings', 'formlift_refresh_custom_fields' );
+
+function formlift_encrypt_decrypt( $string, $action = 'e' ) {
+    // you may change these values to your own
+    $encrypt_method = "AES-256-CBC";
+    if ( in_array( $encrypt_method, openssl_get_cipher_methods()) ){
+        $secret_key = admin_url();
+        $secret_iv = parse_url( site_url(), PHP_URL_HOST );
+
+        $output = false;
+        $key = hash( 'sha256', $secret_key );
+        $iv = substr( hash( 'sha256', $secret_iv ), 0, 16 );
+
+        if( $action == 'e' ) {
+            $output = base64_encode( openssl_encrypt( $string, $encrypt_method, $key, 0, $iv ) );
+        }
+        else if( $action == 'd' ){
+            $output = openssl_decrypt( base64_decode( $string ), $encrypt_method, $key, 0, $iv );
+        }
+    } else {
+        if( $action == 'e' ) {
+            $output = base64_encode( $string );
+        }
+        else if( $action == 'd' ){
+            $output = base64_decode( $string );
+        }
+    }
+
+    return $output;
+}
+
+function formlift_isJson($string) {
+    json_decode($string);
+    return (json_last_error() == JSON_ERROR_NONE);
+}
+
+function formlift_get_leaderboard_position()
+{
+	$url = get_site_url();
+	
+	$args = array(
+		'url'           => $url
+	);
+
+	$destination = add_query_arg( array( 'formlift_action' => 'get_leaderboard_position' ) , FormLift_Stats_Collector::DEST );
+
+	$result = wp_remote_post( $destination, array( 'body' => $args, 'sslverify' => true ) );
+	
+	$args = json_decode( wp_remote_retrieve_body( $result ), true );
+
+	update_option('formlift_leaderboard_rank', $args['placement']);
+	
+	return $args['placement'];
+}
+
+function formlift_get_leaderboard_position_ajax()
+{
+	if ( ! wp_doing_ajax() ){
+		return;
+	}
+
+	$placement = formlift_get_leaderboard_position();
+	
+	wp_die( $placement );
+}
+
+add_action( 'wp_ajax_formlift_get_leaderboard_ranking', 'formlift_get_leaderboard_position_ajax' );

@@ -97,13 +97,15 @@ function formlift_db_update_7_4()
 	update_option( FORMLIFT_VERSION_KEY, FORMLIFT_VERSION );
 }
 
-function formlift_update_notice()
+function formlift_7_4_update_notice()
 {
     $version = get_option( FORMLIFT_VERSION_KEY );
+    if ( version_compare( $version , '7.4.0', '>' ) )
+        return;
 
     if ( isset( $_POST['formlift_db_upgrade'] ) && isset( $_POST['formlift_db_upgrade_nonce'] ) && wp_verify_nonce( $_POST['formlift_db_upgrade_nonce'], 'formlift_db_upgrade' ) && current_user_can('manage_options' ) )
     {
-	    formlift_db_update_7_4();
+        formlift_db_update_7_4();
     }
 
     if ( version_compare( $version , '7.4.0', '<=' ) || empty( $version ) )
@@ -113,4 +115,15 @@ function formlift_update_notice()
     }
 }
 
-add_action( 'admin_init', 'formlift_update_notice' );
+//add_action( 'admin_init', 'formlift_7_4_update_notice' );
+
+function formlift_7_4_27_clear_old_encrypted_sessions()
+{
+    $version = get_option( FORMLIFT_VERSION_KEY );
+    if ( version_compare( $version , '7.4.27', '<' ) ){
+        formlift_delete_sessions();
+        update_option( FORMLIFT_VERSION_KEY, '7.4.27' );
+    }
+}
+
+//add_action( 'admin_init', 'formlift_7_4_27_clear_old_encrypted_sessions' );

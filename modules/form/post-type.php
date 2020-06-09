@@ -15,19 +15,19 @@ class FormLift_Form_Post_Type
     {
         //forms
         $labels = array(
-            'name'                  => _('FormLift'),
-            'singular_name'         => _('Infusionsoft Form'),
-            'add_new'               => _('Add Form'),
-            'add_new_item'          => _('Add Form'),
-            'all_items'             => _('All Forms'),
-            'edit_item'             => _('Edit Form'),
-            'new_item'              => _('New Form'),
-            'view'                  => _('View'),
-            'view_item'             => _('View Form'),
-            'search_items'          => _('Search Forms'),
-            'not_found'             => _('No Forms Found'),
-            'not_found_in_trash'    => _('No Forms Found In Trash'),
-            'archives'              => _('Form Archives')
+            'name'                  => __('FormLift'),
+            'singular_name'         => __('Infusionsoft Form'),
+            'add_new'               => __('Add Form'),
+            'add_new_item'          => __('Add Form'),
+            'all_items'             => __('All Forms'),
+            'edit_item'             => __('Edit Form'),
+            'new_item'              => __('New Form'),
+            'view'                  => __('View'),
+            'view_item'             => __('View Form'),
+            'search_items'          => __('Search Forms'),
+            'not_found'             => __('No Forms Found'),
+            'not_found_in_trash'    => __('No Forms Found In Trash'),
+            'archives'              => __('Form Archives')
         );
 
         $args = array(
@@ -42,7 +42,7 @@ class FormLift_Form_Post_Type
                 'slug' => 'forms'
             ), // it shouldn't have rewrite rules
             'show_in_admin_bar'    => false,
-            'menu_icon'            => plugins_url( 'assets/icon-20x20.png', __FILE__  ),
+            'menu_icon'            => plugins_url( 'assets/images/icon-20x20.png', __FILE__  ),
             'capability_type'      => 'post',
             'map_meta_cap'         => true,
             'supports' => array(
@@ -129,17 +129,17 @@ class FormLift_Form_Post_Type
                 if ( is_string( $terms ) )
                     echo $terms;
                 else
-                    _e( 'no submissions.' , 'submiss_dom');
+                    _e( 'no submissions.' , 'formlift');
                 break;
             case 'num_impressions' :
 
-                $num_subs = formlift_get_form_impressions( date('Y-m-d H:i:s', strtotime('-7 days')), current_time('mysql'), $post_id );
+                $num_imps = formlift_get_form_impressions( date('Y-m-d H:i:s', strtotime('-7 days')), current_time('mysql'), $post_id );
 
-                $terms = sprintf('<p><b>%s</b></p>', intval( $num_subs ) );
+                $terms = sprintf('<p><b>%s</b></p>', intval( $num_imps ) );
                 if ( is_string( $terms ) )
                     echo $terms;
                 else
-                    _e( 'no impressions' , 'submiss_dom');
+                    _e( 'no impressions' , 'formlift');
                 break;
             case 'avg_conversion' :
 
@@ -155,7 +155,7 @@ class FormLift_Form_Post_Type
                 if ( is_string( $terms ) )
                     echo $terms;
                 else
-                    _e( 'no conversions' , 'converge_dom');
+                    _e( 'no conversions' , 'formlift');
                 break;
             case 'campaigns' :
                 $taxonomy = "campaigns";
@@ -202,20 +202,27 @@ class FormLift_Form_Post_Type
      * @param $query WP_Query
      */
     public static function formlift_slice_orderby( $query ) {
+
         if( ! is_admin() )
             return;
 
         $orderby = $query->get('orderby');
 
         if( 'num_subs' == $orderby ) {
-            $query->set('meta_key','num_submissions');
+
+            $query->set('meta_key','submissions');
             $query->set('orderby','meta_value_num');
+
         } else if ('num_impressions' == $orderby){
-            $query->set('meta_key','num_impressions');
+
+            $query->set('meta_key','impressions');
             $query->set('orderby','meta_value_num');
+
         } else if ('avg_conversion' == $orderby){
+
             $query->set('meta_key','conversion_rate');
             $query->set('orderby','meta_value_num');
+
         }
     }
 

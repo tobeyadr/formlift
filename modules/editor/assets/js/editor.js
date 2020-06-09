@@ -2,6 +2,7 @@ var FormLiftEditor = {
     newFieldHtml: null,
     newFieldOptions: null,
     fieldOptions: null,
+    targetField: null,
     editor: null,
     form_id : ThisFormID,
     operatingId: null,
@@ -16,7 +17,10 @@ var FormLiftEditor = {
         this.editor = document.getElementById('formlift-field-editor');
         /* activate sortable and buttons */
         /* init sortable */
-        jQuery( ".formlift-sortable-fields" ).sortable({
+
+        var sortables = jQuery( ".formlift-sortable-fields" );
+
+        sortables.sortable({
             revert: true,
             tolerance:'pointer',
 
@@ -26,48 +30,69 @@ var FormLiftEditor = {
                 ui.placeholder.height( ui.item.height() );
             }
         });
-        jQuery( ".formlift-sortable-fields" ).disableSelection();
 
-        jQuery( ".add-custom-field" ).off();
-        jQuery( ".add-custom-field" ).on("click", function(){
+        sortables.disableSelection();
+
+        function customFieldPopupAdd(){
             var querystart = this.href.indexOf("#");
             var listArgs = this.href.substring(querystart+1);
             listArgs = listArgs.split('=');
             var type = listArgs[1];
             FormLiftEditor.addField( type );
             formliftLightBox.close();
-        });
+        }
+
+        var customFieldOptions = jQuery( ".add-custom-field" );
+
+        customFieldOptions.off();
+        customFieldOptions.on( "click", customFieldPopupAdd );
         this.reload();
     
     },
 
     reload: function(){
 
+        /* init add custom fields */
+
+        var AddCustomFieldTriggers = jQuery( ".add_custom_field" );
+
+        AddCustomFieldTriggers.off( "click",addCustomField );
+        AddCustomFieldTriggers.on( "click", addCustomField );
+
         /* init add options for radio/select */
-        jQuery( ".formlift-option-add" ).off();
-        jQuery( ".formlift-option-add" ).on("click", function(){
-            FormLiftEditor.addOption( this.parentNode, this.parentNode.getAttribute('data-field-id'));
-        });
+
+        var AddCustomOptionTriggers =  jQuery( ".formlift-option-add" );
+
+        AddCustomOptionTriggers.off("click", addCustomOption );
+        AddCustomOptionTriggers.on("click", addCustomOption );
+
         /* init delete options for radio/select */
-        jQuery( ".formlift-option-delete" ).off();
-        jQuery( ".formlift-option-delete").on("click", function(){
-            FormLiftEditor.deleteOption(this);
-        });
+
+        var deleteCustomOptionTriggers =  jQuery( ".formlift-option-delete" );
+
+        deleteCustomOptionTriggers.off("click", deleteCustomOption );
+        deleteCustomOptionTriggers.on("click", deleteCustomOption );
+
         /* init delete field*/
-        jQuery( ".formlift-delete-field" ).off();
-        jQuery( ".formlift-delete-field" ).on("click", function(){
-            FormLiftEditor.deleteField(this.getAttribute('data-delete-id'));
-        });
+
+        var deleteCustomFieldTriggers = jQuery( ".formlift-delete-field" );
+
+        deleteCustomFieldTriggers.off("click", deleteCustomField );
+        deleteCustomFieldTriggers.on("click", deleteCustomField );
+
         /* switch field type */
-        jQuery( ".switch-field-type" ).off();
-        jQuery( ".switch-field-type" ).on("change", function(){
-            FormLiftEditor.replaceField(this.getAttribute('data-change-id'), this.value);
-        });
+
+        var switchFieldTypeTriggers = jQuery( ".switch-field-type" );
+
+        switchFieldTypeTriggers.off( "change",switchFieldType );
+        switchFieldTypeTriggers.on( "change", switchFieldType );
+
         /* init switch width */
-        jQuery( ".formlift-switch-width" ).off();
-        jQuery( ".formlift-switch-width" ).on("click", function(){
-            FormLiftEditor.changeFieldWidth(this.getAttribute('data-change-id'), this.value);
-        });
+
+        var switchWidthTriggers = jQuery( ".formlift-switch-width" );
+
+        switchWidthTriggers.off("click", switchWidth );
+        switchWidthTriggers.on("click", switchWidth );
 
         for( var i = 0; i < this.reloadCallbacks.length; i++ ){
             this.reloadCallbacks[i]();
@@ -133,8 +158,6 @@ var FormLiftEditor = {
             display: 'on',
             options: {}
         };
-        /* special case */
-
         this.fieldOptions[newID] = fieldOptions;
         this.newFieldOptions = JSON.stringify(fieldOptions);
         this.getFieldHtml();
@@ -142,7 +165,7 @@ var FormLiftEditor = {
 
     doAddField: function(){
         /* add to editor */
-        this.editor.insertBefore(this.newFieldHtml, this.editor.firstChild);
+        this.editor.insertBefore(this.newFieldHtml, this.targetField.nextSibling);
         this.reload();
         /* open formliftLightBox */
         var url = "#source_d="+this.operatingId+"-content";
@@ -211,3 +234,29 @@ var FormLiftEditor = {
         });
     }
 };
+
+/* reload functions */
+function addCustomField()
+{
+    FormLiftEditor.targetField = jQuery( this ).parents( ".formlift-col" )[0];
+}
+function addCustomOption()
+{
+    FormLiftEditor.addOption( this.parentNode, this.parentNode.getAttribute('data-field-id'));
+}
+function deleteCustomOption()
+{
+    FormLiftEditor.deleteOption(this);
+}
+function deleteCustomField()
+{
+    FormLiftEditor.deleteField(this.getAttribute('data-delete-id'));
+}
+function switchFieldType()
+{
+    FormLiftEditor.replaceField(this.getAttribute('data-change-id'), this.value);
+}
+function switchWidth()
+{
+    FormLiftEditor.changeFieldWidth(this.getAttribute('data-change-id'), this.value);
+}

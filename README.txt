@@ -1,9 +1,9 @@
 === FormLift for Infusionsoft Web Forms ===
 Contributors: trainingbusinesspros
 Tags: Infusionsoft, Optin, Form, Editor, Official, FormLift, Web Form, Forms, Form Editor
-Requires at least: 4.5
+Requires at least: 4.9
 Donate link: https://formlift.net
-Tested up to: 4.9
+Tested up to: 5.3
 Stable tag: trunk
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
@@ -12,17 +12,17 @@ Import Infusionsoft Web Forms into WordPress and easily customize their style. D
 
 == Description ==
 
-Need help? [Watch Our Tutorials](https://formlift.net/tutorials/)
+Need help? [Watch Our Tutorials](https://formlift.net/video-tutorials/)
 
-What does it do? [See The Features List](https://formlift.net/#features)
+What does it do? [See The Features List](https://formlift.net/features/)
 
-How does it compare against other forms? [See Our User Created Comparison Chart](https://docs.google.com/spreadsheets/d/1Wy2oOahr0cX1-_wjshVZKg_0fW1SzL-p-10PWm3mxxM/edit?usp=sharing)
+Need more functionality? [Check out our extensions!](https://formlift.net/extensions/)
 
-Need more functionality? [Start Your 14 Day Free Trial](https://formlift.net/free-trial/)
+Not technically inclined? [Launch Guided Setup](https://formlift.net/use-formlift/)
 
 Simply put, this is the easiest, fastest, and most user friendly solution to putting Infusionsoft Web Forms on your website. FormLift's 5 minute setup time allows you to install this plugin and run, not walk. It takes 30 seconds to create a new form and place it on your site!
 
-The Free version hosted on WordPress allows for amazing functionality that will make any Infusionites nightmare dissapear in seconds...
+The Free version hosted on WordPress allows for amazing functionality that will make any Infusionites nightmares disappear in seconds...
 
 = Unlicensed Features =
 * Over 45 global styling options
@@ -34,7 +34,7 @@ The Free version hosted on WordPress allows for amazing functionality that will 
 * Customizable Date Picker that actually works
 * Personal Identifiable Information protection to keep your contacts' data safe.
 
-But if you want to unlock the full automation power of FormLift, you can [start your 14 day free trial](https://formlift.net/free-trial/) right now to unlock even more tools!
+But if you want to unlock the full automation power of FormLift, you can [start your 14 day free trial](https://formlift.net/free-trial-3/) right now to unlock even more tools!
 
 = Premium Features =
 * Auto population link builder
@@ -51,7 +51,7 @@ See how easy it is to get setup today!
 
 [vimeo https://vimeo.com/245092055]                 
 
-[Want to go premium?](https://formlift.net/free-trial/)
+[Want extra functionality? Level up with extensions!](https://formlift.net/store/)
 
 == Installation ==
 
@@ -138,10 +138,164 @@ FormLift is NOT HIPAA compliant by default. You can make FormLift HIPAA complian
 * Legacy: If you are connected to Infusionsoft via the Legacy Method, all API calls are made to Infusionsoft directly and "oauth.formlift.net" is not involved. No usage statistics are collected.
 * Methods: The only API methods FormLift uses are for the uploading of Files to a contact's FileBox and the retrieval of WebForms. FormLift will never "retrieve" information from Infusionsoft.
 
-= Infusionsoft or other CRMs=
+= Infusionsoft or other CRMs =
 Infusionsoft or whichever CRM you use with FormLift is the primary holder of Information collected with FormLift. To ensure you are compliant in regard to the storage of information, please consult them if it's beyond the scope of the above.
 
 == Changelog ==
+
+= 7.5.14 =
+* TWEAKED Updated Groundhogg ad in settings page
+* FIXED installation errors showed because of missing DB error
+* FIXED oauth connection broken
+
+= 7.5.13 =
+* Module loader now includes file name to avoid potential harmful files to be included.
+
+= 7.5.12 =
+* Added replacement code support for URL param mapping
+* Removed stats collection, was causing warnings and is no longer needed.
+
+= 7.5.11 =
+* Fixed issue related to radio buttons with values of 0 being ignored
+
+= 7.5.10 =
+* Added prompt to try Groundhogg
+* Did some IE compatibillity stuff.
+
+= 7.5.9 =
+* changed XMLHttpRequest.DONE to the number 4 to workaround some sites changing the DONE property to a function, or not recognizing it at all.
+* Fixed some spelling errors.
+
+= 7.5.8 =
+* Updated the icon which appears in Notices created by FormLift
+* Fixed rewards bug causing rewards to be given to those who did not earn them.
+
+= 7.5.7 =
+* Fixed messy HTML in settings page
+
+= 7.5.6 =
+* Changed condition to check for valid license. More strict to avoid false positives coming from FormLift.net
+* Added required functions and HTML to start contest when ready.
+
+= 7.5.5 =
+* Fixed visual editor firefox bug.
+
+= 7.5.4 =
+* Added explanations to the field editor settings.
+
+= 7.5.3 =
+* Extended the license check time to 3 days instead of day.
+* Removed the add custom field button from the editor bar, and instead there is now an inline addition button.
+
+= 7.5.2 =
+* Send the source url to the API refresh to allow blacklisting.
+* Send an email to the admin whenever an extension license expires.
+* Added an API log.
+
+= 7.5.1 =
+* Added explanations to all plugin & style settings.
+* Simplified the settings UI.
+* hardened the credit again.
+
+= 7.5.0 =
+* Nice UI update made to the editor. No functional changes, just the small version number were getting pretty big.
+* Added border styling options to the form container under "FORM CSS"
+
+= 7.4.29 =
+* moved the "Powered by FormLift" Credit to below the main button text. hardened the css to prevent users CSSing it away. We have to make money too ya know.
+
+= 7.4.28 =
+* removed nonce validation on frontend forms on account of page caching conflict with nonces.
+
+= 7.4.27 =
+* Added session encryption for total user session encryption.
+* Fixed bug with button self closing improperly.
+
+= 7.4.25 =
+* API connection fixes, throwing exception caused undo error. Changed to WP_Error
+
+= 7.4.24 =
+* Provided FormLift sessions with their own DB table.
+
+= 7.4.23 =
+* Added session encryption for single variable user attributes with OPEN SSL.
+
+= 7.4.22 =
+* fixed incorrect settings page redirect.
+
+= 7.4.21 =
+* added try catch to load custom fields.
+
+= 7.4.20 =
+* Fixed default serttings not settign radio and checkbox field options
+* Set options to allow session recovery
+
+= 7.4.19 =
+* Added FormLift stats collection notice.
+
+= 7.4.18 =
+* Added awards to make users feel good!
+* fixed gdpr bug.
+
+= 7.4.16 =
+* allowed the use of the GDPR field with custom fields in Infusionsoft.
+
+= 7.4.15 =
+* Changed the order of credit to appear below the message box rather than on top.
+* Added the "EU ONLY" option to the GDPR consent box.
+
+= 7.4.14 =
+* Send an email to the admin whenver the FormLift connection fails.
+* When the refresh fails do not wipe existing tokens in case of retry.
+
+= 7.4.13 =
+* Fixed the post type orderby function not working for new forms.
+
+= 7.4.12 =
+* Somewhere along the line the Infusionsoft tracking code got removed, we re-included it.
+
+= 7.4.10 =
+* Removed html entities direct inclusion in the PHP code and replaced with ::before in stylesheet.
+* fixed some stylesheet stuff.
+
+= 7.4.10 =
+* Changed brand assets to match new logo!
+
+= 7.4.9 =
+* fixed potential file inclusion error concerning the EDD plugin updater library for Premium extensions.
+* added some new CSS rules.
+* re-ordered som settings.
+
+= 7.4.8 =
+* minor usability fixes
+* changed API method for appending form code to also include the form ID
+
+= 7.4.7 =
+* allow accents in name fields
+* allowed the importing and exporting of Form Level Settings
+
+= 7.4.6.2 =
+* fixed import feature importing incorrect form if not on the "Add New Form" screen
+
+= 7.4.6.1 =
+* fixed bad typo
+
+= 7.4.6 =
+* better error checking for additional error checks
+
+= 7.4.5 =
+* At the request of a user we have added the date format option to date pickers.
+* we have added backwards compatibility for the conditional thank you pages new URL structure.
+* we have allowed the $FormLiftUser Variable to populate even if disable UTM removal is enabled.
+
+= 7.4.4 =
+* added backwards support in case that you don't upgrade the DB.
+
+= 7.4.3 =
+* Added support for shortcodes in select, listbox, radio buttons and other fields' attributes.
+
+= 7.4.2 =
+* added support for shortcodes in the Label & Value fields attributes.
 
 = 7.4.1 =
 * added better extensions compatibility.

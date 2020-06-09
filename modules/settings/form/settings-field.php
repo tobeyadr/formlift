@@ -9,13 +9,15 @@ class FormLift_Setting_Field
     var $type;
     var $values;
     var $form;
+    var $description;
 
-    function __construct( $type, $id='', $label='', $values=array())
+    function __construct($type, $id='', $label='', $values=array(), $description=null )
     {
         $this->id = $id;
         $this->label = $label;
         $this->type = $type;
         $this->values = $values;
+        $this->description = $description;
 
         if( isset( $_GET['post'] ) )
             $this->form = new FormLift_Form( $_GET['post'] );
@@ -239,6 +241,12 @@ class FormLift_Setting_Field
         $label_html = "<label for=\"$this->id\">$this->label</label>";
         $method = $this->type;
         $input_html = $this->$method();
-        return self::wrap_row( self::wrap_label_cell( $label_html ) . self::wrap_input_cell( $input_html ) );
+
+        $content = self::wrap_label_cell( $label_html ) . self::wrap_input_cell( $input_html );
+        if ( !empty( $this->description ) ){
+            $content.= "<p>{$this->description}</p>";
+        }
+
+        return self::wrap_row( $content );
     }
 }

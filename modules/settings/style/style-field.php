@@ -11,8 +11,9 @@ class FormLift_Style_Field
     var $values;
     var $sub_fields;
     var $form;
+    var $description;
 
-    function __construct($type, $class, $attribute, $label='', $values=array(), $sub_fields=array())
+    function __construct($type, $class, $attribute, $label='', $values=array(), $sub_fields=array(), $description=null )
     {
         $this->class = $class;
         $this->attribute = $attribute;
@@ -20,6 +21,7 @@ class FormLift_Style_Field
         $this->type = $type;
         $this->values = $values;
         $this->sub_fields = $sub_fields;
+        $this->description = $description;
 
         if( isset( $_GET['post'] ) )
             $this->form = new FormLift_Form( $_GET['post'] );
@@ -97,7 +99,7 @@ class FormLift_Style_Field
         $option_key = FORMLIFT_STYLE;
         $table = '';
         foreach ($this->sub_fields as $sub => $attribute){
-            $table.="<label style='font-size:30px'>$sub</label><input class='formlift-input' style='width: 50px' placeholder='{$this->form->get_default_style_setting( $this->class, $attribute )}' name='{$option_key}[{$this->class}][{$attribute}]' value='{$this->form->get_style_setting( $this->class, $attribute )}'/><br/>";
+            $table.="<input class='formlift-input' style='width: 50px' placeholder='{$this->form->get_default_style_setting( $this->class, $attribute )}' name='{$option_key}[{$this->class}][{$attribute}]' value='{$this->form->get_style_setting( $this->class, $attribute )}'/>";
         }
         return $table;
 
@@ -141,6 +143,10 @@ class FormLift_Style_Field
         $label_html = "<label>$this->label</label>";
         $method = $this->type;
         $input_html = $this->$method();
-        return self::wrap_row( self::wrap_label_cell( $label_html ) . self::wrap_input_cell( $input_html ) );
+        $content = self::wrap_label_cell( $label_html ) . self::wrap_input_cell( $input_html );
+        if ( ! empty( $this->description ) ){
+        	$content .= "<p>{$this->description}</p>";
+        }
+        return self::wrap_row( $content );
     }
 }

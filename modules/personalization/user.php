@@ -1,289 +1,317 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
+
 /**
  * Class FormLift_User
  */
-class FormLift_User
-{
-    /**
-     * @var $instance FormLift_User
-     */
-    var $ID;
-    var $attributes;
+class FormLift_User {
+	/**
+	 * @var $instance FormLift_User
+	 */
+	var $ID;
+	var $attributes;
+	var $key;
+	var $iv;
 
 	static $instance;
 
-	function __construct()
-	{
-        if ( ! isset( $_COOKIE[ 'FORMLIFT_ID' ] ) ){
-            $this->ID = uniqid( 'formlift_session_', TRUE );
-
-            $expiresInDays = get_formlift_setting( 'time_to_live', 30 );
-
-            setcookie( 'FORMLIFT_ID', $this->ID, time() + $expiresInDays * 24 * 60 * 60, COOKIEPATH, COOKIE_DOMAIN, true, true );
-	        set_transient( $this->ID, array(), $expiresInDays * 24 * HOUR_IN_SECONDS );
-        } else {
-            $this->ID = sanitize_text_field( $_COOKIE[ 'FORMLIFT_ID' ] );
-        }
-
-        $attributes = get_transient( $this->ID );
-        $this->attributes = ( !empty( $attributes ) )? $attributes : array();
+	function __construct() {
+		add_action( 'init', [ $this, 'init' ] );
 	}
 
-	function set_user_data( $field, $data )
-	{
-	    if ( is_ssl() )
-	    	$this->attributes[$field] = $data;
+	function init(){
+		//Do not create a session if the person is a bot.
+		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && preg_match( '/bot|crawl|slurp|spider|mediapartners/i', $_SERVER['HTTP_USER_AGENT'] ) ) {
+			return;
+		}
+
+		if ( ! isset( $_COOKIE['FORMLIFT_ID'] ) ) {
+
+			if ( isset( $_GET['formlift_session'] ) ) {
+				$this->ID = urldecode( $_GET['formlift_session'] );
+			} else {
+				$this->ID = uniqid( 'formlift_session_', true );
+			}
+
+			$expiresInDays = get_formlift_setting( 'time_to_live', 30 );
+			setcookie( 'FORMLIFT_ID', $this->ID, time() + $expiresInDays * 24 * HOUR_IN_SECONDS, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), true );
+		} else {
+			$this->ID = sanitize_text_field( $_COOKIE['FORMLIFT_ID'] );
+		}
+
+		$encodedAttributes = formlift_get_session( $this->ID );
+		if ( $encodedAttributes ) {
+			$decodedAttributes = json_decode( formlift_encrypt_decrypt( $encodedAttributes, 'd' ), true );
+			$this->attributes  = ( ! empty( $decodedAttributes ) && is_array( $decodedAttributes ) ) ? $decodedAttributes : array();
+		} else {
+			$this->attributes = array();
+		}
 	}
 
-    function remove_user_data( $field )
-	{
-		if ( isset( $this->attributes[$field] ) )
-            unset ( $this->attributes[$field] );
+	function getId() {
+		return $this->ID;
 	}
 
-    /* exists just because it has a better name */
-    function get_user_data( $field, $default = false )
-    {
-    	if ( ! is_ssl() )
-    		return $default;
+	function getData( $name, $default = false ) {
+		return $this->get_user_data( $name, $default );
+	}
 
-	    if ( isset( $this->attributes[ $field ] ) ){
-            return $this->attributes[ $field ] ;
-        } else if ( is_user_logged_in() ) {
-            return $this->get_user_data_from_wp( $field , $default );
-        } else {
-            return $default;
-        }
-    }
+	function setData( $field, $data ) {
+		return $this->set_user_data( $field, $data );
+	}
 
-    function addImpression( $formID )
-    {
-        $this->set_user_data( $formID . '-impression', $formID );
-        $this->update();
-    }
+	function set_user_data( $field, $data ) {
+		if ( is_ssl() ) {
+			$this->attributes[ $field ] = $data;
 
-    function addSubmission( $formID )
-    {
-        $this->set_user_data( $formID . '-submission', $formID );
-        $this->update();
-    }
+			return true;
+		} else {
+			return false;
+		}
+	}
 
-    function hasImpression( $formID )
-    {
-        return $this->get_user_data( $formID . '-impression' ) == $formID;
-    }
+	function remove_user_data( $field ) {
+		if ( isset( $this->attributes[ $field ] ) ) {
+			unset ( $this->attributes[ $field ] );
+		}
+	}
 
-    function hasSubmission( $formID )
-    {
-        return $this->get_user_data( $formID . '-submission' ) == $formID;
-    }
+	/* exists just because it has a better name */
+	function get_user_data( $field, $default = false ) {
+		if ( ! is_ssl() ) {
+			return $default;
+		}
 
-    function update()
-    {
-        if ( get_formlift_setting( "disable_session_storage" ) )
-            return;
+		if ( isset( $this->attributes[ $field ] ) ) {
+			$data = $this->attributes[ $field ];
 
-        $expiresInDays = intval( get_formlift_setting( 'time_to_live', 30 ) );
-        set_transient( $this->ID, $this->attributes, $expiresInDays * 24 * HOUR_IN_SECONDS );
-    }
+			return $data;
+		} else if ( is_user_logged_in() ) {
+			return $this->get_user_data_from_wp( $field, $default );
+		} else {
+			return $default;
+		}
+	}
 
-	function get_user_data_from_wp( $field, $default )
-	{
-	        /* because I'm lazy I'll only serve certain fields*/
-        $user = wp_get_current_user();
+	function addImpression( $formID ) {
+		$this->set_user_data( $formID . '-impression', $formID );
+		$this->update();
+	}
 
-        if ("inf_field_Email" == $field)
-            return $user->user_email;
-        elseif ("inf_field_FirstName" == $field)
-            return $user->user_firstname;
-        elseif ("inf_field_LastName" == $field)
-            return $user->user_lastname;
-        elseif ("inf_field_Username" == $field)
-            return $user->user_login;
-        else {
-            //added for memberium support
-            return apply_filters( 'formlift_get_user_data', $default, $field );
-        }
+	function addSubmission( $formID ) {
+		$this->set_user_data( $formID . '-submission', $formID );
+		$this->update();
+	}
+
+	function hasImpression( $formID ) {
+		return $this->get_user_data( $formID . '-impression' ) == $formID;
+	}
+
+	function hasSubmission( $formID ) {
+		return $this->get_user_data( $formID . '-submission' ) == $formID;
+	}
+
+	function update() {
+		if ( get_formlift_setting( "disable_session_storage" ) || ! is_ssl() || empty( $this->ID ) ) {
+			return;
+		}
+
+		$expiresInDays = intval( get_formlift_setting( 'time_to_live', 30 ) );
+
+		if ( formlift_get_session( $this->ID ) ) {
+			formlift_update_session( $this->ID, formlift_encrypt_decrypt( json_encode( $this->attributes ) ), $expiresInDays * 24 * HOUR_IN_SECONDS );
+		} else {
+			formlift_create_session( $this->ID, formlift_encrypt_decrypt( json_encode( $this->attributes ) ), $expiresInDays * 24 * HOUR_IN_SECONDS );
+		}
+	}
+
+	function get_user_data_from_wp( $field, $default ) {
+		/* because I'm lazy I'll only serve certain fields*/
+		$user = wp_get_current_user();
+
+		if ( "inf_field_Email" == $field ) {
+			return $user->user_email;
+		} elseif ( "inf_field_FirstName" == $field ) {
+			return $user->user_firstname;
+		} elseif ( "inf_field_LastName" == $field ) {
+			return $user->user_lastname;
+		} elseif ( "inf_field_Username" == $field ) {
+			return $user->user_login;
+		} else {
+			//added for memberium support
+			return apply_filters( 'formlift_get_user_data', $default, $field );
+		}
 
 	}
 
-    function sanitize_headers()
-    {
-        if ( get_formlift_setting( 'disable_utm_removal' ) || ! is_ssl() )
-            return;
+	function sanitize_headers() {
+		if ( ! is_ssl() ) {
+			return;
+		}
 
-        $do = false;
-        // check for doing a redirect
-        if ( !empty( $_GET ) && !isset( $_GET['form_action'] ) && !isset( $_GET['utm_formlift'] ))
-        {
-            if ( preg_match('/inf_custom/', $_SERVER['QUERY_STRING'] ) || preg_match('/inf_other/', $_SERVER['QUERY_STRING']) || preg_match('/contactId/', $_SERVER['QUERY_STRING']) || preg_match('/inf_field/', $_SERVER['QUERY_STRING'] ) ){
-                $do = true;
-            }
-        }
+		$do = false;
+		// check for doing a redirect
+		if ( ! empty( $_GET ) && ! isset( $_GET['formlift_action'] ) && ! isset( $_GET['form_action'] ) ) {
+			if ( preg_match( '/inf_custom/', $_SERVER['QUERY_STRING'] ) || preg_match( '/inf_other/', $_SERVER['QUERY_STRING'] ) || preg_match( '/contactId/', $_SERVER['QUERY_STRING'] ) || preg_match( '/inf_field/', $_SERVER['QUERY_STRING'] ) ) {
+				$do = true;
+			}
+		}
 
-        if ( !$do )
-            return;
+		if ( ! $do ) {
+			return;
+		}
 
-        $filters = get_formlift_setting( 'exclude_from_utm_removal' );
-        $filters = explode( PHP_EOL, $filters );
-        $filters = array_map('trim', $filters);
+		$filters = get_formlift_setting( 'exclude_from_utm_removal' );
+		$filters = explode( PHP_EOL, $filters );
+		$filters = array_map( 'trim', $filters );
 
-        foreach ( $_GET as $key => $value ) {
-            $unfiltered = urldecode( $value );
-            /* special case for emails from the $_GET*/
-            if ( preg_match( '/inf_field_Email[2-3]?/', $key ) )
-                $filtered = str_replace( ' ', '+', $unfiltered );
-            else
-                $filtered = $unfiltered;
+		foreach ( $_GET as $key => $value ) {
+			$unfiltered = urldecode( $value );
+			/* special case for emails from the $_GET*/
+			if ( preg_match( '/inf_field_Email[2-3]?/', $key ) ) {
+				$filtered = str_replace( ' ', '+', $unfiltered );
+			} else {
+				$filtered = $unfiltered;
+			}
 
-            $this->attributes[ sanitize_text_field( $key )] = sanitize_textarea_field( $filtered ) ;
-            //remove special case for inf_contact_key
-            if ( ( preg_match( '/inf_custom/', $key ) || preg_match( '/inf_other/', $key ) || preg_match( '/inf_field/', $key ) ) && !in_array( $key, $filters ) ){
-                unset( $_GET[$key] );
-            }
-        }
+			$this->set_user_data( sanitize_text_field( $key ), sanitize_textarea_field( $filtered ) );
+			//remove special case for inf_contact_key
+			if ( ! get_formlift_setting( 'disable_utm_removal', false ) ) {
+				if ( ( preg_match( '/inf_custom/', $key ) || preg_match( '/inf_other/', $key ) || preg_match( '/inf_field/', $key ) ) && ! in_array( $key, $filters ) ) {
+					unset( $_GET[ $key ] );
+				}
+			}
+		}
 
-        $uri = preg_replace( "/\?.*/", '', $_SERVER['REQUEST_URI'] );
-        //redirect to a clean version of the URL to protect user data.
+		$uri = preg_replace( "/\?.*/", '', $_SERVER['REQUEST_URI'] );
+		//redirect to a clean version of the URL to protect user data.
 
-        if ( isset( $_GET["contactId"]) ){
-            $this->set_user_data( "contactId", intval( $_GET["contactId"] ) );
-        }
+		if ( isset( $_GET['contactId'] ) ) {
+			$this->set_user_data( "contactId", intval( $_GET["contactId"] ) );
+		}
 
-        $this->update();
+		$this->update();
+		$this->update_contact_with_recovery_id();
 
-        if ( empty( $_GET ) ){
-            wp_redirect( $uri );
-            die();
-        } else {
-            $_GET[ 'utm_formlift' ] = 'safe';
-            wp_redirect( $uri . "?" . http_build_query( $_GET ) );
-            die();
-        }
-    }
+		do_action( 'formlift_after_sanitize_url' );
 
-	public static function db_extend( $field )
-    {
-        if ( strpos( $field, "_" ) && ! strpos( $field, "inf_" ) ){
-            return "inf_custom" . $field;
-        } else if ( !strpos( $field, "inf_" ) && !empty( $field ) ){
-            return "inf_field_" . $field;
-        } else {
-            return $field;
-        }
-    }
+		if ( ! get_formlift_setting( 'disable_utm_removal', false ) ) {
+			if ( empty( $_GET ) ) {
+				wp_redirect( $uri );
+				die();
+			} else {
+				$_GET['formlift_action'] = 'url_cleaned';
+				wp_redirect( $uri . "?" . http_build_query( $_GET ) );
+				die();
+			}
+		}
+	}
 
-    public static function do_replacements( $content )
-    {
-	    global $FormLiftUser;
+	function update_contact_with_recovery_id() {
+		$customField = get_formlift_setting( 'session_storage_field', false );
 
-	    preg_match_all('/%%[\w\d]+%%/', $content, $matches);
-	    $actual_matches = $matches[0];
+		if ( ! $customField || ! $this->getData( 'contactId', false ) ) {
+			return;
+		}
 
-	    foreach ($actual_matches as $pattern) {
-		    $field = str_replace('%%', '', $pattern);
+		$data = array(
+			$customField => $this->getId()
+		);
 
-		    $value = $FormLiftUser->get_user_data( $field );
+		FormLift_Infusionsoft_Manager::updateContact( $this->getData( 'contactId' ), $data );
+	}
 
-		    if ( empty( $value ) ) {
-			    $value = '{No Data}';
-		    }
+	public static function db_extend( $field ) {
+		if ( strpos( $field, "_" ) && ! strpos( $field, "inf_" ) ) {
+			return "inf_custom" . $field;
+		} else if ( ! strpos( $field, "inf_" ) && ! empty( $field ) ) {
+			return "inf_field_" . $field;
+		} else {
+			return $field;
+		}
+	}
 
-		    $content = preg_replace('/' . $pattern . '/', $value, $content);
-	    }
-	    return $content;
-    }
+	public static function do_replacements( $content ) {
+		global $FormLiftUser;
 
-	public static function display_field( $atts, $content )
-    {
-        global $FormLiftUser;
+		preg_match_all( '/%%[\w\d]+%%/', $content, $matches );
+		$actual_matches = $matches[0];
 
-        $atters = shortcode_atts(array(
-            'name' => '',
-            'value' => '',
-            'default' => '',
-            'id' => '',
-	        'everything' => false
-        ), $atts);
+		foreach ( $actual_matches as $pattern ) {
+			$field = str_replace( '%%', '', $pattern );
 
-        if ( $atters['everything'] ){
-        	return $FormLiftUser;
-        }
+			$value = $FormLiftUser->get_user_data( $field );
 
-        if ( !empty( $atters['id'] ) ){
-            $atters['name'] = $atters['id'];
-        }
+			if ( empty( $value ) ) {
+				$value = '';
+			}
 
-//	    $atters[ 'name' ] = self::db_extend( $atters['name'] );
-	    //return $atters['name'];
+			$content = preg_replace( '/' . $pattern . '/', $value, $content );
+		}
 
-	    if ( $content ) {
-            if ( ! empty( $atters['name'] ) ){
-                $val = $FormLiftUser->get_user_data( $atters['name'] );
-                if ( empty( $val ) ){
-	                return '';
-                } elseif ( !empty( $atters['value'] ) && $val != $atters[ 'value' ] ){
-                    return '';
-                }
-            }
-            $content = self::do_replacements( $content );
-            $content = do_shortcode( $content );
-        } else {
-            $val = $FormLiftUser->get_user_data( $atters['name'] );
-            if ( empty( $val ) ){
-                return '';
-            } elseif ( !empty($atters['value']) && $val != $atters['value'] ){
-                return '';
-            }
-            $content = $val;
-        }
+		return $content;
+	}
 
-        return $content;
-    }
+	public static function display_field( $atts, $content ) {
+		global $FormLiftUser;
 
-    public function __toString() {
+		$atters = shortcode_atts( array(
+			'name'       => '',
+			'value'      => '',
+			'default'    => '',
+			'id'         => '',
+			'everything' => false
+		), $atts, 'formlift_data' );
+
+		if ( $atters['everything'] ) {
+			return $FormLiftUser;
+		}
+
+		if ( ! empty( $atters['id'] ) ) {
+			$atters['name'] = $atters['id'];
+		}
+
+		if ( $content ) {
+			if ( ! empty( $atters['name'] ) ) {
+				$val = $FormLiftUser->get_user_data( $atters['name'] );
+				if ( empty( $val ) ) {
+					return '';
+				} elseif ( ! empty( $atters['value'] ) && $val != $atters['value'] ) {
+					return '';
+				}
+			}
+			$content = self::do_replacements( $content );
+			$content = do_shortcode( $content );
+		} else {
+			$val = $FormLiftUser->get_user_data( $atters['name'] );
+			if ( empty( $val ) ) {
+				return '';
+			} elseif ( ! empty( $atters['value'] ) && $val != $atters['value'] ) {
+				return '';
+			}
+			$content = $val;
+		}
+
+		return $content;
+	}
+
+	public function __toString() {
 		$content = "<table><tbody>";
-        foreach ( $this->attributes as $attribute => $value ){
-            $content .= "<tr><td>{$attribute}</td><td>{$value}</td></tr>";
-        }
-        $content.= "</table></tbody>";
+		foreach ( $this->attributes as $attribute => $value ) {
+			$content .= "<tr><td>{$attribute}</td><td>{$value}</td></tr>";
+		}
+		$content .= "</table></tbody>";
 
-        return $content;
-    }
-
-    public static function delete_sessions()
-    {
-        global $wpdb;
-        return $wpdb->query(
-            $wpdb->prepare("
-                DELETE FROM $wpdb->options
-                 WHERE option_name LIKE %s
-             ", "%_formlift_session_%" ) );
-    }
+		return $content;
+	}
 }
 
 $FormLiftUser = new FormLift_User();
 
 add_action( 'plugins_loaded', array( $FormLiftUser, 'sanitize_headers' ), 1 );
-
 add_shortcode( 'infusion_field', array( 'FormLift_User', 'display_field' ) );
 add_shortcode( 'formlift_user', array( 'FormLift_User', 'display_field' ) );
 add_shortcode( 'formlift_data', array( 'FormLift_User', 'display_field' ) );
-
-
-function formlift_delete_transients()
-{
-    if ( !is_user_logged_in() || !is_admin() || ! isset( $_POST[FORMLIFT_SETTINGS]['delete_all_sessions'] ) || ! wp_verify_nonce($_POST['delete_sessions_nonce'],'formlift_delete_sessions') )
-        return;
-
-    if ( FormLift_User::delete_sessions() ){
-        FormLift_Notice_Manager::add_success('sessions-deleted', 'Sessions deleted successfully!');
-    } else {
-        FormLift_Notice_Manager::add_error('sessions-deleted', 'Something went wrong deleteing the sessions...');
-    }
-
-}
-
-add_action('init', 'formlift_delete_transients');

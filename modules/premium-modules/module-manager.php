@@ -2,8 +2,8 @@
 
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
-if ( ! class_exists( 'EDD_SL_Plugin_Updater' ) ){
-    include dirname(__FILE__) . '/updater/FORMLIFT_EDD_SL_Plugin_Updater.php';
+if ( ! class_exists( 'FORMLIFT_EDD_SL_Plugin_Updater' ) ){
+    include __DIR__ . '/updater/FORMLIFT_EDD_SL_Plugin_Updater.php';
 }
 
 //define( 'FORMLIFT_LICENSES', 'formlift_licensed_modules' );
@@ -126,7 +126,7 @@ class FormLift_Module_Manager
                         $message = __( 'Your license key has reached its activation limit.' );
                         break;
                     default :
-                        $message = __( 'An error occurred, please try again.' );
+                        $message = __( 'An error occurred, please try again. Full response msg: ' . json_encode( $license_data ) );
                         break;
                 }
             }
@@ -157,12 +157,17 @@ class FormLift_Module_Manager
         if ( get_transient('formlift_license_verification' ) )
             return;
         else
-            set_transient( 'formlift_license_verification', 'wait', 24 * HOUR_IN_SECONDS );
+            set_transient( 'formlift_license_verification', 'wait', 72 * HOUR_IN_SECONDS );
 
         foreach ( static::$modules as $item_id => $args )
         {
             if ( ! self::verify_license( $item_id, $args['item_id'], $args['license']) ){
                 FormLift_Notice_Manager::add_error( 'license-error-' . $item_id, "Your license for {$args['item_name']} is not longer valid." );
+                wp_mail(
+                    get_option( 'admin_email' ),
+                    "Your license for {$args['item_name']} is not longer valid. Please login into your <a href='https://formlift.net/store/account/'>account</a> for more info. Or, contact info@formlift.net.",
+                    "Your license for {$args['item_name']} has expired or your billing has failed. Please login into https://formlift.net/store/account/ for more info. Or, contact info@formlift.net."
+                );
             }
         }
     }
@@ -179,12 +184,13 @@ class FormLift_Module_Manager
         $response = wp_remote_post( static::$storeUrl, array( 'body' => $api_params, 'timeout' => 15, 'sslverify' => true ) );
 
         if ( is_wp_error( $response ) ) {
-            return false;
+            // return true in the event of an error. Check again later...
+            return true;
         }
 
         $license_data = json_decode( wp_remote_retrieve_body( $response ) );
 
-        if( $license_data->license != 'valid' ) {
+        if( isset( $license_data->license ) && $license_data->license == 'invalid' ) {
             self::update_license_status( $item_id, 'invalid' );
             return false;
         }
@@ -215,19 +221,17 @@ class FormLift_Module_Manager
 
 		?>
         <div class="wrap">
-    <h1 class="wp-heading-inline">FormLift Premium Add-On Licenses:</h1>
+    <h1 class="wp-heading-inline">FormLift Extension Licenses:</h1>
             <div>
                 <?php
-
                 if ( empty( $modules ) )
-                    echo "<p>You have no active premium extensions. Want some to make FormLift even cooler? <a href='https://formlift.net/store/'>Check these out...</a></p>";
+                    echo "<p>You have no active extensions installed. Want some to make FormLift even cooler? <a href='https://formlift.net/store/'>Check these out...</a></p>";
 
                 foreach ( $modules as $moduleId => $args ){
                     echo new FormLift_Module( $moduleId, $args );
                 }
                 ?>
             </div>
-
     </div>
         <?php
 	}

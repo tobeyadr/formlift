@@ -21,7 +21,7 @@ a.add-custom-field:focus{
     box-sizing: border-box;
     width: calc( 33% - 10px );
     display: inline-block;
-    color: #555555;
+    color: #2C3D62;
 }
 
 .custom-field-type-choice:hover{
@@ -46,15 +46,16 @@ a.add-custom-field:focus{
 .formlift-field-header{
     display: inline-block;
     width: 100%;
-    background: #318FC2;
+    background: #f1f1f1;
     cursor: move;
     height: 60px;
     transition: 0.4s;
-    box-shadow: 1px 1px 5px #919191;
+    box-shadow: 0 0 5px #919191;
+    border-radius: 5px;
 }
 
 .formlift-field-header:hover{
-    background: #35afe6;
+    background: #f9f9f9;
     transition: 0.4s;
 }
 
@@ -64,11 +65,11 @@ a.add-custom-field:focus{
     overflow: hidden;
     white-space: nowrap;
     box-sizing: border-box;
-    width: calc( 100% - 130px );
+    width: calc( 100% - 205px );
 }
 
 .formlift-heading-text{
-    color: white;
+    color: #2C3D62;
     font-size: 14px;
     font-weight: 600;
 }
@@ -77,7 +78,12 @@ a.add-custom-field:focus{
     display: inline-block;
     float: right;
     height: 60px;
-    width: 130px;
+    background: white;
+    /*border-left: 1px solid #e4e4e4;*/
+    /*padding: 0 0 0 4px;*/
+    width: 200px;
+    border-bottom-right-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 .formlift-field-header-options .formlift-header-select{
@@ -87,13 +93,20 @@ a.add-custom-field:focus{
     margin: 0;
     background-color: rgba( 0, 0, 0, 0);
     border: none;
-    color: white;
+    color: #2C3D62;
     cursor: pointer;
     box-shadow: none;
+    -moz-appearance: none;
+    -webkit-appearance: none;
+    width: 46px;
+    text-align: center;
+    text-align-last:center;
 }
 
-.formlift-header-select:focus{
-    background-color: #35afe6;
+.formlift-header-option{
+    display: inline-block;
+    padding: 0 5px 0 5px;
+    border-left: 1px solid #e4e4e4;
 }
 
 .formlift-header-button{
@@ -103,14 +116,10 @@ a.add-custom-field:focus{
     text-decoration: none;
     background: none;
     display: inline-block;
-    color: white;
+    color: #2C3D62;
     border: none;
     height: 60px;
     cursor: pointer;
-}
-
-.formlift-header-button:hover{
-    color:#F1F1F1;
 }
 
 .formlift-form-builder-content{
@@ -124,11 +133,11 @@ a.add-custom-field:focus{
 
 .formlift-option-container{
     padding: 5px;
-    background: #F1F1F1;
+    /*background: #F1F1F1;*/
     width: 100%;
     box-sizing: border-box;
     display: inline-block;
-    margin: 5px 0px 20px 0px;
+    /*margin: 5px 0px 20px 0px;*/
 }
 
 .formlift-option-editor{
@@ -136,10 +145,12 @@ a.add-custom-field:focus{
     height: auto;
     box-sizing: border-box;
     display: block;
-    margin: 5px 0 5px 0;
-    padding: 4px;
+    margin-bottom: 15px;
+    padding: 7px;
+    border-radius: 2px;
+    box-shadow: 0 0 3px #919191;
     cursor: default;
-    background: #ffffff;
+    background: #f1f1f1;
 }
 
 .formlift-option-editor input{
@@ -156,9 +167,18 @@ a.add-custom-field:focus{
 }
 
 .formlift-option-icon{
-    padding:0 10px 0 10px;
+    padding: 0 8px;
     cursor: pointer;
     vertical-align: text-bottom;
+}
+
+
+.formlift-delete-field{
+    color: #FF5757;
+}
+
+.formlift_trigger_popup{
+    color:#66B5CE;
 }
 
 .formlift-option-icon:hover{
@@ -169,7 +189,7 @@ a.add-custom-field:focus{
     cursor: move !important;
 }
 
-.formlift-handle{
+.formlift-handle {
     display: inline-block;
     border:none;
     background: none;
@@ -221,10 +241,6 @@ a.add-custom-field:focus{
 #formlift_form_settings .formlift-settings-page{
     border: none;
     margin: 0;
-}
-
-#formlift_form_settings .formlift-nav{
-    height: 500px;
 }
 
 /* ==== editor ==== */

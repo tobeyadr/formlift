@@ -3,7 +3,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 if ( ! interface_exists('FormLift_Field_Interface') ){
-	include_once dirname( __FILE__ ) . '/../lib/field-interface.php';
+	include_once __DIR__ . '/../lib/field-interface.php';
 }
 /**
  * Created by PhpStorm.
@@ -61,8 +61,10 @@ class FormLift_Field implements FormLift_Field_Interface
         
         global $FormLiftUser;
 
-        if (isset($options['auto_fill']))
-            $this->value = ( $FormLiftUser->get_user_data( $this->name ) )?$FormLiftUser->get_user_data( $this->name ):$this->value ;
+        if (isset($options['auto_fill'])) {
+	        $this->value = $FormLiftUser->get_user_data( $this->name, $this->value );
+	        $this->auto_fill = true;
+        }
 
         if (isset($options['required']))
             $this->required = true;
@@ -111,9 +113,39 @@ class FormLift_Field implements FormLift_Field_Interface
             return $this->id;
     }
 
+    /**
+     * Add functionality for URL Request params mapping.
+     *
+     * @return string
+     */
     public function getValue()
     {
-    	return $this->value;
+        return preg_replace_callback( "/{([^{}]+)}/s", array( $this, 'do_replacement' ), $this->value );
+    }
+
+    /**
+     * Get URL param given the param from regexp
+     *
+     * @param $m
+     * @return string
+     */
+    public function do_replacement( $m )
+    {
+        global $FormLiftUser;
+
+        $code = $m[1];
+
+        $return = '';
+
+        if ( $FormLiftUser->getData( $code, '' )){
+            $return = $FormLiftUser->getData( $code, '' );
+        }
+
+        if ( isset( $_REQUEST[ $code ] ) ){
+            $return = sanitize_text_field( stripslashes( $_REQUEST[ $code ] ) );
+        }
+
+        return $return;
     }
 
     public function getSize()
@@ -241,9 +273,15 @@ class FormLift_Field implements FormLift_Field_Interface
 
 	public function GDPR()
     {
-	    $checkbox = "<input type=\"checkbox\" name=\"{$this->getName()}\" id=\"{$this->getUniqueId()}-special\" class=\"formlift_is_checkbox\" value=\"I Consent\"/>";
-	    $label = "<label class=\"formlift_label formlift_radio_label_container\" for=\"{$this->getUniqueId()}-special\"> {$this->getLabel()} $checkbox <span class=\"formlift_checkbox formlift_check_style\"></span></label>";
-	    return "<div id=\"{$this->getUniqueId()}\">$label</div>";
+        $location = ip_info( NULL );
+
+        if ( ( isset( $this->advanced_options['eu_only'] ) && $location['continent_code'] == 'EU') || !  isset( $this->advanced_options['eu_only'] ) ) {
+            $checkbox = "<input type=\"checkbox\" name=\"{$this->getName()}\" id=\"{$this->getUniqueId()}-special\" class=\"formlift_is_checkbox\" value=\"{$this->getValue()}\"/>";
+            $label = "<label class=\"formlift_label formlift_radio_label_container\" for=\"{$this->getUniqueId()}-special\"> {$this->getLabel()} $checkbox <span class=\"formlift_checkbox formlift_check_style\"></span></label>";
+            return "<div id=\"{$this->getUniqueId()}\">$label</div>";
+        } else {
+            return '';
+        }
     }
 
 	public function date()
@@ -254,10 +292,12 @@ class FormLift_Field implements FormLift_Field_Interface
 		$minDate = formlift_convert_to_time_picker_usuable( $this->date_options['min_date'] );
 		$maxDate = formlift_convert_to_time_picker_usuable( $this->date_options['max_date'] );
 
-		$placeholder = ( isset($this->placeholder ) )? "placeholder='{$this->getLabel()}: YYYY-MM-DD'" : "placeholder=\"YYYY-MM-DD\"";
+		$dateFormat = ( ! empty( $this->date_options['format'] ) )? $this->date_options['format'] : 'yy-mm-dd';
+
+		$placeholder = ( isset($this->placeholder ) )? "placeholder='{$this->getLabel()}: {$dateFormat}'" : "placeholder=\"YYYY-MM-DD\"";
 		$label = ( !isset($this->placeholder ) )? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 		$html = "$label<input class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder value=\"{$this->getValue()}\" {$this->isReadOnly()}/>";
-		$code = "<script>jQuery(document).ready(function (){ jQuery('#{$this->getUniqueId()}').datepicker({dateFormat: 'yy-mm-dd', changeMonth: $change_month, changeYear: $change_year, minDate: $minDate, maxDate: $maxDate, yearRange: '-100:+100'});});</script>";
+		$code = "<script>jQuery(document).ready(function (){ jQuery('#{$this->getUniqueId()}').datepicker({dateFormat: '{$dateFormat}', changeMonth: {$change_month}, changeYear: {$change_year}, minDate: {$minDate}, maxDate: {$maxDate}, yearRange: '-100:+100' } ); } );</script>";
 
 		return $code.$html;
 
@@ -360,7 +400,18 @@ class FormLift_Field implements FormLift_Field_Interface
 
 	public function button()
     {
-        return "<div  id=\"{$this->getUniqueId()}\" class=\"formlift_button_container\"><button class=\"formlift_button\" type=\"submit\"/>{$this->getLabel()}</button></div>";
+        $content = "<div  id=\"{$this->getUniqueId()}\" class=\"formlift_button_container\">";
+        $content.= "<button class=\"formlift_button\" type=\"submit\">";
+        $content.= "{$this->getLabel()}";
+
+        //Add credit
+        if ( ! get_formlift_setting('disable_credit', false ) )
+            $content.= formlift_credit();
+
+        $content.= "</button>";
+        $content.="</div>";
+
+        return $content;
     }
 
 	public function custom()
@@ -385,7 +436,7 @@ class FormLift_Field implements FormLift_Field_Interface
 	public function __toString()
     {
         if ($this->getType() == 'hidden')
-            return call_user_func( array( $this, $this->getType() ) );
+            $content = call_user_func( array( $this, $this->getType() ) );
         else {
             if ( method_exists( $this, $this->getType() ) ){
                 $content = call_user_func( array( $this, $this->getType() ) );
@@ -395,8 +446,10 @@ class FormLift_Field implements FormLift_Field_Interface
 
             $content = apply_filters( 'formlift_field_inner_contents', $content, $this );
 
-            return "<div class=\"formlift_field {$this->getFieldWidthClass()} {$this->getAdditionalClasses()}\">{$content}{$this->error_code()}</div>";
+	        $content = do_shortcode( "<div class=\"formlift_field {$this->getFieldWidthClass()} {$this->getAdditionalClasses()}\">{$content}{$this->error_code()}</div>" );
         }
+
+        return do_shortcode( $content );
     }
 
     private function getFieldWidthClass()
@@ -411,7 +464,7 @@ class FormLift_Field implements FormLift_Field_Interface
 		    case '2/3':
 			    return 'formlift-col formlift-span_2_of_3';
 			    break;
-		    case '1/4':
+            case '1/4':
 			    return 'formlift-col formlift-span_1_of_4';
 			    break;
 		    case '3/4':

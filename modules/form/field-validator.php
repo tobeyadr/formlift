@@ -21,8 +21,10 @@ class FormLift_Validator implements FormLift_Field_Interface
 	var $value;
 	var $options;
 	var $required = false;
+	var $date_options;
 	var $formId;
 	var $message;
+	var $advanced_options;
 	var $loose = false;
 
 	function __construct( $options, $formId )
@@ -38,6 +40,9 @@ class FormLift_Validator implements FormLift_Field_Interface
 		if (isset($options['options']))
 			$this->options = $options['options'];
 
+		if (isset($options['date_options']))
+			$this->options = $options['date_options'];
+
 		if (isset($options['value']))
 			$this->value = $options['value'];
 
@@ -46,6 +51,9 @@ class FormLift_Validator implements FormLift_Field_Interface
 
 		if (isset($options['is_loose']))
 			$this->loose = $options['is_loose'];
+
+        if (isset($options['advanced_options']))
+            $this->advanced_options = $options['advanced_options'];
 
 		$this->formId = $formId;
 	}
@@ -149,7 +157,7 @@ class FormLift_Validator implements FormLift_Field_Interface
 	{
 		if ( $this->dataExists() ){
 
-			if (  ! preg_match("/^[a-zA-Z'\- ]*$/", $this->getData() ) ) {
+			if (  ! preg_match("/^[A-zÀ-ú'\- ]*$/", $this->getData() ) ) {
 				return $this->setErrorMessage('invalid_data_error');
 			} else {
 				return true;
@@ -234,7 +242,7 @@ class FormLift_Validator implements FormLift_Field_Interface
 
 	public function radio()
 	{
-		if ( ( $this->dataExists() || $this->getData() === 0 ) && $this->isStrict() ){
+		if ( ( $this->dataExists() || intval( $this->getData() ) === 0 ) && $this->isStrict() ){
 
 			$found = false;
 
@@ -262,9 +270,9 @@ class FormLift_Validator implements FormLift_Field_Interface
 	{
 		if ( $this->dataExists() ){
 
-			$d = DateTime::createFromFormat('Y-m-d', $this->getData() );
+			$d = DateTime::createFromFormat( $this->date_options['format'], $this->getData() );
 
-			if ( $d && $d->format('Y-m-d') !== $this->getData() ) {
+			if ( $d && $d->format( $this->date_options['format'] ) !== $this->getData() ) {
 				return $this->setErrorMessage('date_error');
 			} else {
 				return true;
@@ -301,20 +309,24 @@ class FormLift_Validator implements FormLift_Field_Interface
 
 	public function GDPR()
 	{
-		if ( $this->dataExists() ){
+        if ( $this->dataExists() ){
+            if ( $this->getData() !== $this->getValue() ) {
+                return $this->setErrorMessage('invalid_data_error');
+            } else {
+                return true;
+            }
 
-			if ( $this->getData() !== "I Consent" ) {
-				return $this->setErrorMessage('invalid_data_error');
-			} else {
-				return true;
-			}
-
-		} else if ( $this->isRequired() ){
-			return $this->setErrorMessage( 'required_error' );
-		} else {
-			return true;
-		}
-	}
+        } else if ( $this->isRequired() ){
+            $location = ip_info();
+            if ( ( isset( $this->advanced_options['eu_only'] ) && $location['continent_code'] == 'EU') || !  isset( $this->advanced_options['eu_only'] ) ){
+                return $this->setErrorMessage( 'required_error' );
+            } else {
+                return true;
+            }
+        } else {
+            return true;
+        }
+    }
 
 	public function custom()
 	{
@@ -429,16 +441,15 @@ class FormLift_Validator implements FormLift_Field_Interface
 			$valid = $this->template();
 		}
 
+        $additionalErrors = array();
 		/* bit of a hack but hey whatever */
-		if( has_filter('formlift_extra_custom_validation' ) )
-			$additionalCheck = apply_filters( 'formlift_extra_custom_validation', $this );
-		else
-			$additionalCheck = true;
+        if( has_filter('formlift_extra_custom_validation' ) )
+            $additionalErrors = apply_filters( 'formlift_extra_custom_validation', $additionalErrors, $this );
 
 		if ( $valid !== true ){
 			return new WP_Error( '1', $valid );
-		} else if ( $additionalCheck !== true ) {
-			return new WP_Error( '1', $additionalCheck );
+		} else if ( ! empty( $additionalErrors ) ) {
+			return new WP_Error( '1', array_pop( $additionalErrors ) );
 		} else {
 			return $valid;
 		}

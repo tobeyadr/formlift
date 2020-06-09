@@ -25,11 +25,3 @@
     /* padding: 20px; */
     box-sizing: border-box;
 }
-
-.formlift-license-form div{
-    display: inline-block;
-    box-sizing: border-box;
-    padding: 10px;
-    vertical-align: top;
-    max-width: 500px;
-}

@@ -3,7 +3,7 @@
 if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
 
 if ( ! interface_exists('FormLift_Field_Interface') ){
-	include_once dirname( __FILE__ ) . '/../lib/field-interface.php';
+	include_once __DIR__ . '/../lib/field-interface.php';
 }
 
 class FormLift_Field_Editor implements FormLift_Field_Interface
@@ -26,10 +26,13 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
     var $classes;
     var $loose;
     var $advanced_options = array();
+    //var $display_field;
 
     function __construct( $options )
     {
         $this->option_key = FORMLIFT_FIELDS;
+
+        //$this->display_field = new FormLift_Field( $options, get_the_ID() );
 
         if (isset($options['name']))
             $this->name = $options['name'];
@@ -250,6 +253,14 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $content.= $this->get_label_field();
         $content.= $this->get_value_field();
 
+	    $dateFormat = (!empty( $this->date_options['format'] ) )? $this->date_options['format'] : 'yy-mm-dd';
+
+	    $content.= $this->wrap_row(
+		    $this->wrap_label_cell("<label for=\"{$this->id}-format\">Date Format</label>").
+		    $this->wrap_input_cell("<input id=\"{$this->id}-format\" placeholder=\"yy-mm-dd\" type=\"text\" name=\"{$this->option_key}[{$this->id}][date_options][format]\" value=\"{$dateFormat}\"/>")
+            ."<p><a target='_blank' href='http://api.jqueryui.com/datepicker/#utility-formatDate'>See list of valid date formats.</a></p>"
+	    );
+
         $content.= $this->wrap_row(
             $this->wrap_label_cell("<label for=\"{$this->id}-min-date\">Min Date</label>").
             $this->wrap_input_cell("<input id=\"{$this->id}-min-date\" placeholder=\"YYYY-MM-DD or # DAYS\" type=\"text\" name=\"{$this->option_key}[{$this->id}][date_options][min_date]\" value=\"{$this->date_options['min_date']}\"/>")
@@ -324,7 +335,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $content.= $this->get_required_field();
         $content.= $this->get_loose_validation_field();
         $content.= $this->get_custom_class_field();
-	    $content.= $option_container;
+	    $content.= self::wrap_row($option_container);
 	    $content.= $this->get_advanced_field_options();
 
 	    return $content;
@@ -337,11 +348,11 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $uniqueId = uniqid( 'option_' );
 
         if (empty($this->options)){
-            $row = "<div class=\"formlift-option-editor\" id=\"option_0-$this->id\" data-field-id=\"$this->id\">";
-            $row.= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_0][label]\" value=\"\">";
-            $row.= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_0][value]\" value=\"\">";
-            $row.= "<input type=\"radio\" name=\"{$this->option_key}[{$this->id}][pre_checked]\" value=\"option_0\">Selected";
-            $row.= "<input type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][options][option_0][disabled]\" value=\"1\">Disabled";
+            $row = "<div class=\"formlift-option-editor\" id=\"$uniqueId-$this->id\" data-field-id=\"$this->id\">";
+            $row.= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$uniqueId][label]\" value=\"\">";
+            $row.= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$uniqueId][value]\" value=\"\">";
+            $row.= "<input type=\"radio\" name=\"{$this->option_key}[{$this->id}][pre_checked]\" value=\"$uniqueId\">Selected";
+            $row.= "<input type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][options][$uniqueId][disabled]\" value=\"1\">Disabled";
             $row.= "<span class=\"dashicons dashicons-plus formlift-option-add formlift-option-icon\"></span><span class=\"dashicons dashicons-trash formlift-option-icon formlift-option-delete\"></span><span class=\"dashicons dashicons-move formlift-move-icon formlift-option-icon\"></span>";
             $row.= "</div>";
             $option_container.= $row;
@@ -375,7 +386,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
 	    $content.= $this->get_loose_validation_field();
 	    $content.= $this->get_readonly_field();
 	    $content.= $this->get_custom_class_field();
-	    $content.= $option_container;
+        $content.= self::wrap_row($option_container);
 	    $content.= $this->get_advanced_field_options();
 
 	    return $content;
@@ -385,13 +396,14 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
     {
         $option_container = "<div class=\"formlift-option-container formlift-sortable-fields\">";
         $i = 0;
+        $uniqueId = uniqid( 'option_' );
 
         if (empty($this->options)){
-            $row = "<div class=\"formlift-option-editor\" id=\"option_0-$this->id\" data-field-id=\"$this->id\">";
-            $row.= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_0][label]\" value=\"\">";
-            $row.= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_0][value]\" value=\"\">";
-            $row.= "<input type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][options][option_0][pre_checked]\" value=\"1\">Selected";
-            $row.= "<input type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][options][option_0][disabled]\" value=\"1\">Disabled";
+            $row = "<div class=\"formlift-option-editor\" id=\"$uniqueId-$this->id\" data-field-id=\"$this->id\">";
+            $row.= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$uniqueId][label]\" value=\"\">";
+            $row.= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$uniqueId][value]\" value=\"\">";
+            $row.= "<input type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][options][$uniqueId][pre_checked]\" value=\"1\">Selected";
+            $row.= "<input type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][options][$uniqueId][disabled]\" value=\"1\">Disabled";
             $row.= "<span class=\"dashicons dashicons-plus formlift-option-add formlift-option-icon\"></span><span class=\"dashicons dashicons-trash formlift-option-icon formlift-option-delete\"></span><span class=\"dashicons dashicons-move formlift-move-icon formlift-option-icon\"></span>";
             $row.= "</div>";
             $option_container.= $row;
@@ -425,7 +437,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
 	    $content.= $this->get_loose_validation_field();
 	    $content.= $this->get_readonly_field();
         $content.= $this->get_custom_class_field();;
-	    $content.= $option_container;
+        $content.= self::wrap_row($option_container);
 	    $content.= $this->get_advanced_field_options();
 
 	    return $content;
@@ -461,9 +473,16 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $content.= self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($input));
 
         $label = "<label for=\"{$this->id}-value\">Compliance Value:</label>";
-        $input = "<input id=\"{$this->id}-value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][value]\" value=\"I Consent\" readonly/>";
+
+        $value = ( $this->getValue() )? $this->value : 'I Consent';
+        $input = "<input id=\"{$this->id}-value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][value]\" value=\"{$value}\"/>";
 
         $content.= self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($input));
+
+        $label = "<label for=\"{$this->id}-eu_only\">Show this field only if the contact is in the EU.</label>";
+        $checked = (isset($this->advanced_options['eu_only']))? "checked" : "";
+        $input = "<label class=\"switch\"><input id=\"{$this->id}-eu_only\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][advanced_options][eu_only]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
+        $content.= $this::wrap_row( $this::wrap_label_cell($label) . $this::wrap_input_cell( $input ) );
 
         $content.= $this->get_required_field();
         $content.= $this->get_custom_class_field();
@@ -476,7 +495,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
     {
         $content = $this->get_type_field();
         $content.= $this->get_id_field();
-        $content.="<textarea id=\"{$this->id}-editor-formlift\" data-editorconvert='true' class='wp-editor' name=\"{$this->option_key}[{$this->id}][value]\" style=\"width: 100%\" rows=\"15\" placeholder=\"Supports HTML and Shortcodes\">$this->value</textarea>";
+        $content.= self::wrap_row("<textarea id=\"{$this->id}-editor-formlift\" data-editorconvert='true' class='wp-editor' name=\"{$this->option_key}[{$this->id}][value]\" style=\"width: 100%\" rows=\"15\" placeholder=\"Supports HTML and Shortcodes\">$this->value</textarea>" );
         return $content;
     }
 
@@ -495,29 +514,27 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
      */
     public function __toString()
     {
+        $label = strip_tags( $this->getLabel() );
+
+        if (strlen($label) > 50){
+            $label = substr($label, 0, 50) . "...";
+        }
+
+        $title = get_formlift_field_type_name( $this->getType() ) . ": " . $label;
         //container 0
         $field = "<div class=\"{$this->get_size()}\" id=\"field-box-$this->id\"><div class=\"formlift-field-box\">";
-        //display input
-        //$field .= "<input type=\"hidden\" id=\"{$this->id}-display\" name=\"{$this->option_key}[$this->id][display]\" value=\"$this->display\">";
         //header container 1
         $field .= "<div class=\"formlift-field-header\">";
         //label container 2
-        $field .= "<div class=\"formlift-field-box-heading\">";
+        $field .= "<div class=\"formlift-field-box-heading\" title='{$title}'>";
         //label
-
-        $title = html_entity_decode($this->getLabel());
-
-        if (strlen($title) > 50){
-            $title = substr($title, 0, 50) . "...";
-        }
-
-        $title = get_formlift_field_type_name( $this->getType() ) . ": " . $title;
         $field.= "<span class=\"formlift-heading-text\">$title</span>";
         //end label container 2
         $field.= "</div>";
         //options container 3d
         $field.= "<div class=\"formlift-field-header-options\">";
         //field size button
+        $field.= "<div class='formlift-header-option'>";
         $field.= "<select class=\"formlift-header-select formlift-switch-width\" data-change-id=\"field-box-$this->id\" id=\"{$this->id}-size-option\" name=\"{$this->option_key}[$this->id][size]\">";
         $options = array(
             '1/1',
@@ -534,10 +551,22 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
                 $field.= "<option value=\"$value\">$value</option>";
         }
         $field.= "</select>";
+        $field.= "</div>";
         //move button
-        $field.= "<a title=\"{$title}\" href=\"#source_id={$this->id}-content\" class=\"formlift_trigger_popup formlift-header-button\" ><span class=\"dashicons dashicons-edit\"></span></a>";
+        $field.= "<div class='formlift-header-option'>";
+        $field.= "<a title=\"Edit: {$label}\" href=\"#source_id={$this->id}-content\" class=\"formlift_trigger_popup formlift-header-button\" ><span class=\"dashicons dashicons-edit\"></span></a>";
+        $field.= "</div>";
+
+        //add field
+        $field.= "<div class='formlift-header-option'>";
+        $field.= "<a title=\"Add Custom Field\" href=\"#source_id=custom-field-options\" class=\"add_custom_field formlift_trigger_popup formlift-header-button\" ><span class=\"dashicons dashicons-plus\"></span></a>";
+        $field.= "</div>";
+
         //delete button
+        $field.= "<div class='formlift-header-option'>";
         $field.= "<a href=\"javascript:void(0)\" class=\"formlift-header-button\" id=\"{$this->id}-delete\"><span class=\"dashicons dashicons-trash formlift-delete-field\" data-delete-id=\"field-box-$this->id\"></span></a>";
+        $field.= "</div>";
+
         //end options container 3
         $field.= "</div>";
         //end header container 1
@@ -580,8 +609,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         //$readonly = (isset($this->name))? 'readonly':'';
 //        $input = "<input placeholder=\"required\" id=\"{$this->id}-name\" type=\"text\" name=\"{$this->option_key}[{$this->id}][name]\" value=\"$this->name\" {$readonly} required/>";
         $input = "<input placeholder=\"required\" id=\"{$this->id}-name\" type=\"text\" name=\"{$this->option_key}[{$this->id}][name]\" value=\"$this->name\" required/>";
-
-        return self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($input));
+		$content = self::wrap_label_cell($label).self::wrap_input_cell($input);
+		$content.= "<p>The <b>Name</b> field is used to distinguish if the field should be autopopulated with certain data if auto population is enabled. It is also what matches this field to the field in Infusionsoft and should not be changed.</p>";
+        return self::wrap_row($content);
     }
 
     public function get_id_field()
@@ -590,7 +620,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $readonly = (isset($this->id))? 'readonly':'';
         $input = "<input id=\"{$this->id}-id\" type=\"text\" name=\"{$this->option_key}[{$this->id}][id]\" value=\"$this->id\" {$readonly} required/>";
 
-        return self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($input));
+	    $content = self::wrap_label_cell($label).self::wrap_input_cell($input);
+	    $content.= "<p>The <b>Id</b> field is used to match fields during form syncing. Should not be changed.</p>";
+	    return self::wrap_row($content);
     }
 
     public function get_type_field()
@@ -611,7 +643,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
             $select.="</optgroup>";
         }
         $select.= "</select>";
-        return self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($select));
+	    $content = self::wrap_label_cell($label).self::wrap_input_cell($select);
+	    $content.= "<p>The <b>Type</b> is used to switch the field to another field type while maintaining the fields properties such as Name, Id, Options, and rules.</p>";
+	    return self::wrap_row($content);
     }
 
     public function get_value_field()
@@ -619,7 +653,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $label = "<label for=\"{$this->id}-value\">Set A Default Value</label>";
         $input = "<input id=\"{$this->id}-value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][value]\" value=\"$this->value\"/>";
 
-        return self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($input));
+	    $content = self::wrap_label_cell($label).self::wrap_input_cell($input);
+	    $content.= "<p>You may enter a default value here. If auto population is enabled for this field, and data exists to perform the auto-population, then the default value will be overwritten.<p>";
+	    return self::wrap_row($content);
     }
 
     public function get_label_field()
@@ -627,17 +663,18 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $label = "<label for=\"{$this->id}-label\">Field Label</label>";
         $input = "<textarea id=\"{$this->id}-label\" name=\"{$this->option_key}[{$this->id}][label]\" cols='40'>$this->label</textarea>";
 
-        return self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($input));
-    }
+	    $content = self::wrap_label_cell($label).self::wrap_input_cell($input);
+	    $content.= "<p>The label appears above the field with the given text, or if you have <b>label as placeholder</b> enabled it will appear as placeholder text within the field.<p>";
+	    return self::wrap_row($content);    }
 
     public function get_custom_class_field()
     {
         $label = "<label for=\"{$this->id}-classes\">Add Custom CSS Classes</label>";
         $input = "<input id=\"{$this->id}-classes\" type=\"text\" name=\"{$this->option_key}[{$this->id}][classes]\" value=\"$this->classes\"/>";
-        $content = self::wrap_row(self::wrap_label_cell($label).self::wrap_input_cell($input));
+        $content = self::wrap_label_cell($label).self::wrap_input_cell($input);
         $content.= "<p>The classes get added to the <b>field container</b> rather than the input area itself. That way you can specify special classes for the fields and labels within easier.</p>";
 
-        return $content;
+        return self::wrap_row($content);
     }
 
     public function get_readonly_field()
@@ -646,8 +683,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $checked = (isset($this->readonly))? "checked" : "";
         $input = "<label class=\"switch\"><input id=\"{$this->id}-readonly\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][readonly]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
-        return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
-
+	    $content = self::wrap_label_cell($label).self::wrap_input_cell($input);
+	    $content.= "<p>If you do not want to allow users to edit the contents of this field then you may set it to readonly.<p>";
+	    return self::wrap_row($content);
     }
 
 	public function get_loose_validation_field()
@@ -656,8 +694,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
 		$checked = (isset($this->loose))? "checked" : "";
 		$input = "<label class=\"switch\"><input id=\"{$this->id}-loose\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][is_loose]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
-		return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
-
+		$content = self::wrap_label_cell($label).self::wrap_input_cell($input);
+		$content.= "<p>This will allow you to have multiple radio options of the same with the same <b>Field Name</b> and still pass validation if at least one of them is selected. This will not be relevant to you in most cases and is for advanced customization.<p>";
+		return self::wrap_row($content);
 	}
 
     public function get_placeholder_field()
@@ -667,8 +706,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
 
         $input = "<label class=\"switch\"><input id=\"{$this->id}-placeholder\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][placeholder]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
-        return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
-    }
+	    $content = self::wrap_label_cell($label).self::wrap_input_cell($input);
+	    $content.= "<p>This will remove the label from above the field, and use the label text as placeholder text within the field for a clean look.<p>";
+	    return self::wrap_row($content);    }
 
     public function get_required_field()
     {
@@ -677,8 +717,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
 
         $input = "<label class=\"switch\"><input id=\"{$this->id}-required\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][required]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
-        return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
-    }
+	    $content = self::wrap_label_cell($label).self::wrap_input_cell($input);
+	    $content.= "<p>This will make the field required.<p>";
+	    return self::wrap_row($content);    }
 
     public function get_pre_checked_field()
     {
@@ -686,8 +727,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $checked = (isset($this->pre_checked))? "checked" : "";
         $input = "<label class=\"switch\"><input id=\"{$this->id}-pre_checked\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][pre_checked]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
-        return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
-    }
+	    $content = self::wrap_label_cell($label).self::wrap_input_cell($input);
+	    $content.= "<p>This will pre-check the field. Users will still be able to uncheck it.<p>";
+	    return self::wrap_row($content);    }
 
     public function get_auto_fill_field()
     {
@@ -695,8 +737,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface
         $checked = (isset($this->auto_fill))? "checked" : "";
         $input = "<label class=\"switch\"><input id=\"{$this->id}-auto\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][auto_fill]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
 
-        return self::wrap_row( self::wrap_label_cell($label) . self::wrap_input_cell( $input ) );
-    }
+	    $content = self::wrap_label_cell($label).self::wrap_input_cell($input);
+	    $content.= "<p>This will allow the field to auto-populate with user data if it previously exists or is passed to the page via email. Any default value set will be overwritten if auto-populated data exists.<p>";
+	    return self::wrap_row($content);    }
 
     public function get_advanced_field_options(){
         $content = "";
