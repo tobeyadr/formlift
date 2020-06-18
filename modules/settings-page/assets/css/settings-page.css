@@ -167,11 +167,13 @@ input:checked + .formlift-slider:before {
 .options-container{
     /*float: left;*/
     width: 800px;
+    margin-top: 20px;
 }
 
 .right-bar{
     float: right;
-    width: 250px
+    width: 250px;
+    margin-top: 20px;
 }
 
 .right-bar img{

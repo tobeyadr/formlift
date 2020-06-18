@@ -19,7 +19,7 @@ class FormLift_Infusionsoft_Manager {
 
 	public static function connect() {
 		if ( isset( $_POST[ FORMLIFT_SETTINGS ]['activate_OAuth'] ) ) {
-			$pass = wp_generate_password( 8, false );
+			$pass = wp_generate_password( 8, false, false );
 
 			set_transient( 'formlift_auth_pass', $pass, 60 * 5 );
 
@@ -49,14 +49,19 @@ class FormLift_Infusionsoft_Manager {
 
 			if ( empty( $pass ) ) {
 				wp_die( 'Could not verify server authorization for ' . site_url() . '. Please Try Again.' );
-			} elseif ( $pass != base64_decode( $_REQUEST['OauthClientPass'] ) ) {
+			} elseif ( $pass != $_REQUEST['OauthClientPass'] ) {
 				wp_die( 'Incorrect password. Please try again...' );
 			}
 
-			static::$app = new FormLift_App( base64_decode( $_REQUEST['appDomain'] ) );
-			static::$app->updateAndSaveTokens( base64_decode( $_REQUEST['access_token'] ), base64_decode( $_REQUEST['refresh_token'] ), base64_decode( $_REQUEST['expires_in'] ) );
+			$app_domain    = sanitize_text_field( $_REQUEST['appDomain'] );
+			$access_token  = sanitize_text_field( $_REQUEST['access_token'] );
+			$refresh_token = sanitize_text_field( $_REQUEST['refresh_token'] );
+			$expires_in    = sanitize_text_field( $_REQUEST['expires_in'] );
 
-			update_option( 'Oauth_App_Domain', base64_decode( $_REQUEST['appDomain'] ) );
+			static::$app = new FormLift_App( $app_domain );
+			static::$app->updateAndSaveTokens( $access_token, $refresh_token, $expires_in );
+
+			update_option( 'Oauth_App_Domain', $app_domain );
 
 			update_option( 'oauth_last_status', 'Authorized token at ' . date( 'Y/m/d H:i:s' ) . ' for app ' . static::$app->getHostname() );
 
@@ -70,14 +75,15 @@ class FormLift_Infusionsoft_Manager {
 
 			delete_transient( 'formlift_auth_pass' );
 
-			wp_redirect( get_site_url( null, '/wp-admin/edit.php?post_type=infusion_form&page=formlift_settings_page' ) );
+			wp_safe_redirect( admin_url( '/edit.php?post_type=infusion_form&page=formlift_settings_page' ) );
 			die();
 		}
 	}
 
 	public static function refreshTokens( $token ) {
+
 		$params = array(
-			'OauthToken'   => base64_encode( $token ),
+			'OauthToken'   => $token,
 			'OauthRefresh' => 'refresh_token',
 			'sourceURI'    => get_site_url(),
 		);
@@ -97,6 +103,7 @@ class FormLift_Infusionsoft_Manager {
 		$decodedResponse = json_decode( $response['body'], true );
 
 		if ( isset( $decodedResponse['error'] ) ) {
+
 			FormLift_Notice_Manager::add_notice( 'oauth_error', array(
 				'is_dismissable' => true,
 				'is_premium'     => 'both',

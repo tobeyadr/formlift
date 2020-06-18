@@ -160,7 +160,7 @@ class FormLift_App {
 
 		$this->accessToken  = $accessToken;
 		$this->refreshToken = $refreshToken;
-		$this->$expiresIn   = time() + $expiresIn;
+		$this->expiresIn    = time() + $expiresIn;
 	}
 
 	public function deleteTokens() {
