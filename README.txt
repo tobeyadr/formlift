@@ -143,6 +143,9 @@ Infusionsoft or whichever CRM you use with FormLift is the primary holder of Inf
 
 == Changelog ==
 
+= 7.5.14.2 =
+* FIXED issue with FormLift personalization codes.
+
 = 7.5.14 =
 * TWEAKED Updated Groundhogg ad in settings page
 * FIXED installation errors showed because of missing DB error

@@ -19,7 +19,7 @@ class FormLift_User {
 	static $instance;
 
 	function __construct() {
-		add_action( 'init', [ $this, 'init' ] );
+		add_action( 'plugins_loaded', [ $this, 'init' ], 2 );
 	}
 
 	function init(){
