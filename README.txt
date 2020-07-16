@@ -141,10 +141,14 @@ FormLift is NOT HIPAA compliant by default. You can make FormLift HIPAA complian
 = Infusionsoft or other CRMs =
 Infusionsoft or whichever CRM you use with FormLift is the primary holder of Information collected with FormLift. To ensure you are compliant in regard to the storage of information, please consult them if it's beyond the scope of the above.
 
+== Upgrade Notice ==
+Due to a bug in a previous version FormLift may not successfully update in which case you will have to delete FormLift via FTP and then re-install. Your data and forms will not be affected.
+
 == Changelog ==
 
-= 7.5.14.2 =
+= 7.5.14.3 =
 * FIXED issue with FormLift personalization codes.
+* FIXED issue causing failed update of the core plugin.
 
 = 7.5.14 =
 * TWEAKED Updated Groundhogg ad in settings page
