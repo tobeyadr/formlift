@@ -84,7 +84,7 @@ class FormLift_Options_Skin {
 
 /**
  * @param $tab_name string
- * @param $form FormLift_Form
+ * @param $form     FormLift_Form
  *
  * @return string
  */

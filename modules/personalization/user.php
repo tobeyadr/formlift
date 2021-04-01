@@ -22,7 +22,7 @@ class FormLift_User {
 		add_action( 'plugins_loaded', [ $this, 'init' ], 2 );
 	}
 
-	function init(){
+	function init() {
 		//Do not create a session if the person is a bot.
 		if ( isset( $_SERVER['HTTP_USER_AGENT'] ) && preg_match( '/bot|crawl|slurp|spider|mediapartners/i', $_SERVER['HTTP_USER_AGENT'] ) ) {
 			return;

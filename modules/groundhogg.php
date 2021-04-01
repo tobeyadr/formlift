@@ -10,7 +10,7 @@ defined( 'ABSPATH' ) || exit;
  * @since 3.36.1
  */
 class Groundhogg {
-    
+
 	/**
 	 * Constructor.
 	 *
@@ -29,7 +29,7 @@ class Groundhogg {
 	 * @return void
 	 * @since 3.36.1
 	 *
-	 * @hook wp_ajax_formlift_groundhogg_remote_install
+	 * @hook  wp_ajax_formlift_groundhogg_remote_install
 	 *
 	 */
 	public function ajax_callback_remote_install() {
@@ -49,7 +49,7 @@ class Groundhogg {
 	 */
 	public function do_remote_install() {
 
-	    $nonce = isset( $_POST[ 'nonce' ] ) ? $_POST[ 'nonce' ] : false;
+		$nonce = isset( $_POST['nonce'] ) ? $_POST['nonce'] : false;
 
 		if ( ! current_user_can( 'install_plugins' ) || ! wp_verify_nonce( $nonce, 'install_groundhogg' ) ) {
 			return array(
@@ -99,7 +99,7 @@ class Groundhogg {
 				continue;
 			}
 			$is_groundhogg_installed = true;
-			$activate              = activate_plugin( $path );
+			$activate                = activate_plugin( $path );
 			if ( is_wp_error( $activate ) ) {
 				return $activate;
 			}
@@ -155,39 +155,39 @@ class Groundhogg {
 	 */
 	public function output_js() {
 		?>
-        <script>
-            var btn = document.getElementById("groundhogg-connect");
-            btn.addEventListener("click", function (e) {
-                e.preventDefault();
-                btn.className += " loading";
-                formlift_groundhogg_remote_install();
-            });
+		<script>
+          var btn = document.getElementById('groundhogg-connect')
+          btn.addEventListener('click', function (e) {
+            e.preventDefault()
+            btn.className += ' loading'
+            formlift_groundhogg_remote_install()
+          })
 
-            /**
-             * Perform AJAX request to install SendWP plugin.
-             *
-             * @since 3.36.1
-             *
-             * @return void
-             */
-            function formlift_groundhogg_remote_install() {
+          /**
+           * Perform AJAX request to install SendWP plugin.
+           *
+           * @since 3.36.1
+           *
+           * @return void
+           */
+          function formlift_groundhogg_remote_install () {
 
-                var data = {
-                    "action": "formlift_groundhogg_remote_install",
-                    "nonce": '<?php echo wp_create_nonce( 'install_groundhogg' ); ?>'
-                };
-
-                jQuery.post(ajaxurl, data, function (res) {
-                    // Redirect to the Groundhogg guided setup
-                    window.location = res.redirect_uri;
-                }).fail(function (jqxhr) {
-                    if (jqxhr.responseJSON && jqxhr.responseJSON.message) {
-                        alert("Error: " + jqxhr.responseJSON.message);
-                        console.log(jqxhr);
-                    }
-                });
+            var data = {
+              'action': 'formlift_groundhogg_remote_install',
+              'nonce': '<?php echo wp_create_nonce( 'install_groundhogg' ); ?>'
             }
-        </script>
+
+            jQuery.post(ajaxurl, data, function (res) {
+              // Redirect to the Groundhogg guided setup
+              window.location = res.redirect_uri
+            }).fail(function (jqxhr) {
+              if (jqxhr.responseJSON && jqxhr.responseJSON.message) {
+                alert('Error: ' + jqxhr.responseJSON.message)
+                console.log(jqxhr)
+              }
+            })
+          }
+		</script>
 		<?php
 
 	}
@@ -203,7 +203,7 @@ class Groundhogg {
 	 * Ensures only one instance of the plugin class is loaded or can be loaded.
 	 *
 	 * @return Groundhogg An instance of the class.
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 * @access public
 	 * @static
 	 *
@@ -225,7 +225,7 @@ class Groundhogg {
 	 * object. Therefore, we don't want the object to be cloned.
 	 *
 	 * @access public
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __clone() {
 		// Cloning instances of the class is forbidden.
@@ -238,7 +238,7 @@ class Groundhogg {
 	 * Disable unserializing of the class.
 	 *
 	 * @access public
-	 * @since 1.0.0
+	 * @since  1.0.0
 	 */
 	public function __wakeup() {
 		// Unserializing instances of the class is forbidden.

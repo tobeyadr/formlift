@@ -146,6 +146,8 @@ Due to a bug in a previous version FormLift may not successfully update in which
 
 == Changelog ==
 
+= 7.5.15 =
+
 = 7.5.14.3 =
 * FIXED issue with FormLift personalization codes.
 * FIXED issue causing failed update of the core plugin.

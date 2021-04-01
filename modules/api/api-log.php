@@ -7,6 +7,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 /**
  * Class Log
  * A really simple logging class that writes flat data to a file.
+ *
  * @version   1.0
  * @license   MIT
  * @author    Dennis Thompson

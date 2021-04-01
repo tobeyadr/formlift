@@ -3,47 +3,47 @@
 Grid sizing done on 5% increments.
 
 */
-a.add-custom-field{
+a.add-custom-field {
     text-decoration: none;
     outline: none;
 }
 
-a.add-custom-field:focus{
+a.add-custom-field:focus {
     outline: none;
 }
 
-.custom-field-type-choice{
+.custom-field-type-choice {
     font-size: 20px;
-    padding:10px;
+    padding: 10px;
     border: 1px solid #e5e5e5;
     box-shadow: 1px 1px 3px #e5e5e5;
     margin: 5px;
     box-sizing: border-box;
-    width: calc( 33% - 10px );
+    width: calc(33% - 10px);
     display: inline-block;
     color: #2C3D62;
 }
 
-.custom-field-type-choice:hover{
+.custom-field-type-choice:hover {
     background-color: #f5f5f5;
     transition: 0.2s;
 }
 
-#infusion_meta .inside{
+#infusion_meta .inside {
     margin: 0;
     padding: 0;
 }
 
-#formlift-field-editor{
-    padding:10px;
+#formlift-field-editor {
+    padding: 10px;
 }
 
-.formlift-field-box{
+.formlift-field-box {
     box-sizing: border-box;
     height: 70px;
 }
 
-.formlift-field-header{
+.formlift-field-header {
     display: inline-block;
     width: 100%;
     background: #f1f1f1;
@@ -54,27 +54,27 @@ a.add-custom-field:focus{
     border-radius: 5px;
 }
 
-.formlift-field-header:hover{
+.formlift-field-header:hover {
     background: #f9f9f9;
     transition: 0.4s;
 }
 
-.formlift-field-box-heading{
+.formlift-field-box-heading {
     display: inline-block;
     padding: 20px 0 20px 10px;
     overflow: hidden;
     white-space: nowrap;
     box-sizing: border-box;
-    width: calc( 100% - 205px );
+    width: calc(100% - 205px);
 }
 
-.formlift-heading-text{
+.formlift-heading-text {
     color: #2C3D62;
     font-size: 14px;
     font-weight: 600;
 }
 
-.formlift-field-header-options{
+.formlift-field-header-options {
     display: inline-block;
     float: right;
     height: 60px;
@@ -86,12 +86,12 @@ a.add-custom-field:focus{
     border-top-right-radius: 5px;
 }
 
-.formlift-field-header-options .formlift-header-select{
+.formlift-field-header-options .formlift-header-select {
     height: 60px !important;
     font-weight: 500;
     vertical-align: top;
     margin: 0;
-    background-color: rgba( 0, 0, 0, 0);
+    background-color: rgba(0, 0, 0, 0);
     border: none;
     color: #2C3D62;
     cursor: pointer;
@@ -100,16 +100,16 @@ a.add-custom-field:focus{
     -webkit-appearance: none;
     width: 46px;
     text-align: center;
-    text-align-last:center;
+    text-align-last: center;
 }
 
-.formlift-header-option{
+.formlift-header-option {
     display: inline-block;
     padding: 0 5px 0 5px;
     border-left: 1px solid #e4e4e4;
 }
 
-.formlift-header-button{
+.formlift-header-button {
     vertical-align: top;
     padding: 20px 8px;
     box-sizing: border-box;
@@ -122,16 +122,16 @@ a.add-custom-field:focus{
     cursor: pointer;
 }
 
-.formlift-form-builder-content{
-    padding:20px;
+.formlift-form-builder-content {
+    padding: 20px;
 }
 
-.formlift-builder-cell{
+.formlift-builder-cell {
     color: #323232;
     font-weight: 600;
 }
 
-.formlift-option-container{
+.formlift-option-container {
     padding: 5px;
     /*background: #F1F1F1;*/
     width: 100%;
@@ -140,7 +140,7 @@ a.add-custom-field:focus{
     /*margin: 5px 0px 20px 0px;*/
 }
 
-.formlift-option-editor{
+.formlift-option-editor {
     width: 100%;
     height: auto;
     box-sizing: border-box;
@@ -153,11 +153,11 @@ a.add-custom-field:focus{
     background: #f1f1f1;
 }
 
-.formlift-option-editor input{
+.formlift-option-editor input {
     margin: 0 5px 0 5px;
 }
 
-.formlift-options-header label{
+.formlift-options-header label {
     color: #323232;
     font-weight: 600;
 }
@@ -166,23 +166,23 @@ a.add-custom-field:focus{
     display: none;
 }
 
-.formlift-option-icon{
+.formlift-option-icon {
     padding: 0 8px;
     cursor: pointer;
     vertical-align: text-bottom;
 }
 
 
-.formlift-delete-field{
+.formlift-delete-field {
     color: #FF5757;
 }
 
-.formlift_trigger_popup{
-    color:#66B5CE;
+.formlift_trigger_popup {
+    color: #66B5CE;
 }
 
-.formlift-option-icon:hover{
-    color:#318FC2;
+.formlift-option-icon:hover {
+    color: #318FC2;
 }
 
 .formlift-move-icon {
@@ -191,13 +191,13 @@ a.add-custom-field:focus{
 
 .formlift-handle {
     display: inline-block;
-    border:none;
+    border: none;
     background: none;
-    height:20px;
-    width:20px;
+    height: 20px;
+    width: 20px;
 }
 
-.formlift-handle-arrow{
+.formlift-handle-arrow {
     border: solid white;
     width: 3px;
     height: 3px;
@@ -206,16 +206,17 @@ a.add-custom-field:focus{
     padding: 3px;
 }
 
-.formlift-header-button .on{
+.formlift-header-button .on {
     transform: rotate(-135deg);
-    -webkit-transform: rotate(-135deg);}
+    -webkit-transform: rotate(-135deg);
+}
 
-.formlift-header-button .formlift-hide{
+.formlift-header-button .formlift-hide {
     transform: rotate(45deg);
     -webkit-transform: rotate(45deg);
 }
 
-.formlift-placeholder{
+.formlift-placeholder {
     background: #F1F1F1;
     border: dashed 1px #555555;
 }
@@ -233,12 +234,12 @@ a.add-custom-field:focus{
 
 /* ==== Meta Box Styling === */
 
-#formlift_form_settings .inside{
+#formlift_form_settings .inside {
     margin: 0;
     padding: 0;
 }
 
-#formlift_form_settings .formlift-settings-page{
+#formlift_form_settings .formlift-settings-page {
     border: none;
     margin: 0;
 }

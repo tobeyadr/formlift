@@ -1,6 +1,8 @@
 <?php
 
-if ( ! defined( 'ABSPATH' ) ) exit; // Exit if accessed directly
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+} // Exit if accessed directly
 
 include __DIR__ . '/api/api-log.php';
 include __DIR__ . '/api/AppV2.php';
@@ -52,6 +54,6 @@ include __DIR__ . '/tracking/tracking.php';
 
 include __DIR__ . '/groundhogg.php';
 
-if ( is_admin() ){
+if ( is_admin() ) {
 	\FormLift\Groundhogg::instance();
 }

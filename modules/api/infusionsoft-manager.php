@@ -10,7 +10,7 @@ class FormLift_Infusionsoft_Manager {
 	 */
 	static $app;
 
-	const AUTH_URI = 'https://oauth.formlift.net';
+	const AUTH_URI = 'https://formlift.net/oauth/';
 
 	public static function app_init() {
 		$hostname    = ( get_option( 'Oauth_App_Domain' ) ) ? get_option( 'Oauth_App_Domain', '' ) : get_formlift_setting( 'infusionsoft_app_name' );
@@ -24,7 +24,7 @@ class FormLift_Infusionsoft_Manager {
 			set_transient( 'formlift_auth_pass', $pass, 60 * 5 );
 
 			$params = array(
-				'redirectUri'     => get_site_url( null, '/wp-admin/edit.php?post_type=infusion_form&page=formlift_settings_page' ),
+				'redirectUri'     => admin_url( 'edit.php?post_type=infusion_form&page=formlift_settings_page' ),
 				'OauthConnect'    => true,
 				'OauthClientPass' => $pass
 			);

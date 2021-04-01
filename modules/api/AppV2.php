@@ -85,7 +85,7 @@ class FormLift_App {
 
 	/**
 	 * @param $method string
-	 * @param $args array
+	 * @param $args   array
 	 *
 	 * @return mixed
 	 */
