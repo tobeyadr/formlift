@@ -60,6 +60,8 @@ class FormLift_Notice_Manager {
 			foreach ( $notices as $notice_id => $args ) {
 				echo new FormLift_Notice( $notice_id, $args['type'], $args['html'], $args['is_dismissable'], $args['is_specific'], $args['is_premium'] );
 			}
+
+			update_option( self::$notice_option, [] );
 		}
 	}
 

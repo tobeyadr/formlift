@@ -327,6 +327,11 @@ class FormLift_Form_Builder {
 	}
 
 	public static function sanitize_fields( $fields ) {
+
+		if ( is_wp_error( $fields ) ){
+			return [];
+		}
+
 		foreach ( $fields as $fieldId => $fieldOptions ) {
 
 			$fields[ $fieldId ]['type'] = sanitize_text_field( $fieldOptions['type'] );
@@ -351,6 +356,9 @@ class FormLift_Form_Builder {
 			endif;
 			if ( isset( $fields[ $fieldId ]['placeholder'] ) ):
 				$fields[ $fieldId ]['placeholder'] = sanitize_text_field( $fieldOptions['placeholder'] );
+			endif;
+			if ( isset( $fields[ $fieldId ]['placeholder_text'] ) ):
+				$fields[ $fieldId ]['placeholder_text'] = sanitize_text_field( $fieldOptions['placeholder_text'] );
 			endif;
 			if ( isset( $fields[ $fieldId ]['required'] ) ):
 				$fields[ $fieldId ]['required'] = sanitize_text_field( $fieldOptions['required'] );

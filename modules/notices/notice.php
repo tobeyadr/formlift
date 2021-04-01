@@ -44,12 +44,10 @@ class FormLift_Notice {
 			( ( $this->premium == 'premium_only' && FormLift_Module_Manager::has_modules() ) || ( $this->premium == 'free_only' && ! FormLift_Module_Manager::has_modules() ) || $this->premium == 'both' )
 		) {
 
-			$notice = "<div id=\"{$this->id}\" class='notice {$this->type}'><div class='formlift-notice-icon-container'>
+			$dismissible = $this->dismissible ? 'is-dismissible' : '';
+			$notice = "<div id=\"{$this->id}\" class='notice {$this->type} {$dismissible}'><div class='formlift-notice-icon-container'>
 <img src='" . plugins_url( "assets/images/icon-30x30.png", __FILE__ ) . "' class='formlift-notice-icon'/></div>
 <div class='formlift-notice-text-container'>" . nl2br( $this->html ) . "</div>";
-			if ( $this->dismissible ) {
-				$notice .= "<div class='formlift-notice-footer'>{$this->get_dismiss_form()}</div> ";
-			}
 			$notice .= "</div>";
 
 			return $notice;

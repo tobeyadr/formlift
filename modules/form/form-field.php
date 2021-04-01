@@ -22,6 +22,7 @@ class FormLift_Field implements FormLift_Field_Interface {
 	var $value = '';
 	var $label;
 	var $placeholder;
+	var $placeholder_text;
 	var $options;
 	var $date_options;
 	var $required = false;
@@ -49,6 +50,9 @@ class FormLift_Field implements FormLift_Field_Interface {
 		}
 		if ( isset( $options['placeholder'] ) ) {
 			$this->placeholder = $options['placeholder'];
+		}
+		if ( isset( $options['placeholder_text'] ) ) {
+			$this->placeholder_text = $options['placeholder_text'];
 		}
 
 		/* as of 7.1 */
@@ -187,8 +191,12 @@ class FormLift_Field implements FormLift_Field_Interface {
 		return "<input type=\"hidden\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" value=\"{$this->getValue()}\" />";
 	}
 
+	public function getPlaceholder() {
+		return ( isset( $this->placeholder ) ) ? "placeholder=\"{$this->getLabel()}\"" : "placeholder=\"{$this->placeholder_text}\"";
+	}
+
 	public function text() {
-		$placeholder = ( isset( $this->placeholder ) ) ? "placeholder=\"{$this->getLabel()}\"" : '';
+		$placeholder = $this->getPlaceholder();
 		$label       = ( ! isset( $this->placeholder ) ) ? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 		$input       = "<input type=\"text\" class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder value=\"{$this->getValue()}\" {$this->isReadOnly()}/>";
 
@@ -200,7 +208,7 @@ class FormLift_Field implements FormLift_Field_Interface {
 	}
 
 	public function email() {
-		$placeholder = ( isset( $this->placeholder ) ) ? "placeholder=\"{$this->getLabel()}\"" : '';
+		$placeholder = $this->getPlaceholder();
 		$label       = ( ! isset( $this->placeholder ) ) ? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 		$input       = "<input type=\"email\" class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder value=\"{$this->getValue()}\" {$this->isReadOnly()}/>";
 
@@ -208,7 +216,7 @@ class FormLift_Field implements FormLift_Field_Interface {
 	}
 
 	public function phone() {
-		$placeholder = ( isset( $this->placeholder ) ) ? "placeholder=\"{$this->getLabel()}\"" : '';
+		$placeholder = $this->getPlaceholder();
 		$label       = ( ! isset( $this->placeholder ) ) ? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 		$input       = "<input type=\"tel\" class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder value=\"{$this->getValue()}\" {$this->isReadOnly()}/>";
 
@@ -216,7 +224,7 @@ class FormLift_Field implements FormLift_Field_Interface {
 	}
 
 	public function zip_code() {
-		$placeholder = ( isset( $this->placeholder ) ) ? "placeholder=\"{$this->getLabel()}\"" : '';
+		$placeholder = $this->getPlaceholder();
 		$label       = ( ! isset( $this->placeholder ) ) ? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 		$input       = "<input type=\"text\" class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder value=\"{$this->getValue()}\" {$this->isReadOnly()} maxlength='5'/>";
 
@@ -224,7 +232,7 @@ class FormLift_Field implements FormLift_Field_Interface {
 	}
 
 	public function postal_code() {
-		$placeholder = ( isset( $this->placeholder ) ) ? "placeholder=\"{$this->getLabel()}\"" : '';
+		$placeholder = $this->getPlaceholder();
 		$label       = ( ! isset( $this->placeholder ) ) ? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 		$input       = "<input type=\"text\" class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder value=\"{$this->getValue()}\" {$this->isReadOnly()} maxlength='7'/>";
 
@@ -232,7 +240,7 @@ class FormLift_Field implements FormLift_Field_Interface {
 	}
 
 	public function website() {
-		$placeholder = ( isset( $this->placeholder ) ) ? "placeholder=\"{$this->getLabel()}\"" : '';
+		$placeholder = $this->getPlaceholder();
 		$label       = ( ! isset( $this->placeholder ) ) ? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 		$input       = "<input type=\"website\" class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder value=\"{$this->getValue()}\" {$this->isReadOnly()} />";
 
@@ -240,7 +248,7 @@ class FormLift_Field implements FormLift_Field_Interface {
 	}
 
 	public function number() {
-		$placeholder = ( isset( $this->placeholder ) ) ? "placeholder=\"{$this->getLabel()}\"" : '';
+		$placeholder = $this->getPlaceholder();
 		$label       = ( ! isset( $this->placeholder ) ) ? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 		$input       = "<input type=\"number\" class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder value=\"{$this->getValue()}\" {$this->isReadOnly()} />";
 
@@ -248,14 +256,14 @@ class FormLift_Field implements FormLift_Field_Interface {
 	}
 
 	public function password() {
-		$placeholder = ( isset( $this->placeholder ) ) ? "placeholder=\"{$this->getLabel()}\"" : '';
+		$placeholder = $this->getPlaceholder();
 		$label       = ( ! isset( $this->placeholder ) ) ? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 
 		return "$label<input type=\"password\" class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder {$this->isReadOnly()}/>";
 	}
 
 	public function textarea() {
-		$placeholder = ( isset( $this->placeholder ) ) ? "placeholder=\"{$this->getLabel()}\"" : '';
+		$placeholder = $this->getPlaceholder();
 		$label       = ( ! isset( $this->placeholder ) ) ? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';
 
 		return "$label<textarea class=\"formlift_input\" id=\"{$this->getUniqueId()}\" name=\"{$this->getName()}\" $placeholder {$this->isReadOnly()}>{$this->getValue()}</textarea>";
@@ -289,13 +297,22 @@ class FormLift_Field implements FormLift_Field_Interface {
 	}
 
 	public function date() {
-		$change_month = ( ! empty( $this->date_options['show_month'] ) ) ? $this->date_options['show_month'] : 'false';
-		$change_year  = ( ! empty( $this->date_options['show_year'] ) ) ? $this->date_options['show_month'] : 'false';
 
-		$minDate = formlift_convert_to_time_picker_usuable( $this->date_options['min_date'] );
-		$maxDate = formlift_convert_to_time_picker_usuable( $this->date_options['max_date'] );
+		$date_options = wp_parse_args( $this->date_options, [
+			'show_month' => false,
+			'show_year'  => false,
+			'min_date'   => false,
+			'max_date'   => false,
+			'format'     => 'yy-mm-dd'
+		] );
 
-		$dateFormat = ( ! empty( $this->date_options['format'] ) ) ? $this->date_options['format'] : 'yy-mm-dd';
+		$change_month = ( ! empty( $date_options['show_month'] ) ) ? $date_options['show_month'] : 'false';
+		$change_year  = ( ! empty( $date_options['show_year'] ) ) ? $date_options['show_month'] : 'false';
+
+		$minDate = formlift_convert_to_time_picker_usuable( $date_options['min_date'] );
+		$maxDate = formlift_convert_to_time_picker_usuable( $date_options['max_date'] );
+
+		$dateFormat = ( ! empty( $date_options['format'] ) ) ? $date_options['format'] : 'yy-mm-dd';
 
 		$placeholder = ( isset( $this->placeholder ) ) ? "placeholder='{$this->getLabel()}: {$dateFormat}'" : "placeholder=\"YYYY-MM-DD\"";
 		$label       = ( ! isset( $this->placeholder ) ) ? "<label class=\"formlift_label\" for=\"{$this->getUniqueId()}\">{$this->getLabel()}</label>" : '';

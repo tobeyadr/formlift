@@ -17,6 +17,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 	var $label;
 	var $options;
 	var $placeholder;
+	var $placeholder_text;
 	var $required;
 	var $date_options;
 	var $auto_fill;
@@ -52,6 +53,9 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 		}
 		if ( isset( $options['placeholder'] ) ) {
 			$this->placeholder = $options['placeholder'];
+		}
+		if ( isset( $options['placeholder_text'] ) ) {
+			$this->placeholder_text = $options['placeholder_text'];
 		}
 		if ( isset( $options['required'] ) ) {
 			$this->required = $options['required'];
@@ -170,9 +174,10 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 		$content .= $this->get_id_field();
 		$content .= $this->get_name_field();
 		$content .= $this->get_label_field();
+		$content .= $this->get_placeholder_field();
+		$content .= $this->get_placeholder_text_field();
 		$content .= $this->get_value_field();
 		$content .= $this->get_auto_fill_field();
-		$content .= $this->get_placeholder_field();
 		$content .= $this->get_required_field();
 		$content .= $this->get_readonly_field();
 		$content .= $this->get_custom_class_field();
@@ -214,7 +219,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 		$content .= $this->get_id_field();
 		$content .= $this->get_name_field();
 		$content .= $this->get_label_field();
-		//$content.= $this->get_placeholder_field();
+//		$content .= $this->get_placeholder_field();
 		$content .= $this->get_value_field();
 		$content .= $this->get_pre_checked_field();
 		$content .= $this->get_required_field();
@@ -252,6 +257,12 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 		$content .= $this->get_label_field();
 		$content .= $this->get_value_field();
 
+		$this->date_options = wp_parse_args( $this->date_options, [
+			'format'   => 'yy-mm-dd',
+			'min_date' => '',
+			'max_date' => ''
+		] );
+
 		$dateFormat = ( ! empty( $this->date_options['format'] ) ) ? $this->date_options['format'] : 'yy-mm-dd';
 
 		$content .= $this->wrap_row(
@@ -284,6 +295,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 
 		$content .= $this->get_auto_fill_field();
 		$content .= $this->get_placeholder_field();
+		$content .= $this->get_placeholder_text_field();
 		$content .= $this->get_required_field();
 		$content .= $this->get_readonly_field();
 		$content .= $this->get_custom_class_field();
@@ -642,6 +654,28 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 		return self::wrap_row( $content );
 	}
 
+	public function get_placeholder_field() {
+		$label   = "<label for=\"{$this->id}-placeholder\">Use label as placeholder text instead</label>";
+		$checked = ( isset( $this->placeholder ) ) ? "checked" : "";
+
+		$input = "<label class=\"switch\"><input id=\"{$this->id}-placeholder\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][placeholder]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
+
+		$content = self::wrap_label_cell( $label ) . self::wrap_input_cell( $input );
+		$content .= "<p>This will remove the label from above the field, and use the label text as placeholder text within the field for a clean look.</p>";
+
+		return self::wrap_row( $content );
+	}
+
+	public function get_placeholder_text_field() {
+		$label = "<label for=\"{$this->id}-placeholder-text\">Show some Placeholder Text</label>";
+		$input = "<input id=\"{$this->id}-placeholder-text\" type=\"text\" name=\"{$this->option_key}[{$this->id}][placeholder_text]\" value=\"$this->placeholder_text\"/>";
+
+		$content = self::wrap_label_cell( $label ) . self::wrap_input_cell( $input );
+		$content .= "<p>If labels are enabled, then you can specify example inputs using this setting.</p>";
+
+		return self::wrap_row( $content );
+	}
+
 	public function get_value_field() {
 		$label = "<label for=\"{$this->id}-value\">Set A Default Value</label>";
 		$input = "<input id=\"{$this->id}-value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][value]\" value=\"$this->value\"/>";
@@ -689,18 +723,6 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 
 		$content = self::wrap_label_cell( $label ) . self::wrap_input_cell( $input );
 		$content .= "<p>This will allow you to have multiple radio options of the same with the same <b>Field Name</b> and still pass validation if at least one of them is selected. This will not be relevant to you in most cases and is for advanced customization.<p>";
-
-		return self::wrap_row( $content );
-	}
-
-	public function get_placeholder_field() {
-		$label   = "<label for=\"{$this->id}-placeholder\">Use label as placeholder text instead</label>";
-		$checked = ( isset( $this->placeholder ) ) ? "checked" : "";
-
-		$input = "<label class=\"switch\"><input id=\"{$this->id}-placeholder\" type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][placeholder]\" value=\"true\" $checked/><span class=\"formlift-slider - round\"></span></label>";
-
-		$content = self::wrap_label_cell( $label ) . self::wrap_input_cell( $input );
-		$content .= "<p>This will remove the label from above the field, and use the label text as placeholder text within the field for a clean look.<p>";
 
 		return self::wrap_row( $content );
 	}
