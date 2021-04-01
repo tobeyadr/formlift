@@ -147,6 +147,10 @@ Due to a bug in a previous version FormLift may not successfully update in which
 == Changelog ==
 
 = 7.5.15 =
+* ADDED Ability to set custom placeholder text when the label is enabled.
+* TWEAKED Notices now use the built in dismissible button and will only appear once.
+* FIXED Fatal error when importing a broken/non-existent form from Infusionsoft.
+* FIXED Update the oauth server to the new address.
 
 = 7.5.14.3 =
 * FIXED issue with FormLift personalization codes.
