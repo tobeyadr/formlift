@@ -4,19 +4,12 @@ define( 'FORMLIFT_SESSIONS_TABLE', 'formlift_sessions' );
 define( 'FORMLIFT_SESSIONS_DB_VERSION', '1.0' );
 
 function formlift_create_sessions_table() {
-	if ( ! is_admin() || ! current_user_can( 'manage_options' ) ) {
-		return;
-	}
 
 	global $wpdb;
 
 	$charset_collate = $wpdb->get_charset_collate();
 
 	$table_name = $wpdb->prefix . FORMLIFT_SESSIONS_TABLE;
-
-	if ( $wpdb->get_var( "SHOW TABLES LIKE '$table_name'" ) == $table_name && get_option( 'formlift_sessions_db_version' ) == FORMLIFT_SESSIONS_DB_VERSION ) {
-		return;
-	}
 
 	$sql = "CREATE TABLE $table_name (
       ID bigint(20) NOT NULL AUTO_INCREMENT,
@@ -32,8 +25,6 @@ function formlift_create_sessions_table() {
 
 	update_option( 'formlift_sessions_db_version', FORMLIFT_SUBMISSIONS_DB_VERSION );
 }
-
-add_action( 'admin_init', 'formlift_create_sessions_table' );
 
 function formlift_update_session( $sessionID, $data, $expires ) {
 	global $wpdb;

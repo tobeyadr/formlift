@@ -146,6 +146,10 @@ Due to a bug in a previous version FormLift may not successfully update in which
 
 == Changelog ==
 
+= 7.5.16 =
+* ADDED Function to delete all stats in the even you get loading errors when loading all forms.
+* TWEAKED the form title (`post_name`) is now automatically set to the form name from Infusionsoft so you don't have to specify it each time.
+
 = 7.5.15 =
 * ADDED Ability to set custom placeholder text when the label is enabled.
 * TWEAKED Notices now use the built in dismissible button and will only appear once.

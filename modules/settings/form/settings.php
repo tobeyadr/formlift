@@ -41,12 +41,21 @@ class FormLift_Settings {
 				'It helps us out if you leave it!'
 			);
 		}
+
 		$fields["reset_button"] = new FormLift_Setting_Field(
 			FORMLIFT_BUTTON,
 			"reset_style_to_defaults",
 			"Reset All Style Settings To Their Defaults",
 			"RESET TO DEFAULTS",
 			'DANGER: clicking this will re-implement the default style settings from initial installation. This cannot be undone. Please export your settings FIRST before resetting.'
+		);
+
+		$fields["truncate_stats"] = new FormLift_Setting_Field(
+			FORMLIFT_BUTTON,
+			"truncate_stats",
+			"Truncate the Stats tables",
+			"DELETE ALL STATS",
+			'DANGER: Clicking this will delete all the stats reports for your forms.'
 		);
 
 		return apply_filters( 'formlift_admin_settings', $fields );
@@ -215,6 +224,8 @@ class FormLift_Settings {
 			update_option( FORMLIFT_SETTINGS, $options );
 
 			do_action( 'formlift_after_save_plugin_settings' );
+
+			FormLift_Notice_Manager::add_success( 'imported', "Settings saved!" );
 		}
 	}
 
@@ -235,6 +246,14 @@ class FormLift_Settings {
 		}
 
 		return $array;
+	}
+
+	public static function truncate_stats(){
+		if ( isset( $_POST[ FORMLIFT_SETTINGS ]['truncate_stats'] ) && wp_verify_nonce( $_POST['formlift_options'], 'update' ) && current_user_can( 'manage_options' ) ) {
+			formlift_truncate_all_stats();
+
+			FormLift_Notice_Manager::add_success( 'truncated-stats', "Reset all statistics counts!" );
+		}
 	}
 
 	public static function export_settings() {
@@ -274,6 +293,7 @@ class FormLift_Settings {
 			$options = apply_filters( 'formlift_sanitize_form_settings', json_decode( $options, true ) );
 			update_option( FORMLIFT_SETTINGS, $options );
 
+			FormLift_Notice_Manager::add_success( 'imported', "Imported all settings!" );
 		}
 	}
 }
@@ -281,4 +301,5 @@ class FormLift_Settings {
 add_action( 'init', array( 'FormLift_Settings', 'save_settings' ) );
 add_filter( 'formlift_sanitize_form_settings', array( 'FormLift_Settings', 'clean_settings' ) );
 add_action( 'init', array( 'FormLift_Settings', 'export_settings' ) );
+add_action( 'init', array( 'FormLift_Settings', 'truncate_stats' ) );
 add_action( 'init', array( 'FormLift_Settings', 'import' ) );

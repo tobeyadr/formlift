@@ -117,6 +117,17 @@ function formlift_get_infusionsoft_webforms() {
 	}
 }
 
+/**
+ * @param $id
+ *
+ * @return false|mixed
+ */
+function formlift_get_webform_name( $id ){
+	$list = formlift_get_infusionsoft_webforms();
+
+	return isset( $list[ $id ] ) ? $list[ $id ] : false;
+}
+
 function get_formlift_html( $id ) {
 	$code = FormLift_Infusionsoft_Manager::getWebFormHtml( $id );
 

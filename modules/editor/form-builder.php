@@ -277,8 +277,22 @@ class FormLift_Form_Builder {
 	 */
 	public static function save_form( $post_id ) {
 		if ( isset( $_POST[ FORMLIFT_SETTINGS ]['form_refresh'] ) || isset( $_POST[ FORMLIFT_SETTINGS ]['form_sync'] ) ) {
-			$temp_code = get_formlift_html( $_POST[ FORMLIFT_SETTINGS ]['infusionsoft_form_id'] );
+
+			$form_id = absint( $_POST[ FORMLIFT_SETTINGS ]['infusionsoft_form_id'] );
+
+			$temp_code = get_formlift_html( $form_id );
 			$form_bits = self::parse_html( $temp_code );
+
+			$form_name = formlift_get_webform_name( $form_id );
+
+			global $wpdb;
+
+			$wpdb->update( $wpdb->posts, [
+				'post_title' => sanitize_text_field( $form_name )
+			], [
+				'ID' => $post_id
+			] );
+
 			if ( is_wp_error( $form_bits ) ) {
 				FormLift_Notice_Manager::add_notice(
 					$form_bits->get_error_code(),
@@ -290,7 +304,6 @@ class FormLift_Form_Builder {
 			}
 			if ( isset( $_POST[ FORMLIFT_SETTINGS ]['form_refresh'] ) ) {
 				update_post_meta( $post_id, FORMLIFT_FIELDS, self::sanitize_fields( $form_bits ) );
-
 			} else if ( isset( $_POST[ FORMLIFT_SETTINGS ]['form_sync'] ) ) {
 				$old_bits = $_POST[ FORMLIFT_FIELDS ];
 				/* only add new fields, thus overwrite new bits with old bits and leave outstanding bots alone*/
@@ -328,7 +341,7 @@ class FormLift_Form_Builder {
 
 	public static function sanitize_fields( $fields ) {
 
-		if ( is_wp_error( $fields ) ){
+		if ( is_wp_error( $fields ) ) {
 			return [];
 		}
 
