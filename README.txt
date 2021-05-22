@@ -147,7 +147,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 == Changelog ==
 
 = 7.5.17 =
-* TWEAKED No longer enfore SSL to do sessions tracking as it's required for localhost development
+* TWEAKED No longer enforce SSL to do sessions tracking as it's required for localhost development
 
 = 7.5.16 =
 * ADDED Function to delete all stats in the even you get loading errors when loading all forms.
