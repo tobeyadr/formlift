@@ -64,13 +64,9 @@ class FormLift_User {
 	}
 
 	function set_user_data( $field, $data ) {
-		if ( is_ssl() ) {
-			$this->attributes[ $field ] = $data;
+		$this->attributes[ $field ] = $data;
 
-			return true;
-		} else {
-			return false;
-		}
+		return true;
 	}
 
 	function remove_user_data( $field ) {
@@ -81,9 +77,6 @@ class FormLift_User {
 
 	/* exists just because it has a better name */
 	function get_user_data( $field, $default = false ) {
-		if ( ! is_ssl() ) {
-			return $default;
-		}
 
 		if ( isset( $this->attributes[ $field ] ) ) {
 			$data = $this->attributes[ $field ];
@@ -115,7 +108,7 @@ class FormLift_User {
 	}
 
 	function update() {
-		if ( get_formlift_setting( "disable_session_storage" ) || ! is_ssl() || empty( $this->ID ) ) {
+		if ( get_formlift_setting( "disable_session_storage" ) || empty( $this->ID ) ) {
 			return;
 		}
 
@@ -148,9 +141,6 @@ class FormLift_User {
 	}
 
 	function sanitize_headers() {
-		if ( ! is_ssl() ) {
-			return;
-		}
 
 		$do = false;
 		// check for doing a redirect

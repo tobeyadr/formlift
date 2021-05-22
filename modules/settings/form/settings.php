@@ -146,9 +146,7 @@ class FormLift_Settings {
 	 */
 	public static function tracking_settings() {
 		$fields = array();
-		if ( ! is_ssl() ) {
-			$fields[] = "<p style='color:#ff0000'>The below settings will have no affect because you do not have an SSL certificate installed. Session tracking and other features will not work as designed until you install an SSL Certificate.</p>";
-		}
+
 		$fields["disable_session_storage"] = new FormLift_Setting_Field( FORMLIFT_CHECKBOX, 'disable_session_storage', "Disable Session Storage", null,
 			'Enable this to turn OFF the storage of Personal Identifiable Information on FormLift between pages' );
 		$fields["time_to_live"]            = new FormLift_Setting_Field( FORMLIFT_NUMBER, 'time_to_live', "PII Session Storage Time in Days", null,
@@ -261,17 +259,11 @@ class FormLift_Settings {
 			$filename = "formlift_plugin_settings_" . date( "Y-m-d_H-i", time() );
 
 			header( "Content-type: text/plain" );
-			//header("Content-disposition: csv" . date("Y-m-d") . ".csv");
 			header( "Content-disposition: attachment; filename=" . $filename . ".txt" );
-			// do not cache the file
-			//header('Pragma: no-cache');
-			//header('Expires: 0');
 
 			$file = fopen( 'php://output', 'w' );
 
 			fputs( $file, json_encode( get_option( FORMLIFT_SETTINGS ) ) );
-
-			// output each row of the data
 
 			fclose( $file );
 

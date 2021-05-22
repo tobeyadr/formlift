@@ -40,7 +40,7 @@ class FormLift_Form_Builder {
 			$startingNode = $doc->getElementsByTagName( 'form' )->item( 0 );
 
 			if ( $startingNode === null ) {
-				return new WP_Error( 'FORM_BUILD_FAILED', 'Something went wrong importing your form...' );
+				return new WP_Error( 'FORM_BUILD_FAILED', 'Something went wrong importing your form. A <code>&lt;form&gt;</code> tag was not found in the imported HTML. This means your form is incomplete in Infusionsoft.' );
 			}
 			/* remove extraneuous HTML */
 			$doc->saveHTML( $startingNode );
