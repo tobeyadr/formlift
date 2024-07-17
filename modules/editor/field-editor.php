@@ -106,7 +106,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 
 	public function getFormId() {
 		if ( wp_doing_ajax() ) {
-			return $_POST['form_id'];
+			return absint( $_POST['form_id'] );
 		} else {
 			return get_the_ID();
 		}

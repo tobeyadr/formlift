@@ -11,7 +11,7 @@ function formlift_submitV2() {
 
 	global $FormLiftUser;
 
-	$formId = $_POST["form_id"];
+	$formId = absint( $_POST["form_id"] );
 
 	do_action( 'formlift_before_submit', $formId );
 

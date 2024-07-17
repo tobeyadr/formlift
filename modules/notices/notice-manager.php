@@ -35,7 +35,7 @@ class FormLift_Notice_Manager {
 	 */
 	public static function do_dismiss() {
 		if ( is_user_logged_in() && current_user_can( 'manage_options' ) && isset( $_POST['id'] ) ) {
-			self::remove_notice( $_POST['id'] );
+			self::remove_notice( sanitize_text_field( $_POST['id'] ) );
 			wp_die( 'Success' );
 		} else {
 			wp_die( 'Nice try, but you aren\'t allowed to do this' );

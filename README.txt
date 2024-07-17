@@ -4,7 +4,7 @@ Tags: Infusionsoft, Optin, Form, Editor, Official, FormLift, Web Form, Forms, Fo
 Requires at least: 4.9
 Donate link: https://formlift.net
 Tested up to: 5.7
-Stable tag: 7.5.17
+Stable tag: 7.5.18
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -49,7 +49,7 @@ FormLift empowers regular IFS forms by keeping all the native affiliate tracking
 
 See how easy it is to get setup today!
 
-[vimeo https://vimeo.com/245092055]                 
+[vimeo https://vimeo.com/245092055]
 
 [Want extra functionality? Level up with extensions!](https://formlift.net/store/)
 
@@ -145,6 +145,9 @@ Infusionsoft or whichever CRM you use with FormLift is the primary holder of Inf
 Due to a bug in a previous version FormLift may not successfully update in which case you will have to delete FormLift via FTP and then re-install. Your data and forms will not be affected.
 
 == Changelog ==
+
+= 7.5.18 =
+* FIXED Vulnerability responsibly disclosed by Patchstack.
 
 = 7.5.17 =
 * TWEAKED No longer enforce SSL to do sessions tracking as it's required for localhost development
@@ -328,7 +331,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 
 = 7.3.13 =
 1. Usage stats will be collected from premium activated instalations as per our updated Privacy Policy.
-2. Removed the "infusion-radio" class form the checkbox because it was causing way too much spacing. 
+2. Removed the "infusion-radio" class form the checkbox because it was causing way too much spacing.
 
 = 7.3.12 =
 1. Added some new messages when submitting forms. Success!, Error(s)!
@@ -361,7 +364,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 1. Changed Error messages to just messsages to make sense with context of adding the option to change the "please wait text"
 2. Added options make fields readonly
 3. Added options to add custom CSS classes to field containers
-4. Aded more notices to ensure users their Infusionsoft connection is active  
+4. Aded more notices to ensure users their Infusionsoft connection is active
 
 = 7.3.7 =
 1. Added tool to get the auto-population link of a form for a particular page.
@@ -416,7 +419,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 
 = 7.3.3.2 =
 1. Resolved Typeform Conflict, again hopefully.
-2. Resolved issue of loading APP Domain 
+2. Resolved issue of loading APP Domain
 
 = 7.3.3.1 =
 1. Added refresh connection button
