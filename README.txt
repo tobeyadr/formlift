@@ -3,8 +3,8 @@ Contributors: trainingbusinesspros
 Tags: Infusionsoft, Optin, Form, Editor, Official, FormLift, Web Form, Forms, Form Editor
 Requires at least: 4.9
 Donate link: https://formlift.net
-Tested up to: 5.7
-Stable tag: 7.5.18
+Tested up to: 6.6
+Stable tag: 7.5.19
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -29,7 +29,7 @@ The Free version hosted on WordPress allows for amazing functionality that will 
 * Forms auto populate with contact info From emails
 * Form Validation and spam protection
 * Conversion Rate Tracking
-* Personalized Page Short-codes for thak you pages
+* Personalized Page Short-codes for thank you pages
 * Import form directly via the Infusionsoft API, no copy/pasting
 * Customizable Date Picker that actually works
 * Personal Identifiable Information protection to keep your contacts' data safe.
@@ -145,6 +145,9 @@ Infusionsoft or whichever CRM you use with FormLift is the primary holder of Inf
 Due to a bug in a previous version FormLift may not successfully update in which case you will have to delete FormLift via FTP and then re-install. Your data and forms will not be affected.
 
 == Changelog ==
+
+= 7.5.19 =
+* FIXED Typos and tested-up-to version
 
 = 7.5.18 =
 * FIXED Vulnerability responsibly disclosed by Patchstack.
