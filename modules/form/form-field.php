@@ -37,22 +37,22 @@ class FormLift_Field implements FormLift_Field_Interface {
 	function __construct( $options, $formId ) {
 		$this->type = $options['type'];
 		if ( isset( $options['name'] ) ) {
-			$this->name = $options['name'];
+			$this->name = esc_attr( $options['name'] );
 		}
 		if ( isset( $options['id'] ) ) {
-			$this->id = $options['id'];
+			$this->id = esc_attr( $options['id'] );
 		}
 		if ( isset( $options['value'] ) ) {
-			$this->value = $options['value'];
+			$this->value = esc_attr( $options['value'] );
 		}
 		if ( isset( $options['label'] ) ) {
-			$this->label = $options['label'];
+			$this->label = wp_kses( $options['label'], 'data' );
 		}
 		if ( isset( $options['placeholder'] ) ) {
 			$this->placeholder = $options['placeholder'];
 		}
 		if ( isset( $options['placeholder_text'] ) ) {
-			$this->placeholder_text = $options['placeholder_text'];
+			$this->placeholder_text = esc_attr( $options['placeholder_text'] );
 		}
 
 		/* as of 7.1 */
@@ -332,8 +332,8 @@ class FormLift_Field implements FormLift_Field_Interface {
 			$content .= "<div class=\"formlift_radio_option_container\">";
 			// $name = $radio_option_list['name'];
 			$id    = $radio_id;
-			$label = $radio_option_list['label'];
-			$value = $radio_option_list['value'];
+			$label = esc_attr( $radio_option_list['label'] );
+			$value = esc_attr( $radio_option_list['value'] );
 
 			$disabled = ( isset( $radio_option_list['disabled'] ) ) ? 'disabled' : '';
 
@@ -365,8 +365,8 @@ class FormLift_Field implements FormLift_Field_Interface {
 		}
 
 		foreach ( $this->options as $option_num => $option_list ) {
-			$inside_label = $option_list['label'];
-			$value        = $option_list['value'];
+			$inside_label = esc_attr( $option_list['label'] );
+			$value        = esc_attr( $option_list['value'] );
 			if ( empty( $value ) && isset( $this->placeholder ) ) {
 				$inside_label = $this->getLabel();
 			}
@@ -398,8 +398,8 @@ class FormLift_Field implements FormLift_Field_Interface {
 		}
 
 		foreach ( $this->options as $option_num => $option_list ) {
-			$inside_label = $option_list['label'];
-			$value        = $option_list['value'];
+			$inside_label = esc_attr( $option_list['label'] );
+			$value        = esc_attr( $option_list['value'] );
 			if ( empty( $value ) && isset( $this->placeholder ) ) {
 				$inside_label = $this->getLabel();
 			}

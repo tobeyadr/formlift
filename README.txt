@@ -146,6 +146,9 @@ Due to a bug in a previous version FormLift may not successfully update in which
 
 == Changelog ==
 
+= 7.5.21 =
+* FIXED Potential XSS vulnerability. Credit to PatchStack for responsible disclosure.
+
 = 7.5.20 =
 * FIXED Potential XSS vulnerability. Credit to PatchStack for responsible disclosure.
 

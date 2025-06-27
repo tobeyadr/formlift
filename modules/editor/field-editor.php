@@ -37,25 +37,25 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 		//$this->display_field = new FormLift_Field( $options, get_the_ID() );
 
 		if ( isset( $options['name'] ) ) {
-			$this->name = $options['name'];
+			$this->name = esc_attr( $options['name'] );
 		}
 		if ( isset( $options['type'] ) ) {
-			$this->type = $options['type'];
+			$this->type = esc_attr( $options['type'] );
 		}
 		if ( isset( $options['id'] ) ) {
-			$this->id = $options['id'];
+			$this->id = esc_attr( $options['id'] );
 		}
 		if ( isset( $options['value'] ) ) {
-			$this->value = $options['value'];
+			$this->value = esc_attr( $options['value'] );
 		}
 		if ( isset( $options['label'] ) ) {
-			$this->label = $options['label'];
+			$this->label = wp_kses_post( $options['label'] );
 		}
 		if ( isset( $options['placeholder'] ) ) {
 			$this->placeholder = $options['placeholder'];
 		}
 		if ( isset( $options['placeholder_text'] ) ) {
-			$this->placeholder_text = $options['placeholder_text'];
+			$this->placeholder_text = esc_attr( $options['placeholder_text'] );
 		}
 		if ( isset( $options['required'] ) ) {
 			$this->required = $options['required'];
@@ -320,8 +320,13 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 		} else {
 			foreach ( $this->options as $radio_option_id => $radio_option_list ) {
 				$row = "<div class=\"formlift-option-editor\" id=\"$radio_option_id\" data-field-id=\"$this->id\">";
-				$row .= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$radio_option_id][label]\" value=\"{$radio_option_list['label']}\">";
-				$row .= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$radio_option_id][value]\" value=\"{$radio_option_list['value']}\">";
+
+				$radio_option_id = esc_attr( $radio_option_id );
+				$label = esc_attr( $radio_option_list['label'] );
+				$value = esc_attr( $radio_option_list['value'] );
+
+				$row .= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$radio_option_id][label]\" value=\"{$label}\">";
+				$row .= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][$radio_option_id][value]\" value=\"{$value}\">";
 
 				$checked = ( isset( $this->pre_checked ) && $this->pre_checked == $radio_option_id ) ? 'checked' : '';
 				$row     .= "<input type=\"radio\" name=\"{$this->option_key}[{$this->id}][pre_checked]\" value=\"$radio_option_id\" $checked>Selected";
@@ -367,9 +372,13 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 			$option_container .= $row;
 		} else {
 			foreach ( $this->options as $option_num => $select_option_list ) {
+
+				$label = esc_attr( $select_option_list['label'] );
+				$value = esc_attr( $select_option_list['value'] );
+
 				$row = "<div class=\"formlift-option-editor\" id=\"option_{$i}-$this->id\" data-field-id=\"$this->id\">";
-				$row .= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_{$i}][label]\" value=\"{$select_option_list['label']}\">";
-				$row .= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_{$i}][value]\" value=\"{$select_option_list['value']}\">";
+				$row .= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_{$i}][label]\" value=\"{$label}\">";
+				$row .= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_{$i}][value]\" value=\"{$value}\">";
 
 				$checked = ( isset( $this->pre_checked ) && $this->pre_checked == "option_{$i}" ) ? 'checked' : '';
 				$row     .= "<input type=\"radio\" name=\"{$this->option_key}[{$this->id}][pre_checked]\" value=\"option_{$i}\" $checked>Selected";
@@ -417,9 +426,13 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 			$option_container .= $row;
 		} else {
 			foreach ( $this->options as $option_num => $select_option_list ) {
+
+				$label = esc_attr( $select_option_list['label'] );
+				$value = esc_attr( $select_option_list['value'] );
+
 				$row = "<div class=\"formlift-option-editor\" id=\"option_{$i}-$this->id\" data-field-id=\"$this->id\">";
-				$row .= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_{$i}][label]\" value=\"{$select_option_list['label']}\">";
-				$row .= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_{$i}][value]\" value=\"{$select_option_list['value']}\">";
+				$row .= "<input placeholder=\"label\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_{$i}][label]\" value=\"{$label}\">";
+				$row .= "<input placeholder=\"value\" type=\"text\" name=\"{$this->option_key}[{$this->id}][options][option_{$i}][value]\" value=\"{$value}\">";
 
 				$checked = ( isset( $select_option_list['pre_checked'] ) ) ? 'checked' : '';
 				$row     .= "<input type=\"checkbox\" name=\"{$this->option_key}[{$this->id}][options][option_{$i}][pre_checked]\" value=\"1\" $checked>Selected";
