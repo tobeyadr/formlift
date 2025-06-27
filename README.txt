@@ -4,7 +4,7 @@ Tags: Infusionsoft, Optin, Form, Editor, Official, FormLift, Web Form, Forms, Fo
 Requires at least: 4.9
 Donate link: https://formlift.net
 Tested up to: 6.7
-Stable tag: 7.5.20
+Stable tag: 7.5.21
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
