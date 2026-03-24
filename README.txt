@@ -3,8 +3,8 @@ Contributors: trainingbusinesspros
 Tags: Infusionsoft, Optin, Form, Editor, Official, FormLift, Web Form, Forms, Form Editor
 Requires at least: 4.9
 Donate link: https://formlift.net
-Tested up to: 6.7
-Stable tag: 7.5.21
+Tested up to: 6.9
+Stable tag: 7.5.22
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -145,6 +145,9 @@ Infusionsoft or whichever CRM you use with FormLift is the primary holder of Inf
 Due to a bug in a previous version FormLift may not successfully update in which case you will have to delete FormLift via FTP and then re-install. Your data and forms will not be affected.
 
 == Changelog ==
+
+= 7.5.22 =
+* FIXED Vulnerability. Credit to WordFence for practicing responsible disclosure.
 
 = 7.5.21 =
 * FIXED Potential XSS vulnerability. Credit to PatchStack for responsible disclosure.

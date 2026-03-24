@@ -18,7 +18,18 @@ class FormLift_Infusionsoft_Manager {
 	}
 
 	public static function connect() {
+
 		if ( isset( $_POST[ FORMLIFT_SETTINGS ]['activate_OAuth'] ) ) {
+
+			if ( ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
+				wp_die( 'You do not have permission to perform this action.' );
+			}
+
+			// nonce located in settings-page.php
+			if ( ! isset( $_POST['formlift_options'] ) || ! wp_verify_nonce( $_POST['formlift_options'], 'update' ) ) {
+				wp_die( 'Nonce verification failed.' );
+			}
+
 			$pass = wp_generate_password( 8, false, false );
 
 			set_transient( 'formlift_auth_pass', $pass, 60 * 5 );
@@ -44,6 +55,10 @@ class FormLift_Infusionsoft_Manager {
 
 	public static function listen_for_tokens() {
 		if ( isset( $_REQUEST['OauthClientPass'] ) ) {
+
+			if ( ! is_user_logged_in() || ! current_user_can( 'manage_options' ) ) {
+				wp_die( 'Unauthorized access.' );
+			}
 
 			$pass = get_transient( 'formlift_auth_pass' );
 
