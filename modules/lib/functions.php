@@ -100,10 +100,17 @@ function _formlift_update_web_form_list() {
 		return $array;
 	}
 
-	update_option( 'formlift_web_forms', $array );
+	$list = [];
+
+	// will now be new model, so let's map to legacy model
+	foreach ( $array as $webform ) {
+		$list[ $webform->id ] = $webform->name;
+	}
+
+	update_option( 'formlift_web_forms', $list );
 	FormLift_Notice_Manager::add_success( "refresh_success", "Successfully retrieved new web forms." );
 
-	return $array;
+	return $list;
 }
 
 function formlift_get_infusionsoft_webforms() {
@@ -205,8 +212,43 @@ function get_formlift_field_type_name( $name ) {
 	return array_pop( $type );
 }
 
-function formlift_get_custom_fields() {
-	$returnFields = get_transient( 'formlift_custom_fields' );
+/**
+ * Get the ID of a custom field given the name of the field
+ *
+ * @param string  $name the custom field name
+ * @param bool    $preceding_ whether a preceding "_" is in the name, should be true usually
+ *
+ * @return int|null int if the correct field was identified, otherwise null
+ */
+function formlift_custom_field_name_to_id( string $name, bool $preceding_ = true ) {
+
+	$models = formlift_get_custom_field_models();
+
+	if ( is_wp_error( $models ) ) {
+		return null;
+	}
+
+	if ( $preceding_ && str_starts_with( $name, '_' ) ) {
+		$name = substr( $name, 1 );
+	}
+
+	foreach ( $models as $model ) {
+		if ( $model->field_name == $name ) {
+			return $model->id;
+		}
+	}
+
+	return null;
+}
+
+/**
+ * Returns the models for custom fields as provided by the model API
+ *
+ * @return mixed
+ */
+function formlift_get_custom_field_models() {
+
+	$returnFields = get_transient( 'formlift_custom_fields_models' );
 
 	if ( $returnFields ) {
 		return $returnFields;
@@ -215,18 +257,33 @@ function formlift_get_custom_fields() {
 	$customFields = FormLift_Infusionsoft_Manager::getCustomFields();
 
 	if ( is_wp_error( $customFields ) ) {
-		$customFields = array();
+		return $customFields;
+	}
+
+	set_transient( 'formlift_custom_fields_models', $customFields, 24 * HOUR_IN_SECONDS );
+
+	return $customFields;
+}
+
+/**
+ * Returns a dropdown like representation of custom fields
+ *
+ * @return string[]
+ */
+function formlift_get_custom_fields() {
+	$customFields = formlift_get_custom_field_models();
+
+	if ( is_wp_error( $customFields ) ) {
+		$customFields = [];
 	}
 
 	$returnFields = array(
 		'' => 'Please Select One'
 	);
 
-	foreach ( $customFields as $fieldRow ) {
-		$returnFields[ '_' . $fieldRow['Name'] ] = $fieldRow['Label'];
+	foreach ( $customFields as $field ) {
+		$returnFields[ '_' . $field->field_name ] = $field->label;
 	}
-
-	set_transient( 'formlift_custom_fields', $returnFields, 24 * HOUR_IN_SECONDS );
 
 	return $returnFields;
 }
@@ -234,6 +291,7 @@ function formlift_get_custom_fields() {
 function formlift_refresh_custom_fields() {
 	if ( isset( $_POST[ FORMLIFT_SETTINGS ]['refresh_custom_fields'] ) ) {
 		delete_transient( 'formlift_custom_fields' );
+		delete_transient( 'formlift_custom_fields_models' );
 	}
 }
 
@@ -301,3 +359,53 @@ function formlift_get_leaderboard_position_ajax() {
 }
 
 add_action( 'wp_ajax_formlift_get_leaderboard_ranking', 'formlift_get_leaderboard_position_ajax' );
+
+/**
+ * I checked usages and looks like we only ever pass FirstName, LastName, and Email to this function to create a contact
+ * So we need to map it to the new data format for REST
+ *
+ * @param $email
+ *
+ * @return int|WP_Error the contact ID if successful, otherwise a WP_Error
+ */
+function formlift_quickAddContact( $email ) {
+
+	if ( is_array( $email ) ) {
+		$contact = $email;
+	} else {
+		$contact = array(
+			"Email" => $email
+		);
+	}
+
+	$args = array(
+		$contact,
+		// Assume using name if no email provided
+		in_array( 'Email', $contact ) ? 'Email' : 'EmailAndName'
+	);
+
+	// legacy services pass FirstName, LastName, Email, etc... map to new format
+	$data = [];
+
+	if ( isset( $contact['FirstName'] ) ) {
+		$data['given_name'] = $contact['FirstName'];
+	}
+
+	if ( isset( $contact['LastName'] ) ) {
+		$data['family_name'] = $contact['LastName'];
+	}
+
+	if ( isset( $contact['Email'] ) ) {
+		$data['email_addresses'] = [
+			[ 'email' => $contact['Email'], 'field' => 'EMAIL_FIELD_UNSPECIFIED' ]
+		];
+	}
+
+	$contact = FormLift_Infusionsoft_Manager::addContact( $data, 'id', $args[1] );
+
+	if ( is_wp_error( $contact ) ) {
+		return $contact;
+	}
+
+	return absint( $contact->id );
+}

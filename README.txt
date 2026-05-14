@@ -1,10 +1,10 @@
 === FormLift for Infusionsoft Web Forms ===
 Contributors: trainingbusinesspros
 Tags: Infusionsoft, Optin, Form, Editor, Official, FormLift, Web Form, Forms, Form Editor
-Requires at least: 4.9
 Donate link: https://formlift.net
+Requires at least: 6.7
 Tested up to: 6.9
-Stable tag: 7.5.22
+Stable tag: 7.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -145,6 +145,9 @@ Infusionsoft or whichever CRM you use with FormLift is the primary holder of Inf
 Due to a bug in a previous version FormLift may not successfully update in which case you will have to delete FormLift via FTP and then re-install. Your data and forms will not be affected.
 
 == Changelog ==
+
+= 7.6 =
+* FIXED Upgraded our integration to use the REST API instead of the XML-RPC API.
 
 = 7.5.22 =
 * FIXED Vulnerability. Credit to WordFence for practicing responsible disclosure.

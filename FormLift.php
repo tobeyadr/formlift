@@ -2,7 +2,7 @@
 /*
  * Plugin Name: FormLift
  * Description: The Ultimate Web Form Solution for WordPress and Infusionsoft. Style your web forms, create personalized pages, and create epic automation with them too.
- * Version: 7.5.22
+ * Version: 7.6
  * Author: Adrian Tobey
  * Plugin URI: https://formlift.net
  * Author URI: https://formlift.net/blog
@@ -15,7 +15,7 @@ if ( ! defined( 'ABSPATH' ) ) {
 	exit;
 }
 
-define( 'FORMLIFT_VERSION', '7.5.22' );
+define( 'FORMLIFT_VERSION', '7.6' );
 define( 'FORMLIFT_CSS_VERSION', '7.5.17' );
 define( 'FORMLIFT_JS_VERSION', '7.5.14' );
 define( 'FORMLIFT_VERSION_KEY', 'formlift_db_version' );
@@ -25,7 +25,7 @@ define( 'FORMLIFT_FIELDS', 'formlift_form_bits' );
 
 /* Load Modules */
 
-if ( version_compare( PHP_VERSION, '5.6.0', '>=' ) ):
+if ( version_compare( PHP_VERSION, '8.0', '>=' ) ):
 
 	include __DIR__ . "/modules/modules-loader.php";
 

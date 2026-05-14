@@ -83,7 +83,90 @@ class FormLift_App {
 		}
 	}
 
+	private static $retries = 0;
+
 	/**
+	 * Use the REST API
+	 *
+	 * @param  string  $endpoint
+	 * @param  array  $request
+	 * @param  string  $method
+	 *
+	 * @return object|WP_Error
+	 */
+	public function restRequest( string $endpoint, array $request, string $method = 'POST' ) {
+
+		$access = $this->getAccessToken() ?: $this->getApiKey();
+
+		if ( ! $access ){
+			return new WP_Error( 'rest_api_failed', 'No access token found.' );
+		}
+
+		$headers = [ 'Authorization' => 'Bearer ' . $access ];
+
+		if ( $method == 'GET' ) {
+
+			$response = wp_remote_get( add_query_arg( $request, 'https://api.infusionsoft.com/crm/' . $endpoint ) , [
+				'headers' => $headers
+			] );
+
+		} else {
+
+			$headers['Content-Type'] = 'application/json';
+
+			$response = wp_remote_post( 'https://api.infusionsoft.com/crm/' . $endpoint, [
+				'headers'     => $headers,
+				'body'        => wp_json_encode( $request ),
+				'method'      => $method,
+				'data-format' => 'body'
+			] );
+		}
+
+		if ( is_wp_error( $response ) ) {
+			return $response;
+		}
+
+		$code          = wp_remote_retrieve_response_code( $response );
+		$response_body = wp_remote_retrieve_body( $response );
+		$response_type = wp_remote_retrieve_header( $response, 'Content-Type' );
+
+		// refresh and try again
+		if ( $code === 401 && self::$retries === 0 ) {
+
+			$this->refreshTokens();
+			self::$retries++;
+
+			return $this->restRequest( $endpoint, $request, $method );
+		}
+
+		// reset retries
+		self::$retries = 0;
+
+		if ( $code < 200 || $code >= 300 ) {
+
+			$message = 'An unknown error occurred.';
+
+			if ( str_contains( $response_type, 'application/json' ) ){
+				$json = json_decode( $response_body );
+				$message = $json->message;
+			}
+
+			return new WP_Error( 'keap_rest_api_failed', $message );
+		}
+
+		// make json if content-type matches
+		if ( str_contains( $response_type, 'application/json' ) ) {
+			return json_decode( $response_body );
+		}
+
+		return $response;
+	}
+
+	/**
+	 * XML-RPC API
+	 *
+	 * @deprecated Keap is sunsetting XML-RPC
+	 *
 	 * @param $method string
 	 * @param $args   array
 	 *

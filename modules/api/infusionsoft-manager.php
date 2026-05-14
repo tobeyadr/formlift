@@ -161,72 +161,119 @@ class FormLift_Infusionsoft_Manager {
 		}
 	}
 
+	/**
+	 * Get a webform list
+	 *
+	 * @return object|WP_Error
+	 */
 	public static function getWebForms() {
+		$response = static::$app->restRequest( 'rest/v2/webforms', [
+			'filter'    => 'webform_type==legacy',
+			'order_by'  => 'name,asc',
+			'page_size' => 999
+		], 'GET' );
 
-		return static::$app->send( 'WebFormService.getMap', array() );
-
-	}
-
-	public static function getWebFormHtml( $webformId ) {
-		$params = array(
-			(int) $webformId
-		);
-
-		return static::$app->send( "WebFormService.getHTML", $params );
-	}
-
-	public static function fileUpload( $contactId, $fileName, $base64encoded ) {
-		if ( $contactId === null ) {
-			$params = array(
-				$fileName,
-				$base64encoded
-			);
-		} else {
-			$params = array(
-				(int) $contactId,
-				$fileName,
-				$base64encoded
-			);
+		if ( is_wp_error( $response ) ) {
+			return $response;
 		}
 
-		return static::$app->send( "FileService.uploadFile", $params );
+		return $response->webforms;
 	}
 
+	/**
+	 * Get the HTML of a webform
+	 *
+	 * @param $webformId
+	 *
+	 * @return string
+	 */
+	public static function getWebFormHtml( $webformId ) {
+
+		// since the content-type of the response will be HTML, the response array will be returned
+		$response = static::$app->restRequest( 'rest/v2/webforms/' . $webformId, [], 'GET' );
+
+		return wp_remote_retrieve_body( $response );
+	}
+
+	/**
+	 * Upload a file
+	 *
+	 * @param $contactId
+	 * @param $fileName
+	 * @param $base64encoded
+	 *
+	 * @return object|WP_Error
+	 */
+	public static function fileUpload( $contactId, $fileName, $base64encoded ) {
+
+		if ( ! $contactId ) {
+			return new WP_Error( 'no_contact_id', 'No contact id provided' );
+		}
+
+		return static::$app->restRequest( 'rest/v1/files', [
+			'file_name'        => $fileName,
+			'file_data'        => $base64encoded,
+			'is_public'        => false,
+			'file_association' => 'CONTACT',
+			'contact_id'       => $contactId,
+		] );
+	}
+
+	/**
+	 * Achieve a goal
+	 *
+	 * @param $contactId
+	 * @param $callName
+	 *
+	 * @return object|WP_Error
+	 */
 	public static function achieveGoal( $contactId, $callName ) {
-		$params = array(
-			"FormLift",
-			$callName,
-			$contactId
-		);
-
-		return static::$app->send( "FunnelService.achieveGoal", $params );
+		return static::$app->restRequest( 'rest/v2/automations/goals/achieve', [
+			'integration' => 'FormLift',
+			'callName'    => $callName,
+			'contactId'   => $contactId,
+		] );
 	}
 
+	/**
+	 * Get custom fields
+	 *
+	 * @return mixed
+	 */
 	public static function getCustomFields() {
-		$args = array(
-			"DataFormField",
-			1000,
-			0,
-			array(
-				'FormId' => '-1',
-				'Name'   => '%'
-			),
-			array(
-				'Label',
-				'Name'
-			)
-		);
-
-		return static::$app->send( "DataService.query", $args );
+		$response = static::$app->restRequest( 'rest/v2/contacts/model', [], 'GET' );
+		return $response->custom_fields;
 	}
 
+	/**
+	 * update a contact
+	 *
+	 * @param $contactId
+	 * @param $data
+	 *
+	 * @return object|WP_Error
+	 */
 	public static function updateContact( $contactId, $data ) {
-		$args = array(
-			(int) $contactId,
-			$data
-		);
 
-		return static::$app->send( "ContactService.update", $args );
+		$update_mask = implode( ',' , array_keys( $data ) );
+
+		return static::$app->restRequest( 'rest/v2/contacts/' . $contactId . '?update_mask=' . $update_mask , $data, 'PATCH' );
+	}
+
+	/**
+	 * Add a contact
+	 *
+	 * @param  array  $data per docs
+	 * @param  string  $fields csv of fields, "name,email,phone,..."
+	 * @param  string  $duplicate_option Email, EmailAndName, EmailAndNameAndCompany
+	 *
+	 * @return object|WP_Error
+	 */
+	public static function addContact( array $data, string $fields = '', string $duplicate_option = 'Email' ) {
+
+		$query = array_filter( [ 'duplicate_option' => $duplicate_option, 'fields' => $fields ] );
+
+		return static::$app->restRequest( add_query_arg( $query, 'rest/v2/contacts' ) , $data, 'post' );
 	}
 }
 

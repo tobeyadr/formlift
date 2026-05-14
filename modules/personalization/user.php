@@ -200,16 +200,27 @@ class FormLift_User {
 		}
 	}
 
+
 	function update_contact_with_recovery_id() {
+
+		// will be in format "_some_field_name" so we need to convert it to the actual ID
 		$customField = get_formlift_setting( 'session_storage_field', false );
 
 		if ( ! $customField || ! $this->getData( 'contactId', false ) ) {
 			return;
 		}
 
-		$data = array(
-			$customField => $this->getId()
-		);
+		$fieldId = formlift_custom_field_name_to_id( $customField );
+
+		if ( ! $fieldId ) {
+			return;
+		}
+
+		$data = [
+			'custom_fields' => [
+				[ 'id' => $fieldId, 'content' => $this->getId() ]
+			]
+		];
 
 		FormLift_Infusionsoft_Manager::updateContact( $this->getData( 'contactId' ), $data );
 	}
