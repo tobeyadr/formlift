@@ -16,7 +16,7 @@ class FormLift_Form_Post_Type {
 		//forms
 		$labels = array(
 			'name'               => __( 'FormLift' ),
-			'singular_name'      => __( 'Infusionsoft Form' ),
+			'singular_name'      => __( 'Keap Form' ),
 			'add_new'            => __( 'Add Form' ),
 			'add_new_item'       => __( 'Add Form' ),
 			'all_items'          => __( 'All Forms' ),

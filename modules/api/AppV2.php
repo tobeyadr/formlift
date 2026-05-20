@@ -144,11 +144,18 @@ class FormLift_App {
 
 		if ( $code < 200 || $code >= 300 ) {
 
-			$message = 'An unknown error occurred.';
+			$message = 'An unknown API error occurred.';
 
 			if ( str_contains( $response_type, 'application/json' ) ){
 				$json = json_decode( $response_body );
-				$message = $json->message;
+
+				if ( isset( $json->error ) ) {
+					$message = $json->error;
+				}
+
+				if ( isset( $json->message ) ) {
+					$message = $json->message;
+				}
 			}
 
 			return new WP_Error( 'keap_rest_api_failed', $message );
@@ -181,7 +188,7 @@ class FormLift_App {
 		} elseif ( ! empty( $this->accessToken ) ) {
 			$client = new WP_HTTP_IXR_Client( add_query_arg( "access_token", $this->accessToken, "https://api.infusionsoft.com/crm/xmlrpc/v1" ) );
 		} else {
-			return new WP_Error( "NO_CONNECTION", "Please set an Infusionsoft connection in the settings." );
+			return new WP_Error( "NO_CONNECTION", "Please set an Keap connection in the settings." );
 		}
 
 		// Call the function and return any error that happens
@@ -225,7 +232,7 @@ class FormLift_App {
 			wp_mail(
 				get_option( 'admin_email' ),
 				'FormLift failed to connect.',
-				'FormLift failed to refresh the Oauth tokens provided by Infusionsoft. You may have to manually re-connect to Infusionsoft to be on the safe side.
+				'FormLift failed to refresh the Oauth tokens provided by Keap. You may have to manually re-connect to Keap to be on the safe side.
                 Click the link to go to the settings page now! <' . admin_url( 'edit.php?post_type=infusion_form&page=formlift_settings_page' ) . '>'
 			);
 		}

@@ -627,7 +627,7 @@ class FormLift_Field_Editor implements FormLift_Field_Interface {
 //        $input = "<input placeholder=\"required\" id=\"{$this->id}-name\" type=\"text\" name=\"{$this->option_key}[{$this->id}][name]\" value=\"$this->name\" {$readonly} required/>";
 		$input   = "<input placeholder=\"required\" id=\"{$this->id}-name\" type=\"text\" name=\"{$this->option_key}[{$this->id}][name]\" value=\"$this->name\" required/>";
 		$content = self::wrap_label_cell( $label ) . self::wrap_input_cell( $input );
-		$content .= "<p>The <b>Name</b> field is used to distinguish if the field should be autopopulated with certain data if auto population is enabled. It is also what matches this field to the field in Infusionsoft and should not be changed.</p>";
+		$content .= "<p>The <b>Name</b> field is used to distinguish if the field should be autopopulated with certain data if auto population is enabled. It is also what matches this field to the field in Keap and should not be changed.</p>";
 
 		return self::wrap_row( $content );
 	}

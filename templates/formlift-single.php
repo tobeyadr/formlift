@@ -1,6 +1,6 @@
 <?php
 /*
-Template Name: Infusionsoft Form
+Template Name: Keap Form
 Template Post Type: infusion_form
 */
 get_header(); ?>

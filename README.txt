@@ -1,14 +1,14 @@
-=== FormLift for Infusionsoft Web Forms ===
+=== FormLift for Keap (Legacy) Web Forms ===
 Contributors: trainingbusinesspros
 Tags: Infusionsoft, Optin, Form, Editor, Official, FormLift, Web Form, Forms, Form Editor
 Donate link: https://formlift.net
 Requires at least: 6.7
-Tested up to: 6.9
+Tested up to: 7.0
 Stable tag: 7.6
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
-Import Infusionsoft Web Forms into WordPress and easily customize their style. Display with short-codes.
+Import Keap Web Forms into WordPress and easily customize their style. Display with short-codes.
 
 == Description ==
 
@@ -20,9 +20,9 @@ Need more functionality? [Check out our extensions!](https://formlift.net/extens
 
 Not technically inclined? [Launch Guided Setup](https://formlift.net/use-formlift/)
 
-Simply put, this is the easiest, fastest, and most user friendly solution to putting Infusionsoft Web Forms on your website. FormLift's 5 minute setup time allows you to install this plugin and run, not walk. It takes 30 seconds to create a new form and place it on your site!
+Simply put, this is the easiest, fastest, and most user friendly solution to putting Keap (Infusionsoft) Web Forms on your website. FormLift's 5 minute setup time allows you to install this plugin and run, not walk. It takes 30 seconds to create a new form and place it on your site!
 
-The Free version hosted on WordPress allows for amazing functionality that will make any Infusionites nightmares disappear in seconds...
+The Free version hosted on WordPress allows for amazing functionality that will make any Keap users' nightmares disappear in seconds...
 
 = Unlicensed Features =
 * Over 45 global styling options
@@ -30,7 +30,7 @@ The Free version hosted on WordPress allows for amazing functionality that will 
 * Form Validation and spam protection
 * Conversion Rate Tracking
 * Personalized Page Short-codes for thank you pages
-* Import form directly via the Infusionsoft API, no copy/pasting
+* Import form directly via the Keap API, no copy/pasting
 * Customizable Date Picker that actually works
 * Personal Identifiable Information protection to keep your contacts' data safe.
 
@@ -39,7 +39,7 @@ But if you want to unlock the full automation power of FormLift, you can [start 
 = Premium Features =
 * Auto population link builder
 * Conditional Thank You Page Redirect Creator Tool
-* In form Google reCAPTCHA integration, works better than the native Infusionsoft one.
+* In form Google reCAPTCHA integration, works better than the native Keap one.
 * Individual Form Styling
 * Conditional Form Display Tool
 * Require login for submit
@@ -70,17 +70,14 @@ Method 2:
 
 == Frequently Asked Questions ==
 
-= What PHP level is required =
-PHP 7.0 or better is recommended, however 5.6 and up works fine. Below 5.6 is at your own risk...
-
-= Will this work with my existing Infusionsoft Web Forms in my campaigns? =
-YES! All you need to do is import them and they will work as if they were regular infusionsoft forms.
+= Will this work with my existing Keap Web Forms in my campaigns? =
+FormLift only works with the *legacy* form builder in the older campaign builder.
 
 = Is there support? =
-Yes, I so far response time is lees the 24 hours. You can [contact me directly](https://formlift.net/contact-us/), or get in touch via our [new facebook group](https://www.facebook.com/groups/143721343008129/)
+Yes. You can [contact me directly](https://formlift.net/contact-us/), or get in touch via our [new facebook group](https://www.facebook.com/groups/143721343008129/)
 
-= Is it compatible with other Infusionsoft based plugins?
-Yes, The Gravity Forms Infusionsoft Add-On, Memberium, and the new Infusionsoft Official Web Form Plugin, and Thrive Leads are all tested as compatible.
+= Is it compatible with other Keap based plugins?
+Yes, The Gravity Forms Keap Add-On, Memberium, and the new Keap Official Web Form Plugin, and Thrive Leads are all tested as compatible.
 If an error arises it is likely on part of another plugin and not FormLift, however our support will investigate in every case.
 
 == Screenshots ==
@@ -102,14 +99,14 @@ provide them with marketing, transactional emails, and so on and so forth.
 With the MANY compliance initiatives out there such as GDPR, it is important to understand the following BEFORE using formlift
 for your business.
 
-FormLift is used expressly for Infusionsoft, an SMB marketing CRM based in Pheonix Arizona. Infusionsoft maintains the compliance of your business
+FormLift is used expressly for Keap, an SMB marketing CRM based in Pheonix Arizona. Keap maintains the compliance of your business
 with regards to Personally identifiable information in MOST cases, but not all.
 
 FormLift has several functions you will either want to disable, or enable depending on your industry or region of the world.
 
 = Data Collection =
 When a user submits a form, that data is sent to YOUR server for validation and is not necessarily stored.
-MOST data collected with FormLift after a submission is sent to Infusionsoft where it is stored and is then forgotten by your website EXCEPT in the following cases.
+MOST data collected with FormLift after a submission is sent to Keap where it is stored and is then forgotten by your website EXCEPT in the following cases.
 
 = Session Tracking =
 This feature comes with FormLift and is enable automatically, it allows the persistence of user data from page to page without having to pass UTM variables, almost as if the user is logged in.
@@ -133,20 +130,19 @@ There is a special field you can add to your forms called GDPR which will automa
 FormLift is NOT HIPAA compliant by default. You can make FormLift HIPAA compliant by installing an SSL certificate and disabling "Session Tracking" and "Saved Submissions".
 
 = API Connection =
-* OAuth : If you are connected to Infusionsoft via the Oauth method, your authentication Tokens are passed through an intermediary server "ouath.formlift.net." No personal information is ever passed through this medium however. Hence all API calls made with FormLift are communicated to Infusionsoft Directly with the exception of refreshing tokens and the initial authentication request.
+* OAuth : If you are connected to Keap via the Oauth method, your authentication Tokens are passed through an intermediary server "webhook.site" No personal information is ever passed through this medium however. Hence all API calls made with FormLift are communicated to Keap Directly with the exception of refreshing tokens and the initial authentication request.
 * API Usage: Anonymous API usage statistics are collected if you use the OAuth Method.
-* Legacy: If you are connected to Infusionsoft via the Legacy Method, all API calls are made to Infusionsoft directly and "oauth.formlift.net" is not involved. No usage statistics are collected.
-* Methods: The only API methods FormLift uses are for the uploading of Files to a contact's FileBox and the retrieval of WebForms. FormLift will never "retrieve" information from Infusionsoft.
+* Legacy: If you are connected to Keap via the Legacy Method, all API calls are made to Keap directly and "webhook.site" is not involved. No usage statistics are collected.
+* Methods: The only API methods FormLift uses are for the uploading of Files to a contact's FileBox and the retrieval of WebForms. FormLift will never "retrieve" information from Keap.
 
-= Infusionsoft or other CRMs =
-Infusionsoft or whichever CRM you use with FormLift is the primary holder of Information collected with FormLift. To ensure you are compliant in regard to the storage of information, please consult them if it's beyond the scope of the above.
-
-== Upgrade Notice ==
-Due to a bug in a previous version FormLift may not successfully update in which case you will have to delete FormLift via FTP and then re-install. Your data and forms will not be affected.
+= Keap or other CRMs =
+Keap or whichever CRM you use with FormLift is the primary holder of Information collected with FormLift. To ensure you are compliant in regard to the storage of information, please consult them if it's beyond the scope of the above.
 
 == Changelog ==
 
 = 7.6 =
+* TWEAKED Replaced "Infusionsoft" with "Keap" to reflect current branding.
+* IMPROVED Better and more reliable Oauth flow and automatic token refresh.
 * FIXED Upgraded our integration to use the REST API instead of the XML-RPC API.
 
 = 7.5.22 =
@@ -169,12 +165,12 @@ Due to a bug in a previous version FormLift may not successfully update in which
 
 = 7.5.16 =
 * ADDED Function to delete all stats in the even you get loading errors when loading all forms.
-* TWEAKED the form title (`post_name`) is now automatically set to the form name from Infusionsoft so you don't have to specify it each time.
+* TWEAKED the form title (`post_name`) is now automatically set to the form name from Keap so you don't have to specify it each time.
 
 = 7.5.15 =
 * ADDED Ability to set custom placeholder text when the label is enabled.
 * TWEAKED Notices now use the built in dismissible button and will only appear once.
-* FIXED Fatal error when importing a broken/non-existent form from Infusionsoft.
+* FIXED Fatal error when importing a broken/non-existent form from Keap.
 * FIXED Update the oauth server to the new address.
 
 = 7.5.14.3 =
@@ -276,7 +272,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 * fixed gdpr bug.
 
 = 7.4.16 =
-* allowed the use of the GDPR field with custom fields in Infusionsoft.
+* allowed the use of the GDPR field with custom fields in Keap.
 
 = 7.4.15 =
 * Changed the order of credit to appear below the message box rather than on top.
@@ -290,7 +286,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 * Fixed the post type orderby function not working for new forms.
 
 = 7.4.12 =
-* Somewhere along the line the Infusionsoft tracking code got removed, we re-included it.
+* Somewhere along the line the Keap tracking code got removed, we re-included it.
 
 = 7.4.10 =
 * Removed html entities direct inclusion in the PHP code and replaced with ::before in stylesheet.
@@ -379,7 +375,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 1. Changed Error messages to just messsages to make sense with context of adding the option to change the "please wait text"
 2. Added options make fields readonly
 3. Added options to add custom CSS classes to field containers
-4. Aded more notices to ensure users their Infusionsoft connection is active
+4. Aded more notices to ensure users their Keap connection is active
 
 = 7.3.7 =
 1. Added tool to get the auto-population link of a form for a particular page.
@@ -389,7 +385,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 = 7.3.6 =
 1. Added IP Blacklist that will check the user's IP to allow submission
 2. Added KeyWord blacklist that will check EVERY field in the user's submitted data
-3. Removed the infusionsoft required special fields form the builder and made them unedittable
+3. Removed the Keap required special fields form the builder and made them unedittable
 4. hid the xid of the form until a successful submission is recorded so spammers cannot compose the URL from the xid and access form directly
 5. Fixed the session population so it also removes user data from the query string for Google PII policies
 6. Added the option to remove the flag from the phone type field.
@@ -406,7 +402,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 3. Adding new radio and select options wasn't giving the pre-selected option.
 
 = 7.3.5 =
-1. Removed the Infusionsoft NOVAK SDK and replaced it with My own as FormLift only uses 3 API methods anyway.
+1. Removed the Keap NOVAK SDK and replaced it with My own as FormLift only uses 3 API methods anyway.
 2. Changed the call behaviour so that if the Oauth Request fails, it will fall back to the Legacy credentials if they exist eliminating downtime.
 3. Made the refresh behaviour & disconnect behaviour more stable.
 
@@ -451,7 +447,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 1. Quick CSS fix
 
 = 7.3 =
-1. Added the Oauth Integration Method which will now be required given the sunsetting of the infusionsoft API key
+1. Added the Oauth Integration Method which will now be required given the sunsetting of the Keap API key
 2. Added the Require Login Option for forms
 3. Added the phone number internalization library. "Fingers Crossed it works"
 
@@ -471,7 +467,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 5. Fixed some style settings not populating on installation.
 
 = 7.1.5 =
-1. Fixed Checkboxes not sending values to Infusionsoft
+1. Fixed Checkboxes not sending values to Keap
 2. Added ClearFix to columned forms for improved style and looks
 3. Fixed some CSS issues with the drag and drop builder
 4. Added the option to FORGO the validation and show the POST url.
@@ -499,12 +495,12 @@ Due to a bug in a previous version FormLift may not successfully update in which
 1. Added submissions table to track form submissions in WP! (Premium Only)
 2. Added devloper API
 3. added more css options for radio buttons
-4. FormLift no longer imports a bunch of JS from the infusionsoft form because most of it is just not needed.
+4. FormLift no longer imports a bunch of JS from the Keap form because most of it is just not needed.
 5. Edit popup actually loads in the correct size now.
 
 = 7.0.16 =
 1. New notice API with FormLift.net to retrieve notices live on login. #MarketingFTW
-2. Better ERROR handling when importing Infusionsoft forms goes wrong.
+2. Better ERROR handling when importing Keap forms goes wrong.
 3. Added filters and actions for external developers who might want to modify the available CSS classes or play with form submission data.
 
 = 7.0.15 =
@@ -569,7 +565,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 1. Fixed some very minor errors with compatibility between PHP versions. No "important" functionality was affected.
 
 = 6.4.12 =
-1. TimeZone was not being set on a successful form submission, now it does. Just saying, infusionsoft did not make the search to do this easy at all, so your welcome for figuring it out.
+1. TimeZone was not being set on a successful form submission, now it does. Just saying, Keap did not make the search to do this easy at all, so your welcome for figuring it out.
 
 = 6.4.11 =
 1. Oops, forgot to change the formatting of the preview form in the settings page causing an error loading the color-picker.
@@ -588,7 +584,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 = 6.4.7 =
 1. Some files disappeared randomly causing a downtime in API integration. They have been replaced.
 2. Chanced some logic syntax to follow standards
-3. Added better handling of exceptions thrown by the Infusionsoft SDK
+3. Added better handling of exceptions thrown by the Keap SDK
 
 = 6.4.6 =
 1. More stable conversion tracking, some conversion rates may be skewed towards lower end results
@@ -618,11 +614,11 @@ Due to a bug in a previous version FormLift may not successfully update in which
 4. Conditions on auto filling form data now appears in the Settings tab of Formlift Defaults
 5. Added a Redirect making metabox
     - Create Redirects based on Dropdowns and Radio Buttons
-    - Use the thank you page URL as the thank you page URL in Infusionsoft
+    - Use the thank you page URL as the thank you page URL in Keap
 6. Added the ability to change the Placeholder colour pf text fields
 
 = 5.5 =
-1. Added a User Manual with specific instruction on how to setup lead source tracking in infusionsoft and auto populate fields
+1. Added a User Manual with specific instruction on how to setup lead source tracking in Keap and auto populate fields
 2. Added campaigns, a custom taxonomy that allows users to associated multiple web-forms with a specific campaign so directly compare conversions in case they are split testing multiple landing pages.
 3. Changed the Remove Labels option to a yes/no drop down selection.
 4. Re-added checkboxes to the formLift columns in admin panel.
@@ -662,7 +658,7 @@ Due to a bug in a previous version FormLift may not successfully update in which
 3. The validation algorithm has again been lightened to improve speed.
 4. The errors no longer appear under the fields to improve space usage and mobile friendliness, and now appear under the form in a list of errors format.
 5. The radio button error has be removed and will now use the default missing field error
-6. Date support! Date fields carried over from Infusionsoft will be reformatted and have a DATE picker installed so you can choose dates with a UI
+6. Date support! Date fields carried over from Keap will be reformatted and have a DATE picker installed so you can choose dates with a UI
 7. If you decide to do so, the following fields will all have REQUIRED support. Password, Date, Number, Text, Textarea, Select, checkbox, radio
 
 = 3.8 =

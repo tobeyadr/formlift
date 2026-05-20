@@ -67,7 +67,7 @@ class FormLift_Settings {
 		$fields["import_plugin_settings"] = new FormLift_Setting_Field( FORMLIFT_TEXT, 'import_plugin_settings', 'Paste your Plugin Settings here...', null,
 			'Paste the settings here from your TXT file export.' );
 		$fields["import_plugin"]          = new FormLift_Setting_Field( FORMLIFT_BUTTON, "import_plugin", "Click to import plugin settings.", "IMPORT NOW",
-			'This will overwrite ALL settings you currently have set. EVEN your Infusionsoft connection.' );
+			'This will overwrite ALL settings you currently have set. EVEN your Keap connection.' );
 		$fields["export_plugin"]          = new FormLift_Setting_Field( FORMLIFT_BUTTON, "export_plugin", "Export your plugin settings", "EXPORT NOW",
 			'This will provide you with a TXT file where you can open it and copy the settings to another installation.' );
 //        $fields[] = "<h2>Style Settings</h2>";
@@ -96,8 +96,8 @@ class FormLift_Settings {
 
 	public static function submission_settings() {
 		$fields                 = array();
-		$fields["post_url"]     = new FormLift_Setting_Field( FORMLIFT_INPUT, 'post_url', 'Infusionsoft Post URL', null,
-			'This is the url the form submits to. Do not change this if you are using an Infusionsoft Form.' );
+		$fields["post_url"]     = new FormLift_Setting_Field( FORMLIFT_INPUT, 'post_url', 'Keap Post URL', null,
+			'This is the url the form submits to. Do not change this if you are using an Keap Form.' );
 		$fields["target_blank"] = new FormLift_Setting_Field( FORMLIFT_CHECKBOX, 'target_blank', 'Submit To Blank Page', null,
 			'This is an experimental feature and is blocked by some chrome extensions. This will open up a new tab when the form submits.' );
 //        $fields["show_post_url"] = new FormLift_Setting_Field(FORMLIFT_CHECKBOX, 'show_post_url', 'Show Post URL');
@@ -152,7 +152,7 @@ class FormLift_Settings {
 		$fields["time_to_live"]            = new FormLift_Setting_Field( FORMLIFT_NUMBER, 'time_to_live', "PII Session Storage Time in Days", null,
 			'The number of days you\'d like FormLift to store PII after a user\'s LAST successful submission so that it will auto populate forms and replacement codes.' );
 		$fields['session_storage_field']   = new FormLift_Setting_Field( FORMLIFT_SELECT, 'session_storage_field', 'Use a custom field to save sessions', formlift_get_custom_fields(),
-			'Use this to store sessions in Infusionsoft. Send a user back to your site with their session info by appending <pre>?formlift_session=~Contact.' . get_formlift_setting( 'session_storage_field' ) . '~</pre> to any url on your website.' );
+			'Use this to store sessions in Keap. Send a user back to your site with their session info by appending <pre>?formlift_session=~Contact.' . get_formlift_setting( 'session_storage_field' ) . '~</pre> to any url on your website.' );
 		$fields["refresh_custom_fields"]   = new FormLift_Setting_Field( FORMLIFT_BUTTON, "refresh_custom_fields", "Refresh Custom Fields", "REFRESH",
 			'The custom fields are cached, if you added new ones and they are not appearing in the dropdown above, click this.' );
 		$fields["delete_all_sessions"]     = new FormLift_Setting_Field( FORMLIFT_BUTTON, "delete_all_sessions", "Delete all currently stored user sessions", "DELETE SESSIONS",
@@ -162,7 +162,7 @@ class FormLift_Settings {
 	}
 
 	/**
-	 * Returns a list of FormLift_Setting_Fields for the Infusionsoft API settings
+	 * Returns a list of FormLift_Setting_Fields for the Keap API settings
 	 *
 	 * @return array
 	 */
@@ -170,16 +170,16 @@ class FormLift_Settings {
 		$status = get_option( 'oauth_last_status' );
 
 		$fields   = array();
-		$fields[] = new FormLift_Setting_Field( FORMLIFT_BUTTON, 'activate_OAuth', 'Connect To Infusionsoft', "CONNECT",
-			"Use oauth to securely connect to Infusionsoft. This uses formlift.net as a proxy only for the initial connection. Using Oauth subjects you to anonymous API usage monitoring. No PII is stored, period.<br/><br/><b>Current Status</b>: $status" );
-		$fields[] = new FormLift_Setting_Field( FORMLIFT_BUTTON, 'refresh_OAuth', 'Refresh Infusionsoft Connection', "REFRESH",
-			'Manually refresh your connection with Infusionsoft if you are experiencing intermittent errors or slowness.' );
-		$fields[] = new FormLift_Setting_Field( FORMLIFT_BUTTON, 'disconnect_Oauth', 'Disconnect From Infusionsoft', "DISCONNECT",
-			'Manually disconnect your connection with Infusionsoft if you are experiencing intermittent errors or slowness.' );
+		$fields[] = new FormLift_Setting_Field( FORMLIFT_BUTTON, 'activate_OAuth', 'Connect To Keap', "CONNECT",
+			"Use oauth to securely connect to Keap. This uses formlift.net as a proxy only for the initial connection. Using Oauth subjects you to anonymous API usage monitoring. No PII is stored, period.<br/><br/><b>Current Status</b>: $status" );
+		$fields[] = new FormLift_Setting_Field( FORMLIFT_BUTTON, 'refresh_OAuth', 'Refresh Keap Connection', "REFRESH",
+			'Manually refresh your connection with Keap if you are experiencing intermittent errors or slowness.' );
+		$fields[] = new FormLift_Setting_Field( FORMLIFT_BUTTON, 'disconnect_Oauth', 'Disconnect From Keap', "DISCONNECT",
+			'Manually disconnect your connection with Keap if you are experiencing intermittent errors or slowness.' );
 		$fields[] = "<h1>Experiencing issues? Try using the Legacy API... </h1>";
-		$fields[] = new FormLift_Setting_Field( FORMLIFT_INPUT, 'infusionsoft_app_name', 'Infusionsoft App Name (e.g xx123)', null,
+		$fields[] = new FormLift_Setting_Field( FORMLIFT_INPUT, 'infusionsoft_app_name', 'Keap App Name (e.g xx123)', null,
 			'Your app name is the name before the <b>.infusionsoft.com</b> for example <b>ab123</b>.infusionsoft.com' );
-		$fields[] = new FormLift_Setting_Field( FORMLIFT_SECRET, 'infusionsoft_api_key', 'Infusionsoft API Key', null,
+		$fields[] = new FormLift_Setting_Field( FORMLIFT_SECRET, 'infusionsoft_api_key', 'Keap API Key', null,
 			'<a href="https://help.infusionsoft.com/userguides/get-started/tips-and-tricks/api-key" target="_blank">Find your API key.</a>' );
 
 		return apply_filters( 'formlift_infusionsoft_settigns', $fields );
@@ -193,11 +193,11 @@ class FormLift_Settings {
 	public static function import_settings() {
 
 		$fields                                    = array();
-		$fields["infusionsoft_form_id"]            = new FormLift_Setting_Field( FORMLIFT_SELECT, 'infusionsoft_form_id', 'Import From Infusionsoft', formlift_get_infusionsoft_webforms(),
-			'This is the list of all the web forms from your Infusionsoft APP. Including Legacy forms. Select the form you wish to import and then hit <b>sync</b> or <b>replace</b> below.' );
+		$fields["infusionsoft_form_id"]            = new FormLift_Setting_Field( FORMLIFT_SELECT, 'infusionsoft_form_id', 'Import From Keap', formlift_get_infusionsoft_webforms(),
+			'This is the list of all the web forms from your Keap APP. Including Legacy forms. Select the form you wish to import and then hit <b>sync</b> or <b>replace</b> below.' );
 		$fields["formlift_update_webform_list"]    = new FormLift_Setting_Field( FORMLIFT_BUTTON, 'formlift_update_webform_list', 'Refresh Form List', "REFRESH",
 			'Is your form not showing in the list? First, make sure it\'s published in the campaign builder, then click this button to pull in the new list of forms.' );
-		$fields["form_sync"]                       = new FormLift_Setting_Field( FORMLIFT_BUTTON, 'form_sync', 'Sync Form Code', "SYNC", 'This will update your form with any changes you made in Infusionsoft, like adding new fields' );
+		$fields["form_sync"]                       = new FormLift_Setting_Field( FORMLIFT_BUTTON, 'form_sync', 'Sync Form Code', "SYNC", 'This will update your form with any changes you made in Keap, like adding new fields' );
 		$fields["form_refresh"]                    = new FormLift_Setting_Field( FORMLIFT_BUTTON, 'form_refresh', 'Replace Form Code', "REPLACE", 'This will completely replace your form code, all changes made in the editor will be lost.' );
 		$fields["infusionsoft_form_original_html"] = new FormLift_Setting_Field( FORMLIFT_TEXT, 'infusionsoft_form_original_html', 'Use Form Html', null,
 			'Have a custom form you want to import? Use this instead. Paste the code into the text block and then click the button below.' );

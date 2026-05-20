@@ -58,12 +58,11 @@ if ( version_compare( PHP_VERSION, '8.0', '>=' ) ):
 else:
 	function formlift_php_error_notice() {
 		?>
-        <div class='notice notice-error'><p>Uh oh... your <strong>PHP level must be 5.6 or greater</strong> for FormLift
+        <div class='notice notice-error'><p>Uh oh... your <strong>PHP level must be 8.0 or greater</strong> for FormLift
                 to activate. Please update
-                your PHP level to 5.6 or better (7+ is recommended)! You can use
+                your PHP level to 8.0 or better (8.2+ is recommended)! You can use
                 <a href='https://wordpress.org/plugins/php-compatibility-checker/'>this plugin</a> to determine if it is
-                safe
-                for you to upgrade your PHP.</p></div>
+                safe for you to upgrade your PHP.</p></div>
 		<?php
 	}
 
